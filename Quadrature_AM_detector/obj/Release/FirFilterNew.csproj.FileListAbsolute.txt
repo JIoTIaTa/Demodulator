@@ -1,0 +1,14 @@
+D:\Anri\PLAZMA\PLAZMA\FirFilterNew\bin\Release\FirFilterNew.dll
+D:\Anri\PLAZMA\PLAZMA\FirFilterNew\bin\Release\FirFilterNew.pdb
+D:\Anri\PLAZMA\PLAZMA\FirFilterNew\bin\Release\Interface.dll
+D:\Anri\PLAZMA\PLAZMA\FirFilterNew\obj\Release\FirFilterNew.csprojResolveAssemblyReference.cache
+D:\Anri\PLAZMA\PLAZMA\FirFilterNew\obj\Release\FirFilterNew.FirFilterForm.resources
+D:\Anri\PLAZMA\PLAZMA\FirFilterNew\obj\Release\FirFilterNew.csproj.GenerateResource.Cache
+D:\Anri\PLAZMA\PLAZMA\FirFilterNew\obj\Release\FirFilterNew.dll
+D:\Anri\PLAZMA\PLAZMA\FirFilterNew\obj\Release\FirFilterNew.pdb
+D:\Anri\PLAZMA\PLAZMA\FirFilterNew\bin\Release\Cloo.dll.config
+D:\Anri\PLAZMA\PLAZMA\FirFilterNew\bin\Release\Cloo.dll
+D:\Anri\PLAZMA\PLAZMA\FirFilterNew\bin\Release\Cloo.pdb
+D:\Anri\PLAZMA\PLAZMA\FirFilterNew\bin\Release\Cloo.xml
+D:\Anri\PLAZMA\FormVisualizator\bin\Debug\Decoders\Утиліти\FirFilterNew.dll
+D:\Anri\PLAZMA\FormVisualizator\bin\Debug\Decoders\Утиліти\FirFilterNew.pdb

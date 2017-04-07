@@ -1,0 +1,10 @@
+D:\plaZma\Decoders\Утиліти\Quadrature_AM_detector.dll
+D:\plaZma\Decoders\Утиліти\Quadrature_AM_detector.pdb
+D:\Programming\SPARK\Quadrature_AM_detector\obj\Debug\ResolveAssemblyReference.cache
+D:\Programming\SPARK\Quadrature_AM_detector\obj\Debug\Exponentiation.Quadrature_AM_detectorForm.resources
+D:\Programming\SPARK\Quadrature_AM_detector\obj\Debug\Quadrature_AM_detector.Properties.Resources.resources
+D:\Programming\SPARK\Quadrature_AM_detector\obj\Debug\GenerateResource.read.1.tlog
+D:\Programming\SPARK\Quadrature_AM_detector\obj\Debug\GenerateResource.write.1.tlog
+D:\Programming\SPARK\Quadrature_AM_detector\obj\Debug\Quadrature_AM_detector.dll
+D:\Programming\SPARK\Quadrature_AM_detector\obj\Debug\Quadrature_AM_detector.pdb
+D:\Programming\SPARK\Quadrature_AM_detector\obj\Debug\Exponentiation.VisualForm.resources
