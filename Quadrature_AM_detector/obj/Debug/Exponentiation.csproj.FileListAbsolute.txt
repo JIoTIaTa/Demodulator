@@ -1,9 +1,0 @@
-D:\plaZma\Decoders\Утиліти\Exponentiation.dll
-D:\Programming\SPARK\Exponentiation^2\obj\Debug\ResolveAssemblyReference.cache
-D:\Programming\SPARK\Exponentiation^2\obj\Debug\Exponentiation.ExponentiationForm.resources
-D:\Programming\SPARK\Exponentiation^2\obj\Debug\Exponentiation.Properties.Resources.resources
-D:\Programming\SPARK\Exponentiation^2\obj\Debug\GenerateResource.read.1.tlog
-D:\Programming\SPARK\Exponentiation^2\obj\Debug\GenerateResource.write.1.tlog
-D:\Programming\SPARK\Exponentiation^2\obj\Debug\Exponentiation.dll
-D:\Programming\SPARK\Exponentiation^2\obj\Debug\Exponentiation.pdb
-D:\plaZma\Decoders\Утиліти\Exponentiation.pdb

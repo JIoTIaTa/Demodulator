@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!--Файл-звіт комплексу -->
-<logmessages>
-  <Decoder ID="4" name="Запис в IQ файл" logi="" />
-  <Decoder ID="3" name="Фільтр" logi="" />
-  <Decoder ID="2" name="Запис в IQ файл" logi="" />
-  <Decoder ID="1" name="Фільтр" logi="" />
-  <Decoder ID="0" name="Читати IQ файл" logi="" />
-</logmessages>

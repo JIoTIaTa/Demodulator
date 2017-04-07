@@ -1,9 +1,0 @@
-D:\plaZma\Decoders\Утиліти\FirFilterCPU.dll
-D:\plaZma\Decoders\Утиліти\FirFilterCPU.pdb
-D:\Programming\Часть спарка\FirFilterCPU\obj\Debug\ResolveAssemblyReference.cache
-D:\Programming\Часть спарка\FirFilterCPU\obj\Debug\FirFilterNew.FirFilterForm.resources
-D:\Programming\Часть спарка\FirFilterCPU\obj\Debug\Filter.VisualForm.resources
-D:\Programming\Часть спарка\FirFilterCPU\obj\Debug\GenerateResource.read.1.tlog
-D:\Programming\Часть спарка\FirFilterCPU\obj\Debug\GenerateResource.write.1.tlog
-D:\Programming\Часть спарка\FirFilterCPU\obj\Debug\FirFilterCPU.dll
-D:\Programming\Часть спарка\FirFilterCPU\obj\Debug\FirFilterCPU.pdb
