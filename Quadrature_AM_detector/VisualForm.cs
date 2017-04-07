@@ -16,8 +16,6 @@ namespace Exponentiation
     public partial class VisualForm : Form
     {
         public Quadrature_AM_detector Quadrature_AM_detector;
-        //private static sIQData _inData;
-        //int maxFFT = 65536;
         private double fNormolize = 1f; // коефициент нормализации сигнала
         private double SR = 0.0d; // частота дискретизации
         private double F = 0.0d; // цетральная частота спектра (половина частоты дискретизации)
@@ -38,11 +36,6 @@ namespace Exponentiation
         {
             SR = Quadrature_AM_detector.SR;
             F = Quadrature_AM_detector.F;
-            
-            //fNormolize = 1f / 4294967296 / firFilter.maxFFT;
-            //fNormolize = 1f / 1024 / firFilter.maxFFT;
-            //double BW = firFilter.getBW;
-            //MessageBox.Show(String.Format("SR = {0},F = {1},FFIR = {2}", SR, F, FFIR));
             detection = new Complex[65536];
             exponentiation = new Complex[65536];
             fftChart.ChartAreas[0].AxisX.Minimum = 0;
@@ -52,28 +45,19 @@ namespace Exponentiation
             //------------------------------------------------------------------------------------------------------
             N = Quadrature_AM_detector.Count;
             if (N > Quadrature_AM_detector.maxFFT) { N = Quadrature_AM_detector.maxFFT; }
-            //MessageBox.Show(String.Format("N = {0}",N));
-            //_inData.bytes = firFilter.inDataForVisual;
-            //var inSignalDataComplex = new Complex[65536]; //создаем буффер с данными для вхідного сигналу
             for (int k = 0; k < N; k++)
             {
-                //inFilterData[k] = Quadrature_AM_detector._outData.iq[k].i;
                 detection[k] = new Complex(Quadrature_AM_detector._bufferData.iq[k].i, Quadrature_AM_detector._bufferData.iq[k].q);
                 exponentiation[k] = new Complex(Quadrature_AM_detector._outData.iq[k].i, Quadrature_AM_detector._outData.iq[k].q);
-                //MessageBox.Show(String.Format("{0}->{1}",Quadrature_AM_detector._outData.iq[k].i, inFilterData[k]));
-                //SignalAvering += Convert.ToSingle(inFilterDataComplex[k].Magnitude);
             }
             for (int k = N; k < 65536; k++)
             {
-                //inFilterData[k] = 0;
                 detection[k] = new Complex(0, 0);
                 exponentiation[k] = new Complex(0, 0);
-                //SignalAvering += Convert.ToSingle(inFilterDataComplex[k].Magnitude);
             }
             try
             {
                 detection = Fft.fft(detection);
-                //inFilterData = Fft.nfft(inFilterData);
                 exponentiation = Fft.fft(exponentiation);
                 exponentiation = Fft.nfft(exponentiation);
             }
@@ -117,27 +101,12 @@ namespace Exponentiation
                             centralPosition = i;
                         }
                     }
-                    //fftChart.Series[0].Points.AddXY(F - SR / 2 + i * SR / 65536, Math.Log(inFilterData[i], 10));
                     fftChart.Series[0].Points.AddXY(0 + i*SR/65536, Math.Log(exponentiation[i].Magnitude, 10));
-                    //fftChart.Series[0].Points.AddXY(0 + i * SR / 65536, inFilterData[i].Real);
-                    //fftChart.Series[0].Points.AddXY(0 + i * SR / 65536, inFilterData[i].Phase);
-                    //MessageBox.Show(String.Format("{0}", inFilterData[i]));
-                    //fftChart.Series[0].Points.AddXY(0,Math.Log(inFilterData[i], 10));
             }
 
                 realSpeedPosition = (SR/65536)*speedPosition;
                 realCentralFrequencyPosition = (SR/65536)*centralPosition;
-            //------------------------------------------------------------------------------------------------------
-            //try
-            //{
-            //    bw = fftChart.ChartAreas[0].AxisX.ScaleView.Size*N/SR;
-            //}
-            //catch
-            //{
-            //    bw = 0.0;
-            //}
-            //bw = (bw/N)*SR;
-            //if (Double.IsNaN(bw)) { bw = SR; }
+            //------------------------------------------------------------------------------------------------------  
             band_label.Text ="Виділена смуга: " + (SR / 1000.0d) + " кГц";
             Speed_label.Text = "Частота маніауляції: " + realSpeedPosition + " Гц";
             T_label.Text = "Період маніпуляції:  " + (1 / realSpeedPosition * 1000000.0d) + " мкс";
@@ -168,12 +137,7 @@ namespace Exponentiation
             if (comboBoxFFT.SelectedIndex == 6) { Quadrature_AM_detector.maxFFT = 16384; }
             if (comboBoxFFT.SelectedIndex == 7) { Quadrature_AM_detector.maxFFT = 32768; }
             if (comboBoxFFT.SelectedIndex == 8) { Quadrature_AM_detector.maxFFT = 65536; }
-            //MessageBox.Show(String.Format("firFilter.maxFFT={0}, firFilter.parallelVisual {1}", firFilter.maxFFT, firFilter.parallelVisual)); 
-            //MessageBox.Show(String.Format("Різниця між курсорами {0} - {1} = {2}",SelectionEnd,SelectionStart, cursorsDifference));
             LoadVisualForm();
-            //SR = firFilter.getSR;
-            //F = firFilter.F;
-            //FFIR = firFilter.getFFIRreal;
         }
 
         private void fftChart_AxisViewChanged(object sender, System.Windows.Forms.DataVisualization.Charting.ViewEventArgs e)
