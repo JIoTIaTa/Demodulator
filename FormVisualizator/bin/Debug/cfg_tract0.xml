@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!--Конфігураційний файл комплексу -->
+<config TractName="Опис тракту відсутній...">
+  <Decoder ID="2" name="Запис в IQ файл" parametru="D:\Temp\3.wav" column="536" row="112" />
+  <Decoder ID="1" name="Фільтр" parametru="&lt;FilterOrder&gt;127&lt;CutoffFrequency&gt;0&lt;CentralFrequency&gt;0" column="317" row="148">
+    <outLink>2</outLink>
+  </Decoder>
+  <Decoder ID="0" name="Читати IQ файл" parametru="D:\Temp\17-51-11_1243021kHz.wav&lt;start&gt;44&lt;rozmir&gt;2097152" column="142" row="94">
+    <outLink>1</outLink>
+  </Decoder>
+</config>

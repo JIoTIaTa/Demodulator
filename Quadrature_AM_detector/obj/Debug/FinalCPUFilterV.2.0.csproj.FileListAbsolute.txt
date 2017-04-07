@@ -1,0 +1,12 @@
+D:\Programming\FinalCPUFilter\FinalCPUFilterV.2.0.dll
+D:\Programming\FinalCPUFilter\FinalCPUFilterV.2.0.pdb
+D:\Programming\Часть спарка\FinalCPUFilter\obj\Debug\ResolveAssemblyReference.cache
+D:\Programming\Часть спарка\FinalCPUFilter\obj\Debug\FirFilterNew.FirFilterForm.resources
+D:\Programming\Часть спарка\FinalCPUFilter\obj\Debug\FinalCPUFilterV20.Properties.Resources.resources
+D:\Programming\Часть спарка\FinalCPUFilter\obj\Debug\FirFilterNew.VisualForm.resources
+D:\Programming\Часть спарка\FinalCPUFilter\obj\Debug\GenerateResource.read.1.tlog
+D:\Programming\Часть спарка\FinalCPUFilter\obj\Debug\GenerateResource.write.1.tlog
+D:\Programming\Часть спарка\FinalCPUFilter\obj\Debug\FinalCPUFilterV.2.0.dll
+D:\Programming\Часть спарка\FinalCPUFilter\obj\Debug\FinalCPUFilterV.2.0.pdb
+D:\plaZma\Decoders\Утиліти\FinalCPUFilterV.2.0.dll
+D:\plaZma\Decoders\Утиліти\FinalCPUFilterV.2.0.pdb
