@@ -1,0 +1,52 @@
+Z:\volume2\Programming\spark от Венгра 2012 с исход\FormVisualizator\bin\Debug\data\Interface.dll
+Z:\volume2\Programming\spark от Венгра 2012 с исход\FormVisualizator\bin\Debug\data\Interface.pdb
+Z:\volume2\Programming\spark от Венгра 2012 с исход\Interface\obj\Debug\ResolveAssemblyReference.cache
+Z:\volume2\Programming\spark от Венгра 2012 с исход\Interface\obj\Debug\Interface.dll
+Z:\volume2\Programming\spark от Венгра 2012 с исход\Interface\obj\Debug\Interface.pdb
+Y:\Программирование\Мое программирование А1906\spark от Венгра 2012 с исход\FormVisualizator\bin\Debug\data\Interface.dll
+Y:\Программирование\Мое программирование А1906\spark от Венгра 2012 с исход\FormVisualizator\bin\Debug\data\Interface.pdb
+Y:\Программирование\Мое программирование А1906\spark от Венгра 2012 с исход\Interface\obj\Debug\ResolveAssemblyReference.cache
+Y:\Программирование\Мое программирование А1906\spark от Венгра 2012 с исход\Interface\obj\Debug\Interface.dll
+Y:\Программирование\Мое программирование А1906\spark от Венгра 2012 с исход\Interface\obj\Debug\Interface.pdb
+X:\Программирование\Мое программирование А1906\spark от Венгра 2012 с исход\FormVisualizator\bin\Debug\data\Interface.dll
+X:\Программирование\Мое программирование А1906\spark от Венгра 2012 с исход\FormVisualizator\bin\Debug\data\Interface.pdb
+X:\Программирование\Мое программирование А1906\spark от Венгра 2012 с исход\Interface\obj\Debug\ResolveAssemblyReference.cache
+X:\Программирование\Мое программирование А1906\spark от Венгра 2012 с исход\Interface\obj\Debug\Interface.dll
+X:\Программирование\Мое программирование А1906\spark от Венгра 2012 с исход\Interface\obj\Debug\Interface.pdb
+Y:\Программирование\Мое программирование А1906\Часть спарка\FormVisualizator\bin\Debug\data\Interface.dll
+Y:\Программирование\Мое программирование А1906\Часть спарка\Interface\obj\Debug\Interface.dll
+Y:\Программирование\Мое программирование А1906\Часть спарка\Interface\obj\Debug\Interface.pdb
+X:\Программирование\Мое программирование А1906\Часть спарка\FormVisualizator\bin\Debug\data\Interface.dll
+X:\Программирование\Мое программирование А1906\Часть спарка\FormVisualizator\bin\Debug\data\Interface.pdb
+X:\Программирование\Мое программирование А1906\Часть спарка\Interface\obj\Debug\ResolveAssemblyReference.cache
+X:\Программирование\Мое программирование А1906\Часть спарка\Interface\obj\Debug\Interface.dll
+X:\Программирование\Мое программирование А1906\Часть спарка\Interface\obj\Debug\Interface.pdb
+Y:\Программирование\Мое программирование А1906\Часть спарка\FormVisualizator\bin\Debug\data\Interface.pdb
+O:\Инфа для программирования ПЛАЗМЫ\Часть спарка\FormVisualizator\bin\Debug\data\Interface.dll
+O:\Инфа для программирования ПЛАЗМЫ\Часть спарка\FormVisualizator\bin\Debug\data\Interface.pdb
+O:\Инфа для программирования ПЛАЗМЫ\Часть спарка\Interface\obj\Debug\ResolveAssemblyReference.cache
+O:\Инфа для программирования ПЛАЗМЫ\Часть спарка\Interface\obj\Debug\Interface.dll
+O:\Инфа для программирования ПЛАЗМЫ\Часть спарка\Interface\obj\Debug\Interface.pdb
+H:\Инфа для программирования ПЛАЗМЫ\Часть спарка\FormVisualizator\bin\Debug\data\Interface.dll
+H:\Инфа для программирования ПЛАЗМЫ\Часть спарка\FormVisualizator\bin\Debug\data\Interface.pdb
+H:\Инфа для программирования ПЛАЗМЫ\Часть спарка\Interface\obj\Debug\Interface.dll
+H:\Инфа для программирования ПЛАЗМЫ\Часть спарка\Interface\obj\Debug\Interface.pdb
+d:\Часть спарка\FormVisualizator\bin\Debug\data\Interface.dll
+d:\Часть спарка\FormVisualizator\bin\Debug\data\Interface.pdb
+d:\Часть спарка\Interface\obj\Debug\ResolveAssemblyReference.cache
+d:\Часть спарка\Interface\obj\Debug\Interface.dll
+d:\Часть спарка\Interface\obj\Debug\Interface.pdb
+D:\Programming\Часть спарка\FormVisualizator\bin\Debug\data\Interface.dll
+D:\Programming\Часть спарка\FormVisualizator\bin\Debug\data\Interface.pdb
+D:\Programming\Часть спарка\Interface\obj\Debug\ResolveAssemblyReference.cache
+D:\Programming\Часть спарка\Interface\obj\Debug\Interface.dll
+D:\Programming\Часть спарка\Interface\obj\Debug\Interface.pdb
+D:\Programming\SPARK\FormVisualizator\bin\Debug\data\Interface.dll
+D:\Programming\SPARK\FormVisualizator\bin\Debug\data\Interface.pdb
+D:\Programming\SPARK\Interface\obj\Debug\ResolveAssemblyReference.cache
+D:\Programming\SPARK\Interface\obj\Debug\Interface.dll
+D:\Programming\SPARK\Interface\obj\Debug\Interface.pdb
+B:\Projects\Demodulator\FormVisualizator\bin\Debug\data\Interface.dll
+B:\Projects\Demodulator\FormVisualizator\bin\Debug\data\Interface.pdb
+B:\Projects\Demodulator\Interface\obj\Debug\Interface.dll
+B:\Projects\Demodulator\Interface\obj\Debug\Interface.pdb
