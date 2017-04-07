@@ -133,6 +133,7 @@ namespace Exponentiation
             }
             if (degree == 4)
             {
+                //new string for GitHub
                 tempI = 0;
                 tempQ = 0;
                 for (int i = 0; i < Count; i++)
