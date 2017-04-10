@@ -24,9 +24,7 @@ namespace Exponentiation
         private long SR = 9999999; // частота дискретизації (вхідного сигналу)
         private long F = 5555555; // центральна частота (вхідного сигналу)
         private string info; // строка виведення інформації в вікні СПАРК
-        public VisualForm visual; // форма візуалізації
-        
-        
+        public VisualForm visual; // форма візуалізації                
 
         public string Name
         {
@@ -78,9 +76,6 @@ namespace Exponentiation
 
         public void Info()
         {
-            //MessageBox.Show("Даний модуль призначений для фільтрації сигналу \n" +
-            //                "у смузі пропускання, яка обирається у попередньому\n" +
-            //                "модулі, наприклад модулі ШПФ");
             MessageBox.Show("\nКвадратурний детектор");
         }
 
@@ -93,8 +88,6 @@ namespace Exponentiation
         {
             if (visual == null || visual.IsDisposed)
             {
-                //visual = new VisualForm(firFilter.filter, firFilter.SR, firFilter.BW, firFilter.F); // імпульсно-частотна характеристика фільтра
-                //visual = new VisualForm(firFilter.filter);
                 visual = new VisualForm() { Quadrature_AM_detector = Quadrature_AM_detector };
                 visual.Show();
             }
@@ -111,7 +104,6 @@ namespace Exponentiation
                 if (!string.IsNullOrEmpty(mesage))
                 {
                     var comanda = mesage;
-                    //MessageBox.Show(String.Format("{0}",mesage));
                     try
                     {
                         if (comanda.Contains("%%SAMPLERATE&"))
@@ -138,23 +130,8 @@ namespace Exponentiation
                     }
                     catch
                     {
-                    }
-                    
-                    //if (comanda.Contains("%%NUM&"))
-                    //{
-                    //    int a1; // номер смуги для вибору фільтра (з повідомлення від ШПФ)
-                    //    long ffir; // центральна чатота сигналу, що потрібно відфільтрувати (з повідомлення від ШПФ)
-                    //    string strheader = comanda.Substring(comanda.LastIndexOf("%%NUM&") + 6);
-                    //    if (strheader.Contains("%%"))
-                    //        strheader = strheader.Substring(0, strheader.IndexOf("%%"));
-                    //    a1 = Convert.ToInt32(strheader);
 
-                    //    if (a1 == Exponentiation.login)
-                    //    {
-                    //        info = string.Format("Модуль піднесення до степеня № {0} зконфігуровано",
-                    //                              Exponentiation.login);
-                    //    }
-                    //}
+                    }
                     }
             try
             {
@@ -194,33 +171,21 @@ namespace Exponentiation
         {
             try
             {
-            //    if (param.Contains("%%NUM&"))
-            //    {
-            //        string strheader = param.Substring(param.LastIndexOf("%%NUM&") + 6);
-            //        if (strheader.Contains("%%")) strheader = strheader.Substring(0, strheader.IndexOf("%%"));
-            //        Exponentiation.login = Convert.ToInt32(strheader);
-            //    }
-                //if (param.Contains("%%FPCH&"))
-                //{
                     string strheader = param.Substring(param.LastIndexOf("%%FPCH&") + 7);
                     if (strheader.Contains("%%")) strheader = strheader.Substring(0, strheader.IndexOf("%%"));
                     Quadrature_AM_detector.F = Convert.ToInt64(strheader);
                     strheader = param.Substring(param.LastIndexOf("%%SAMPLERATE&") + 13);
                     if (strheader.Contains("%%")) strheader = strheader.Substring(0, strheader.IndexOf("%%"));
-                    Quadrature_AM_detector.SR = Convert.ToDouble(strheader);
-                //}
+                    Quadrature_AM_detector.SR = Convert.ToDouble(strheader);               
             }
             catch
             {
-            //    MessageBox.Show("Дані не визначені");
             }
         }
 
         public string GetParam()
         {
-            //return string.Format("%%NUM&{0}", Exponentiation.login);
-            return string.Format("%%FPCH&{0}%%SAMPLERATE&{1}", Convert.ToDecimal(Quadrature_AM_detector.F), Convert.ToDecimal(Quadrature_AM_detector.SR));
-            //return "";
+            return string.Format("%%FPCH&{0}%%SAMPLERATE&{1}", Convert.ToDecimal(Quadrature_AM_detector.F), Convert.ToDecimal(Quadrature_AM_detector.SR));           
         }
 
         public event Sdelal DoneWorck;
