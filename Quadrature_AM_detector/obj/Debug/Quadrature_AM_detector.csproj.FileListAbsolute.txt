@@ -8,3 +8,12 @@ D:\Programming\SPARK\Quadrature_AM_detector\obj\Debug\GenerateResource.write.1.t
 D:\Programming\SPARK\Quadrature_AM_detector\obj\Debug\Quadrature_AM_detector.dll
 D:\Programming\SPARK\Quadrature_AM_detector\obj\Debug\Quadrature_AM_detector.pdb
 D:\Programming\SPARK\Quadrature_AM_detector\obj\Debug\Exponentiation.VisualForm.resources
+B:\Repositories\Demodulator\Quadrature_AM_detector\obj\Debug\Quadrature_AM_detector.csprojResolveAssemblyReference.cache
+B:\Repositories\Demodulator\Quadrature_AM_detector\obj\Debug\Exponentiation.Quadrature_AM_detectorForm.resources
+B:\Repositories\Demodulator\Quadrature_AM_detector\obj\Debug\Quadrature_AM_detector.Properties.Resources.resources
+B:\Repositories\Demodulator\Quadrature_AM_detector\obj\Debug\Exponentiation.VisualForm.resources
+B:\Repositories\Demodulator\Quadrature_AM_detector\obj\Debug\Quadrature_AM_detector.csproj.GenerateResource.Cache
+B:\Repositories\Demodulator\Quadrature_AM_detector\obj\Debug\Quadrature_AM_detector.dll
+B:\Repositories\Demodulator\Quadrature_AM_detector\obj\Debug\Quadrature_AM_detector.pdb
+B:\plaZma\Decoders\Утиліти\Quadrature_AM_detector.dll
+B:\plaZma\Decoders\Утиліти\Quadrature_AM_detector.pdb

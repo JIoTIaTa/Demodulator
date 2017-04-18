@@ -47,7 +47,6 @@ namespace Exponentiation
         public double SR = 0.0d;
         public static sIQData _inData, _outData, _bufferData, _bufferData2;
         public long F = 0;
-        //public int degree = 2;
         public int login;
         public bool sendComand = false;
         private double tempI = 0;
@@ -60,6 +59,7 @@ namespace Exponentiation
         public int Count;
         public int maxFFT = 65536;
         public int degree = 2;
+        public bool busy = false;
 
 
         public void quadrature_AM_detector(byte[] inData, byte[] outData)
@@ -83,30 +83,10 @@ namespace Exponentiation
             {
                 for (int i = 0; i < Count; i++)
                 {
-                    //tempI = 0.0000025 * Math.Pow((_inData.iq[i].i + 65536), 2);
-                    //tempQ = 0.0000025 * Math.Pow((_inData.iq[i].q + 65536), 2);
-                    //tempI = _inData.iq[i].i * _inData.iq[i].i - _inData.iq[i].q * _inData.iq[i].q;
-                    //tempQ = 2 * _inData.iq[i].i * _inData.iq[i].q;
-                    //tempQ = Math.Abs(_inData.iq[i].i + _inData.iq[i].q);
                     tempI = Math.Abs(_inData.iq[i].i + _inData.iq[i].q);
                     tempQ = 0;
-                    //if (i == 0)
-                    //{
-                    //    tempI = Math.Abs(_inData.iq[i].i*_inData.iq[i].i - _inData.iq[i].q*_inData.iq[i].q);
-                    //    tempQ = Math.Abs(_inData.iq[i].i * _inData.iq[i].q - _inData.iq[i].i * _inData.iq[i].q);
-                    //}
-                    //else
-                    //{
-                    //    tempI = Math.Abs(_inData.iq[i - 1].i * _inData.iq[i].i - _inData.iq[i - 1].q * _inData.iq[i].q);
-                    //    tempQ = Math.Abs(tempQ = _inData.iq[i].i * _inData.iq[i - 1].q - _inData.iq[i - 1].i * _inData.iq[i].q); 
-                    //}
-
-                    //_outData.iq[i].i = (short) tempI;
-                    //_outData.iq[i].q = (short) tempQ;
                     _bufferData.iq[i].i = (short)tempI;
                     _bufferData.iq[i].q = (short)tempQ;
-                    //_bufferData.iq[i].i = (short) Math.Abs(_inData.iq[i].i + _inData.iq[i].q); ;
-                    //_bufferData.iq[i].q = (short) 0;
                 }
             }
             if (x == 2)
@@ -119,21 +99,13 @@ namespace Exponentiation
                     _bufferData.iq[i*2].q = _inData.iq[i].q;
                     _bufferData.iq[i*2 + 1].i = (short) ((_inData.iq[i].i + _inData.iq[i + 1].i)/2);
                     _bufferData.iq[i*2 + 1].q = (short) ((_inData.iq[i].q + _inData.iq[i + 1].q)/2);
-                    //_bufferData.iq[i*2 + 1].i = 0;
-                    //_bufferData.iq[i * 2 + 1].q = 0;
                 }
                 for (int i = 0; i < Count*2; i++)
                 {
                     tempI = Math.Abs(_bufferData.iq[i].i + _bufferData.iq[i].q);
                     tempQ = 0;
-                    //tempI = _bufferData.iq[i].i;
-                    //tempQ = _bufferData.iq[i].q;
-                    //_outData.iq[i].i = (short)tempI;
-                    //_outData.iq[i].q = (short)tempQ;
                     _bufferData.iq[i].i = (short)tempI;
                     _bufferData.iq[i].q = (short)tempQ;
-                    //_bufferData.iq[i].i = (short) Math.Abs(_bufferData.iq[i].i + _bufferData.iq[i].q);
-                    //_bufferData.iq[i].q = (short) 0;
                 }
 
             }
@@ -153,24 +125,16 @@ namespace Exponentiation
             }
             if (degree == 4)
             {
-                // new string for testing
                 tempI = 0;
                 tempQ = 0;
                 for (int i = 0; i < Count; i++)
                 {
                     _bufferData2.iq[i].i = (short)((_inData.iq[i].i * _inData.iq[i].i - _inData.iq[i].q * _inData.iq[i].q) / 10);
                     _bufferData2.iq[i].q = (short)((2 * _inData.iq[i].i * _inData.iq[i].q) / 10);
-                    //tempI = tempI*tempI - tempQ*tempQ;
-                    //tempQ = 2*tempI*tempQ;
-                    //tempI = tempI / 10;
-                    //tempQ = tempQ / 10;
-                    //_outData.iq[i].i = (short)tempI;
-                    //_outData.iq[i].q = (short)tempQ;
                     _outData.iq[i].i = (short)((_bufferData2.iq[i].i * _bufferData2.iq[i].i - _bufferData2.iq[i].q * _bufferData2.iq[i].q) / 10); ;
                     _outData.iq[i].q = (short)((2 * _bufferData2.iq[i].i * _bufferData2.iq[i].q) / 10); ;
                 }
             }
-
         }
     }
 }
