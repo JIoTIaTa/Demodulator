@@ -45,7 +45,7 @@ namespace Exponentiation
     public class Quadrature_AM_detector
     {
         public double SR = 0.0d;
-        public static sIQData _inData, _outData, _bufferData, _bufferData2;
+        public static sIQData _inData, _outData, _bufferData, _bufferData2, _shiftingData;
         public long F = 0;
         public int login;
         public bool sendComand = false;
@@ -61,17 +61,37 @@ namespace Exponentiation
         public int degree = 2;
         public bool busy = false;
         public int averagingValue = 1;
+        float [] sin_1024;
+        float [] cos_1024;
+        public double realSpeedPosition; // швидкість модуляції
+        public double realCentralFrequencyPosition; // центральна частота
+        float sin_cos_position;
 
+        public void sin_cos_init()
+        {
+            for (int i = 0; i < 1024; i++)
+            {
+                sin_1024 = new float[1024];
+                cos_1024 = new float[1024];
+                sin_1024[i] = (float)Math.Sin(i * Math.PI * 2 / 1024);
+                cos_1024[i] = (float)Math.Cos(i * Math.PI * 2 / 1024);
+            }
+        }
 
         public void detection(byte[] inData, byte[] outData)
         {
+            //if (realCentralFrequencyPosition > F) sin_cos_position = (float)(realCentralFrequencyPosition * 1024f / SR);
+            //else sin_cos_position = (float)(1024f + (realCentralFrequencyPosition - F) * 1024f / SR);
+            sin_cos_position = (float)(realCentralFrequencyPosition * 1024f / SR);
             Count = inData.Length/4; // величина вхідних масивів
             _inData.bytes = inData;
             _outData.bytes = outData;
             byte[] data = new byte[inData.Length * x];
             byte[] data2 = new byte[inData.Length];
+            byte[] shifting_data = new byte[inData.Length];
             _bufferData.bytes = data;
             _bufferData2.bytes = data2;
+            _shiftingData.bytes = shifting_data;
             if (degree == 2)
             {
                 normalizeCoeff = 100000;
@@ -130,8 +150,21 @@ namespace Exponentiation
                 tempQ = 0;
                 for (int i = 0; i < Count; i++)
                 {
-                    _bufferData2.iq[i].i = (short)((_inData.iq[i].i * _inData.iq[i].i - _inData.iq[i].q * _inData.iq[i].q) / 10);
-                    _bufferData2.iq[i].q = (short)((2 * _inData.iq[i].i * _inData.iq[i].q) / 10);
+                    int t = (i * (int)sin_cos_position) % 1024;
+                    _shiftingData.iq[i].i = (short)(_inData.iq[i].i * cos_1024[t] + (float)_inData.iq[i].q * sin_1024[t]);
+                    _shiftingData.iq[i].q = (short)(_inData.iq[i].q * cos_1024[t] - (float)_inData.iq[i].i * sin_1024[t]);
+                    //    _bufferData2.iq[i].i = (short)((_bufferData2.iq[i].i * _bufferData2.iq[i].i - _bufferData2.iq[i].q * _bufferData2.iq[i].q) / 10);
+                    //    _bufferData2.iq[i].q = (short)((2 * _bufferData2.iq[i].i * _bufferData2.iq[i].q) / 10);
+                    //    _outData.iq[i].i = (short)((_bufferData2.iq[i].i * _bufferData2.iq[i].i - _bufferData2.iq[i].q * _bufferData2.iq[i].q) / 10); ;
+                    //    _outData.iq[i].q = (short)((2 * _bufferData2.iq[i].i * _bufferData2.iq[i].q) / 10); ;
+                }
+
+                for (int i = 0; i < Count; i++)
+                {
+                    //_bufferData2.iq[i].i = (short)((_inData.iq[i].i * _inData.iq[i].i - _inData.iq[i].q * _inData.iq[i].q) / 10);
+                    //_bufferData2.iq[i].q = (short)((2 * _inData.iq[i].i * _inData.iq[i].q) / 10);
+                    _bufferData2.iq[i].i = (short)((_shiftingData.iq[i].i * _shiftingData.iq[i].i - _shiftingData.iq[i].q * _shiftingData.iq[i].q) / 10);
+                    _bufferData2.iq[i].q = (short)((2 * _shiftingData.iq[i].i * _shiftingData.iq[i].q) / 10);
                     _outData.iq[i].i = (short)((_bufferData2.iq[i].i * _bufferData2.iq[i].i - _bufferData2.iq[i].q * _bufferData2.iq[i].q) / 10); ;
                     _outData.iq[i].q = (short)((2 * _bufferData2.iq[i].i * _bufferData2.iq[i].q) / 10); ;
                 }

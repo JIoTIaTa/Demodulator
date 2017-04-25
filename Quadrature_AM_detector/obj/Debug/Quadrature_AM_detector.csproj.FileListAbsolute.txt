@@ -17,3 +17,5 @@ B:\Repositories\Demodulator\Quadrature_AM_detector\obj\Debug\Quadrature_AM_detec
 B:\Repositories\Demodulator\Quadrature_AM_detector\obj\Debug\Quadrature_AM_detector.pdb
 B:\plaZma\Decoders\Утиліти\Quadrature_AM_detector.dll
 B:\plaZma\Decoders\Утиліти\Quadrature_AM_detector.pdb
+B:\Repositories\Demodulator\Compiled\Quadrature_AM_detector.dll
+B:\Repositories\Demodulator\Compiled\Quadrature_AM_detector.pdb

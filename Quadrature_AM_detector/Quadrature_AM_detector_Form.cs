@@ -32,6 +32,7 @@ namespace Exponentiation
 
         private void save_Click(object sender, EventArgs e)
         {
+            Quadrature_AM_detector.sin_cos_init();
             Quadrature_AM_detector.sendComand = true;
             Quadrature_AM_detector.F = Convert.ToInt64(Fvalue.Text);
             if (Show.Checked) { Quadrature_AM_detector.show = true; } else { Quadrature_AM_detector.show = false; }
