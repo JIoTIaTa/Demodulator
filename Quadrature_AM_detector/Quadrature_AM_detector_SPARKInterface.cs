@@ -144,7 +144,7 @@ namespace Exponentiation
                         //MessageBox.Show("переписав частоту");
                         info = string.Format("Частота дискретизації:  {0} МГц\nЦентральна частота:  {1} МГц", Quadrature_AM_detector.SR / 1000000.0, Quadrature_AM_detector.F / 1000000.0);
                     }
-                Quadrature_AM_detector.quadrature_AM_detector(inData, outData);
+                Quadrature_AM_detector.detection(inData, outData);
                 Array.Resize(ref outData, inData.Length * Quadrature_AM_detector.x); // для інтерполяції
                 _outcom += outData.Length;
                 DoneWorck(this, outMessage, outData);

@@ -55,14 +55,15 @@ namespace Exponentiation
         private double averingAfter = 0;
         private long normalizeCoeff = 1; // 12
         public bool show;
-        public int x = 1;
+        public int x = 1; // коеф інтерполяції
         public int Count;
         public int maxFFT = 65536;
         public int degree = 2;
         public bool busy = false;
+        public int averagingValue = 1;
 
 
-        public void quadrature_AM_detector(byte[] inData, byte[] outData)
+        public void detection(byte[] inData, byte[] outData)
         {
             Count = inData.Length/4; // величина вхідних масивів
             _inData.bytes = inData;

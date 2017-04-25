@@ -37,6 +37,7 @@ namespace Exponentiation
         int centralPosition;
         double realSpeedPosition;
         double realCentralFrequencyPosition;
+        
 
 
         public VisualForm()
@@ -55,10 +56,8 @@ namespace Exponentiation
             if (Quadrature_AM_detector.maxFFT == 16384) { comboBoxFFT.SelectedIndex = 6; }
             if (Quadrature_AM_detector.maxFFT == 32768) { comboBoxFFT.SelectedIndex = 7; }
             if (Quadrature_AM_detector.maxFFT == 65536) { comboBoxFFT.SelectedIndex = 8; }
-
             SR = Quadrature_AM_detector.SR;
-            F = Quadrature_AM_detector.F;
-            //------------------------------------------------------------------------------------------------------
+            F = Quadrature_AM_detector.F;            
             N = Quadrature_AM_detector.Count;
             if (N > Quadrature_AM_detector.maxFFT) { N = Quadrature_AM_detector.maxFFT; }
             for (int k = 0; k < N; k++)
@@ -114,7 +113,7 @@ namespace Exponentiation
                         }
                     }
                 xAxes[i] = (float)(i * SR / 65536);
-                outFFTdata[i] = (float)Math.Log(exponentiation[i].Magnitude, 10);
+                outFFTdata[i] = (float)Math.Log(exponentiation[i].Magnitude/ Quadrature_AM_detector.averagingValue, 10);
             }
             MitovScope.Channels[0].Data.SetXYData(xAxes,outFFTdata);
 
@@ -215,7 +214,7 @@ namespace Exponentiation
                     }
                 }
                 xAxes[i] = (float)(i * SR / 65536);
-                outFFTdata[i] = (float)Math.Log(exponentiation[i].Magnitude, 10);
+                outFFTdata[i] = (float)Math.Log(exponentiation[i].Magnitude/ Quadrature_AM_detector.averagingValue, 10);
             }
             MitovScope.Channels[0].Data.SetXYData(xAxes, outFFTdata);
 
@@ -228,77 +227,83 @@ namespace Exponentiation
             F_label.Text = "Центральна частота:  " + (realCentralFrequencyPosition / 1000.0d) + " кГц";
         }
 
-        //private void timer1_Tick(object sender, EventArgs e)
-        //{
-        //    if (Quadrature_AM_detector.busy)
-        //    {
-        //        MitovScope.Channels[0].Data.Clear();
-        //        if (N > Quadrature_AM_detector.maxFFT) { N = Quadrature_AM_detector.maxFFT; }
-        //        for (int k = 0; k < N; k++)
-        //        {
-        //            detection[k] = new Complex(Quadrature_AM_detector._bufferData.iq[k].i, Quadrature_AM_detector._bufferData.iq[k].q);
-        //            exponentiation[k] = new Complex(Quadrature_AM_detector._outData.iq[k].i, Quadrature_AM_detector._outData.iq[k].q);
-        //        }
-        //        for (int k = N; k < 65536; k++)
-        //        {
-        //            detection[k] = new Complex(0, 0);
-        //            exponentiation[k] = new Complex(0, 0);
-        //        }
-        //        try
-        //        {
-        //            detection = Fft.fft(detection);
-        //            exponentiation = Fft.fft(exponentiation);
-        //            exponentiation = Fft.nfft(exponentiation);
-        //        }
-        //        catch
-        //        {
-        //            MessageBox.Show("ШПФ не проведено :(");
-        //        }
-        //        minSpeedZoneCoef = (detection.Length / 10) * 6;
-        //        maxSpeedZoneCoef = (detection.Length / 10) * 9;
-        //        minCentralFrequencyZoneCoef = (exponentiation.Length / 10) * 4;
-        //        maxCentralFrequencyZoneCoef = (exponentiation.Length / 10) * 6;
-        //        maxValue = 0;
-        //        speedPosition = 0;
-        //        centralPosition = 0;
-        //        realSpeedPosition = 0;
-        //        realCentralFrequencyPosition = 0;
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            //MessageBox.Show("1");
+            if (Quadrature_AM_detector.busy)
+            {
+                //MitovScope.Channels[0].Data.Clear();
+                if (N > Quadrature_AM_detector.maxFFT) { N = Quadrature_AM_detector.maxFFT; }
+                for (int k = 0; k < N; k++)
+                {
+                    detection[k] = new Complex(Quadrature_AM_detector._bufferData.iq[k].i, Quadrature_AM_detector._bufferData.iq[k].q);
+                    exponentiation[k] = new Complex(Quadrature_AM_detector._outData.iq[k].i, Quadrature_AM_detector._outData.iq[k].q);
+                }
+                for (int k = N; k < 65536; k++)
+                {
+                    detection[k] = new Complex(0, 0);
+                    exponentiation[k] = new Complex(0, 0);
+                }
+                try
+                {
+                    detection = Fft.fft(detection);
+                    exponentiation = Fft.fft(exponentiation);
+                    exponentiation = Fft.nfft(exponentiation);
+                }
+                catch
+                {
+                    MessageBox.Show("ШПФ не проведено :(");
+                }
+                minSpeedZoneCoef = (detection.Length / 10) * 6;
+                maxSpeedZoneCoef = (detection.Length / 10) * 9;
+                minCentralFrequencyZoneCoef = (exponentiation.Length / 10) * 4;
+                maxCentralFrequencyZoneCoef = (exponentiation.Length / 10) * 6;
+                maxValue = 0;
+                speedPosition = 0;
+                centralPosition = 0;
+                realSpeedPosition = 0;
+                realCentralFrequencyPosition = 0;
 
-        //        for (int i = 0; i < detection.Length; i++)
-        //        {
-        //            if (i > minSpeedZoneCoef & i < maxSpeedZoneCoef)
-        //            {
-        //                if (maxValue < Math.Log(detection[i].Magnitude, 10))
-        //                {
-        //                    maxValue = (float)Math.Log(detection[i].Magnitude, 10);
-        //                    speedPosition = i;
-        //                }
-        //            }
-        //        }
+                for (int i = 0; i < detection.Length; i++)
+                {
+                    if (i > minSpeedZoneCoef & i < maxSpeedZoneCoef)
+                    {
+                        if (maxValue < Math.Log(detection[i].Magnitude, 10))
+                        {
+                            maxValue = (float)Math.Log(detection[i].Magnitude, 10);
+                            speedPosition = i;
+                        }
+                    }
+                }
 
-        //        for (int i = 0; i < exponentiation.Length; i++)
-        //        {
-        //            if (i > minCentralFrequencyZoneCoef & i < maxCentralFrequencyZoneCoef)
-        //            {
-        //                if (maxValue < Math.Log(exponentiation[i].Magnitude, 10))
-        //                {
-        //                    maxValue = (float)Math.Log(exponentiation[i].Magnitude, 10);
-        //                    centralPosition = i;
-        //                }
-        //            }
-        //            xAxes[i] = (float)(i * SR / 65536);
-        //            outFFTdata[i] = (float)Math.Log(exponentiation[i].Magnitude, 10);
-        //        }
-        //        MitovScope.Channels[0].Data.SetXYData(xAxes, outFFTdata);
+                for (int i = 0; i < exponentiation.Length; i++)
+                {
+                    if (i > minCentralFrequencyZoneCoef & i < maxCentralFrequencyZoneCoef)
+                    {
+                        if (maxValue < Math.Log(exponentiation[i].Magnitude, 10))
+                        {
+                            maxValue = (float)Math.Log(exponentiation[i].Magnitude, 10);
+                            centralPosition = i;
+                        }
+                    }
+                    xAxes[i] = (float)(i * SR / 65536);
+                    outFFTdata[i] = (float)Math.Log(exponentiation[i].Magnitude/ Quadrature_AM_detector.averagingValue, 10);
+                }
+                MitovScope.Channels[0].Data.SetXYData(xAxes, outFFTdata);
 
-        //        realSpeedPosition = (SR / 65536) * speedPosition;
-        //        realCentralFrequencyPosition = (SR / 65536) * centralPosition;
-        //        //------------------------------------------------------------------------------------------------------  
+                realSpeedPosition = (SR / 65536) * speedPosition;
+                realCentralFrequencyPosition = (SR / 65536) * centralPosition;
+                //------------------------------------------------------------------------------------------------------  
 
-        //        Speed_label.Text = "Частота маніауляції: " + realSpeedPosition + " Гц";
-        //        T_label.Text = "Період маніпуляції:  " + (1 / realSpeedPosition * 1000000.0d) + " мкс";
-        //        F_label.Text = "Центральна частота:  " + (realCentralFrequencyPosition / 1000.0d) + " кГц";
-        //    }
-        //}
+                Speed_label.Text = "Частота маніауляції: " + realSpeedPosition + " Гц";
+                T_label.Text = "Період маніпуляції:  " + (1 / realSpeedPosition * 1000000.0d) + " мкс";
+                F_label.Text = "Центральна частота:  " + (realCentralFrequencyPosition / 1000.0d) + " кГц";
+            }
+        }
+
+        private void numericUpDown3_ValueChanged(object sender, EventArgs e)
+        {
+            Quadrature_AM_detector.averagingValue = (int)numericUpDown3.Value;
+        }
     }
 }

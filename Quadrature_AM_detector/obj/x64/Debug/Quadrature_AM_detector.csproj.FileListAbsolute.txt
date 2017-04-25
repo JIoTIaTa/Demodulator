@@ -1,0 +1,9 @@
+B:\Repositories\Demodulator\Compiled\Quadrature_AM_detector.dll
+B:\Repositories\Demodulator\Compiled\Quadrature_AM_detector.pdb
+B:\Repositories\Demodulator\Quadrature_AM_detector\obj\x64\Debug\Quadrature_AM_detector.csprojResolveAssemblyReference.cache
+B:\Repositories\Demodulator\Quadrature_AM_detector\obj\x64\Debug\Exponentiation.Quadrature_AM_detectorForm.resources
+B:\Repositories\Demodulator\Quadrature_AM_detector\obj\x64\Debug\Quadrature_AM_detector.Properties.Resources.resources
+B:\Repositories\Demodulator\Quadrature_AM_detector\obj\x64\Debug\Exponentiation.VisualForm.resources
+B:\Repositories\Demodulator\Quadrature_AM_detector\obj\x64\Debug\Quadrature_AM_detector.csproj.GenerateResource.Cache
+B:\Repositories\Demodulator\Quadrature_AM_detector\obj\x64\Debug\Quadrature_AM_detector.dll
+B:\Repositories\Demodulator\Quadrature_AM_detector\obj\x64\Debug\Quadrature_AM_detector.pdb
