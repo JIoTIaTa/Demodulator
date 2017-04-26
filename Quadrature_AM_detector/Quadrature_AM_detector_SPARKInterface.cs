@@ -98,7 +98,7 @@ namespace Exponentiation
         }
 
         public void Start(string mesage, byte[] inData)
-        {
+        {            
             Quadrature_AM_detector.busy = true;
             string outMessage = ""; // команда, що буде предана наступному модулю
             _incom += inData.Length;            

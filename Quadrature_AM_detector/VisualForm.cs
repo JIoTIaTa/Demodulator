@@ -26,6 +26,7 @@ namespace Exponentiation
         private float SignalAvering ;
         Complex[] detection = new Complex[65536]; // для детектування
         Complex[] exponentiation = new Complex[65536]; // для піднесення до степені
+        Complex[] visual_data = new Complex[65536];
         public float[] xAxes = new float[65536]; // значення осі Х ШТП
         public float[] outFFTdata = new float[65536]; // значення осі У ШПФ
         /*зона пошуку гармоніки швидкості модуляції*/
@@ -54,6 +55,7 @@ namespace Exponentiation
 
         private void LoadVisualForm()
         {
+            Quadrature_AM_detector.sin_cos_init();
             if (Quadrature_AM_detector.maxFFT == 256) { comboBoxFFT.SelectedIndex = 0; }
             if (Quadrature_AM_detector.maxFFT == 512) { comboBoxFFT.SelectedIndex = 1; }
             if (Quadrature_AM_detector.maxFFT == 1024) { comboBoxFFT.SelectedIndex = 2; }
@@ -111,20 +113,25 @@ namespace Exponentiation
 
             for (int i = 0; i < exponentiation.Length; i++)
             {
-            if (i > minCentralFrequencyZoneCoef & i < maxCentralFrequencyZoneCoef)
+                if (i > minCentralFrequencyZoneCoef & i < maxCentralFrequencyZoneCoef)
+                {
+                    if (maxValue < Math.Log(exponentiation[i].Magnitude, 10))
                     {
-                        if (maxValue < Math.Log(exponentiation[i].Magnitude, 10))
-                        {
-                            maxValue = (float) Math.Log(exponentiation[i].Magnitude, 10);
-                            centralPosition = i;
-                        }
+                        maxValue = (float)Math.Log(exponentiation[i].Magnitude, 10);
+                        centralPosition = i;
                     }
-                xAxes[i] = (float)(i * SR / 65536);
-                outFFTdata[i] = (float)(10 * Math.Log(exponentiation[i].Magnitude / Quadrature_AM_detector.averagingValue, 10));
+                }
             }
-            MitovScope.Channels[0].Data.SetXYData(xAxes,outFFTdata);
-            Quadrature_AM_detector.realSpeedPosition = (SR/65536)*speedPosition;
-            Quadrature_AM_detector.realCentralFrequencyPosition = (SR/65536)*centralPosition;          
+            Quadrature_AM_detector.realSpeedPosition = (SR / 65536) * speedPosition;
+            Quadrature_AM_detector.realCentralFrequencyPosition = (SR / 65536) * centralPosition;
+            Quadrature_AM_detector.shifting();
+            for (int i = 0; i < visual_data.Length; i++)
+            {
+                xAxes[i] = (float)(i * SR / 65536);
+                visual_data[i] = new Complex(Quadrature_AM_detector._shiftingData.iq[i].i, Quadrature_AM_detector._shiftingData.iq[i].q);
+                outFFTdata[i] = (float)(10 * Math.Log(visual_data[i].Magnitude / Quadrature_AM_detector.averagingValue, 10));
+            }
+            MitovScope.Channels[0].Data.SetXYData(xAxes, outFFTdata);
             Speed_label.Text = "Символьна швидкість: " + Quadrature_AM_detector.realSpeedPosition + " Бод";
             T_label.Text = "Період маніпуляції:  " + (1 / Quadrature_AM_detector.realSpeedPosition * 1000000.0d) + " мкс";
             F_label.Text = "Центральна частота:  " + (Quadrature_AM_detector.realCentralFrequencyPosition / 1000.0d) + " кГц";
@@ -162,7 +169,7 @@ namespace Exponentiation
                 for (int k = 0; k < N; k++)
                 {
                     detection[k] = new Complex(Quadrature_AM_detector._bufferData.iq[k].i, Quadrature_AM_detector._bufferData.iq[k].q);
-                    exponentiation[k] = new Complex(Quadrature_AM_detector._outData.iq[k].i, Quadrature_AM_detector._outData.iq[k].q);
+                    exponentiation[k] = new Complex(Quadrature_AM_detector._outData.iq[k].i, Quadrature_AM_detector._outData.iq[k].q);                    
                 }
                 for (int k = N; k < 65536; k++)
                 {
@@ -210,16 +217,19 @@ namespace Exponentiation
                             maxValue = (float)Math.Log(exponentiation[i].Magnitude, 10);
                             centralPosition = i;
                         }
-                    }
-                    xAxes[i] = (float)(i * SR / 65536);
-                    outFFTdata[i] = (float)(10 * Math.Log(exponentiation[i].Magnitude/ Quadrature_AM_detector.averagingValue, 10));
+                    }                    
                 }
-                MitovScope.Channels[0].Data.SetXYData(xAxes, outFFTdata);
-
                 Quadrature_AM_detector.realSpeedPosition = (SR / 65536) * speedPosition;
                 Quadrature_AM_detector.realCentralFrequencyPosition = (SR / 65536) * centralPosition;
-                //------------------------------------------------------------------------------------------------------  
-
+                Quadrature_AM_detector.shifting();
+                for (int i = 0; i < visual_data.Length; i++)
+                {
+                    xAxes[i] = (float)(i * SR / 65536);
+                    visual_data[i] = new Complex(Quadrature_AM_detector._shiftingData.iq[i].i, Quadrature_AM_detector._shiftingData.iq[i].q);                    
+                    outFFTdata[i] = (float)(10 * Math.Log(visual_data[i].Magnitude / Quadrature_AM_detector.averagingValue, 10));
+                }
+                MitovScope.Channels[0].Data.SetXYData(xAxes, outFFTdata);
+                
                 Speed_label.Text = "Символьна швидкість: " + Quadrature_AM_detector.realSpeedPosition + " Бод";
                 T_label.Text = "Період маніпуляції:  " + (1 / Quadrature_AM_detector.realSpeedPosition * 1000000.0d) + " мкс";
                 F_label.Text = "Центральна частота:  " + (Quadrature_AM_detector.realCentralFrequencyPosition / 1000.0d) + " кГц";

@@ -158,7 +158,7 @@
             this.exponentiationLevel.Size = new System.Drawing.Size(40, 20);
             this.exponentiationLevel.TabIndex = 18;
             this.exponentiationLevel.Value = new decimal(new int[] {
-            2,
+            4,
             0,
             0,
             0});
