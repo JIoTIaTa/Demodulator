@@ -55,6 +55,7 @@ namespace Exponentiation
 
         private void LoadVisualForm()
         {
+            MitovScope.Channels[0].Color = Color.Gray;
             Quadrature_AM_detector.sin_cos_init();
             if (Quadrature_AM_detector.maxFFT == 256) { comboBoxFFT.SelectedIndex = 0; }
             if (Quadrature_AM_detector.maxFFT == 512) { comboBoxFFT.SelectedIndex = 1; }
@@ -125,10 +126,26 @@ namespace Exponentiation
             Quadrature_AM_detector.realSpeedPosition = (SR / 65536) * speedPosition;
             Quadrature_AM_detector.realCentralFrequencyPosition = (SR / 65536) * centralPosition;
             Quadrature_AM_detector.shifting();
+            for (int k = 0; k < N; k++)
+            {
+                visual_data[k] = new Complex(Quadrature_AM_detector._shiftingData.iq[k].i, Quadrature_AM_detector._shiftingData.iq[k].q);
+            }
+            for (int k = N; k < 65536; k++)
+            {
+                visual_data[k] = new Complex(0, 0);
+            }
+            try
+            {
+                visual_data = Fft.fft(visual_data);
+                visual_data = Fft.nfft(visual_data);
+            }
+            catch
+            {
+                MessageBox.Show("ШПФ не проведено :(");
+            }
             for (int i = 0; i < visual_data.Length; i++)
             {
                 xAxes[i] = (float)(i * SR / 65536);
-                visual_data[i] = new Complex(Quadrature_AM_detector._shiftingData.iq[i].i, Quadrature_AM_detector._shiftingData.iq[i].q);
                 outFFTdata[i] = (float)(10 * Math.Log(visual_data[i].Magnitude / Quadrature_AM_detector.averagingValue, 10));
             }
             MitovScope.Channels[0].Data.SetXYData(xAxes, outFFTdata);
@@ -222,14 +239,29 @@ namespace Exponentiation
                 Quadrature_AM_detector.realSpeedPosition = (SR / 65536) * speedPosition;
                 Quadrature_AM_detector.realCentralFrequencyPosition = (SR / 65536) * centralPosition;
                 Quadrature_AM_detector.shifting();
+                for (int k = 0; k < N; k++)
+                {
+                    visual_data[k] = new Complex(Quadrature_AM_detector._shiftingData.iq[k].i, Quadrature_AM_detector._shiftingData.iq[k].q);
+                }
+                for (int k = N; k < 65536; k++)
+                {
+                    visual_data[k] = new Complex(0, 0);
+                }
+                try
+                {
+                    visual_data = Fft.fft(visual_data);
+                    visual_data = Fft.nfft(visual_data);
+                }
+                catch
+                {
+                    MessageBox.Show("ШПФ не проведено :(");
+                }
                 for (int i = 0; i < visual_data.Length; i++)
                 {
-                    xAxes[i] = (float)(i * SR / 65536);
-                    visual_data[i] = new Complex(Quadrature_AM_detector._shiftingData.iq[i].i, Quadrature_AM_detector._shiftingData.iq[i].q);                    
+                    xAxes[i] = (float)(i * SR / 65536);                    
                     outFFTdata[i] = (float)(10 * Math.Log(visual_data[i].Magnitude / Quadrature_AM_detector.averagingValue, 10));
-                }
-                MitovScope.Channels[0].Data.SetXYData(xAxes, outFFTdata);
-                
+                }                
+                MitovScope.Channels[0].Data.SetXYData(xAxes, outFFTdata);                
                 Speed_label.Text = "Символьна швидкість: " + Quadrature_AM_detector.realSpeedPosition + " Бод";
                 T_label.Text = "Період маніпуляції:  " + (1 / Quadrature_AM_detector.realSpeedPosition * 1000000.0d) + " мкс";
                 F_label.Text = "Центральна частота:  " + (Quadrature_AM_detector.realCentralFrequencyPosition / 1000.0d) + " кГц";
@@ -239,6 +271,7 @@ namespace Exponentiation
         private void numericUpDown3_ValueChanged(object sender, EventArgs e)
         {
             Quadrature_AM_detector.averagingValue = (int)numericUpDown3.Value;
+            toolStripStatusLabel.Text = String.Format("Усереднення ШПФ змінено на {0}", Quadrature_AM_detector.averagingValue);
         }
     }
 }

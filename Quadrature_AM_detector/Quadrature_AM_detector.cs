@@ -54,14 +54,12 @@ namespace Exponentiation
         public bool sendComand = false;
         private double tempI = 0;
         private double tempQ = 0;
-        private double averingBefore = 0;
-        private double averingAfter = 0;
-        private long normalizeCoeff = 1; // 12
         public bool show;
+        long normalizeCoeff = 1;
         public int x = 1; // коеф інтерполяції
         public int Count;
         public int maxFFT = 65536;
-        public int degree = 2;
+        public int degree = 4;
         public bool busy = false;
         public int averagingValue = 1;
         float[] sin_1024 = new float[1024];
@@ -80,9 +78,7 @@ namespace Exponentiation
         }
 
         public void detection(byte[] inData, byte[] outData)
-        {
-            //if (realCentralFrequencyPosition > F) sin_cos_position = (float)(realCentralFrequencyPosition * 1024f / SR);
-            //else sin_cos_position = (float)(1024f + (realCentralFrequencyPosition - F) * 1024f / SR);
+        {            
             sin_cos_position = (float)(realCentralFrequencyPosition * 1024f / SR);
             Count = inData.Length / 4; // величина вхідних масивів
             _inData.bytes = inData;
@@ -163,12 +159,19 @@ namespace Exponentiation
 
         public void shifting()
         {
-            for (int i = 0; i < Count; i++)
+            if (realCentralFrequencyPosition > F) sin_cos_position = (float)(realCentralFrequencyPosition * 1024f / SR);
+            else sin_cos_position = (float)(1024f + (realCentralFrequencyPosition - F) * 1024f / SR);
+
+            for (int k = 0; k <averagingValue; k++)
             {
-                int t = (i * (int)sin_cos_position) % 1024;
-                _shiftingData.iq[i].i = (short)(_inData.iq[i].i * cos_1024[t] + (float)_inData.iq[i].q * sin_1024[t]);
-                _shiftingData.iq[i].q = (short)(_inData.iq[i].q * cos_1024[t] - (float)_inData.iq[i].i * sin_1024[t]);
+                for (int i = 0; i < Count; i++)
+                {
+                    int t = (i * (int)sin_cos_position) % 1024;
+                    _shiftingData.iq[i].i += (short)(_inData.iq[i].i * cos_1024[t] + (float)_inData.iq[i].q * sin_1024[t]);
+                    _shiftingData.iq[i].q += (short)(_inData.iq[i].q * cos_1024[t] - (float)_inData.iq[i].i * sin_1024[t]);
+                }
             }
+            
         }
     }
 }
