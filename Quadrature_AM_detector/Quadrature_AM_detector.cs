@@ -61,7 +61,7 @@ namespace Exponentiation
         public int maxFFT = 65536;
         public int degree = 4;
         public bool busy = false;
-        public int averagingValue = 1;
+        public int averagingValue = 5;
         float[] sin_1024 = new float[1024];
         float[] cos_1024 = new float[1024];
         public double realSpeedPosition; // швидкість модуляції
@@ -161,16 +161,13 @@ namespace Exponentiation
         {
             if (realCentralFrequencyPosition > F) sin_cos_position = (float)(realCentralFrequencyPosition * 1024f / SR);
             else sin_cos_position = (float)(1024f + (realCentralFrequencyPosition - F) * 1024f / SR);
-
-            for (int k = 0; k <averagingValue; k++)
-            {
+            
                 for (int i = 0; i < Count; i++)
                 {
                     int t = (i * (int)sin_cos_position) % 1024;
-                    _shiftingData.iq[i].i += (short)(_inData.iq[i].i * cos_1024[t] + (float)_inData.iq[i].q * sin_1024[t]);
-                    _shiftingData.iq[i].q += (short)(_inData.iq[i].q * cos_1024[t] - (float)_inData.iq[i].i * sin_1024[t]);
-                }
-            }
+                    _shiftingData.iq[i].i = (short)(_shiftingData.iq[i].i + (short)(_inData.iq[i].i * cos_1024[t] + (float)_inData.iq[i].q * sin_1024[t]));
+                    _shiftingData.iq[i].q = (short)(_shiftingData.iq[i].q + (short)(_inData.iq[i].q * cos_1024[t] - (float)_inData.iq[i].i * sin_1024[t]));
+                }         
             
         }
     }
