@@ -4,17 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Numerics;
 using System.Threading.Tasks;
+using Cloo;
 
 namespace FirFilterNew
 {
     static class Fft
-    {
-        /// <summary>
-        /// Вычисление поворачивающего модуля e^(-i*2*PI*k/N)
-        /// </summary>
-        /// <param name="k"></param>
-        /// <param name="N"></param>
-        /// <returns></returns>
+    {        
         private static Complex w(int k, int N)
         {
             if (k % N == 0) return 1;
@@ -175,6 +170,37 @@ namespace FirFilterNew
                 X_n[N / 2 + i] = X[i];
                 });
             return X_n;
-        }
+        }        
     }
+
+    //class GPU_FFT
+    //{
+    //    ComputeContextPropertyList contextPropetyList;
+    //    List<ComputeDevice> Devs = new List<ComputeDevice>();
+    //    ComputeContext context; // контекст (для управління об'єктами, такими як командних черг, пам'яті, програми та об'єктів ядра, і для виконання ядра на один або кілька пристроїв)
+    //    ComputeCommandQueue command_queue; //команда 
+    //    ComputeProgram program; // програма (компіляція і лінковка всіх кодів в файлах .сl)
+    //    ComputeKernel kernel; //  робить з функцій з ідендифікаторами __kernel реальний kernel :)
+    //    string[] platform_id; // id доступних платформ	
+    //    uint ret_num_platforms = 0; //кількість доступних платформ
+    //    uint ret = 0; // флажок помилки
+    //    string[] cdDevices; // список id доступних пристроїв
+    //    uint ciDeviceCount = 0; // кількість доступних пристроїв
+    //    const Int32 szGlobalWorkSize = 81920; // загальна кількість work-items, які будуть виконуватись        
+    //    const Int16 GroupWorkSize = 128; // ниток в блоці
+    //    ComputeBuffer<byte> dev_inData;
+    //    string source_str = @"
+    //    typedef struct 
+    //            {	
+	   //             short i;
+	   //             short q;
+    //            } iq;
+    //            typedef struct
+    //            {	
+	   //             float i;
+	   //             float q;
+    //            } iqf;
+        
+    //    ";
+    //}
 }

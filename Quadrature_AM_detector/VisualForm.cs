@@ -27,6 +27,7 @@ namespace Exponentiation
         Complex[] detection = new Complex[65536]; // для детектування
         Complex[] exponentiation = new Complex[65536]; // для піднесення до степені
         Complex[] visual_data = new Complex[65536];
+        Complex[] avering_buffer = new Complex[65536];
         public float[] xAxes = new float[65536]; // значення осі Х ШТП
         public float[] outFFTdata = new float[65536]; // значення осі У ШПФ
         /*зона пошуку гармоніки швидкості модуляції*/
@@ -160,8 +161,19 @@ namespace Exponentiation
                 }
                 try
                 {
-                    visual_data = Fft.fft(visual_data);
-                    visual_data = Fft.nfft(visual_data);
+                    int k = 0;
+                    do
+                    {
+                        visual_data = Fft.fft(visual_data);
+                        visual_data = Fft.nfft(visual_data);
+
+                        for (int i = 0; i < 65536; i++)
+                        {
+                            avering_buffer[i] += visual_data[i];
+                        }
+                        k++;
+                    } while (k< Quadrature_AM_detector.averagingValue);
+                    
                 }
                 catch
                 {
@@ -170,7 +182,7 @@ namespace Exponentiation
                 for (int i = 0; i < visual_data.Length; i++)
                 {
                     xAxes[i] = (float)(i * SR / 65536);                    
-                    outFFTdata[i] = (float)(10 * Math.Log(visual_data[i].Magnitude / Quadrature_AM_detector.averagingValue, 10));
+                    outFFTdata[i] = (float)(10 * Math.Log(avering_buffer[i].Magnitude / Quadrature_AM_detector.averagingValue, 10));
                 }                
                 MitovScope.Channels[0].Data.SetXYData(xAxes, outFFTdata);                
                 Speed_label.Text = "Символьна швидкість: " + Quadrature_AM_detector.realSpeedPosition + " Бод";
