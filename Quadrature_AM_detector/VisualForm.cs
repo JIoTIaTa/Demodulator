@@ -27,7 +27,7 @@ namespace Exponentiation
         Complex[] detection = new Complex[65536]; // для детектування
         Complex[] exponentiation = new Complex[65536]; // для піднесення до степені
         Complex[] visual_data = new Complex[65536];
-        Complex[] avering_buffer = new Complex[65536];
+        //Complex[] avering_buffer = new Complex[65536];
         public float[] xAxes = new float[65536]; // значення осі Х ШТП
         public float[] outFFTdata = new float[65536]; // значення осі У ШПФ
         /*зона пошуку гармоніки швидкості модуляції*/
@@ -40,7 +40,7 @@ namespace Exponentiation
         float maxValue; // змінна для знаходження пікової гармоніки
         int speedPosition; // позиція пікової гармоніки швидкості
         int centralPosition; // позиція пікової гармоніки центральної частоти
-        int k = 0;
+        int averingRepeat = 0;
         
 
 
@@ -161,27 +161,28 @@ namespace Exponentiation
                 }
                 try
                 {
-                        visual_data = Fft.fft(visual_data);
-                        visual_data = Fft.nfft(visual_data);
+                        //visual_data = Fft.fft(visual_data);
+                        //visual_data = Fft.nfft(visual_data);
 
                         for (int i = 0; i < 65536; i++)
                         {
-                            avering_buffer[i] += visual_data[i];
-                        }
-                    k++;
-                    if(k == Quadrature_AM_detector.averagingValue)
+                        Quadrature_AM_detector.avering_buffer[i] += visual_data[i];
+                        }                    
+                    averingRepeat++;
+                    if (averingRepeat >= Quadrature_AM_detector.averagingValue)
                     {
-                        k = 0;
+                        averingRepeat = 0;
+                        Quadrature_AM_detector.avering_buffer = Fft.fft(Quadrature_AM_detector.avering_buffer);
+                        Quadrature_AM_detector.avering_buffer = Fft.nfft(Quadrature_AM_detector.avering_buffer);
                         for (int i = 0; i < visual_data.Length; i++)
                         {
                             xAxes[i] = (float)(i * SR / 65536);
-                            outFFTdata[i] = (float)(10 * Math.Log(avering_buffer[i].Magnitude / Quadrature_AM_detector.averagingValue, 10));
+                            outFFTdata[i] = (float)(10 * Math.Log(Quadrature_AM_detector.avering_buffer[i].Magnitude / Quadrature_AM_detector.averagingValue, 10));
                         }
                         MitovScope.Channels[0].Data.SetXYData(xAxes, outFFTdata);
-                        avering_buffer = null;
+                        Array.Clear(Quadrature_AM_detector.avering_buffer,0,65536);
                     }
-                    toolStripStatusLabel.Text = String.Format("k =  {0}", k) ;                
-
+                    toolStripStatusLabel.Text = string.Format("averingRepeat =  {0}", averingRepeat);
                 }
                 catch
                 {
@@ -197,7 +198,7 @@ namespace Exponentiation
         private void numericUpDown3_ValueChanged(object sender, EventArgs e)
         {
             Quadrature_AM_detector.averagingValue = (int)numericUpDown3.Value;
-            toolStripStatusLabel.Text = String.Format("Усереднення ШПФ змінено на {0}", Quadrature_AM_detector.averagingValue);
+            toolStripStatusLabel.Text = string.Format("Усереднення ШПФ змінено на {0}", Quadrature_AM_detector.averagingValue);
         }
     }
 }

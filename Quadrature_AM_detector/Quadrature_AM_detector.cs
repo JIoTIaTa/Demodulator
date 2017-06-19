@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Cloo;
+using System.Numerics;
 
 namespace Exponentiation
 {
@@ -67,6 +68,7 @@ namespace Exponentiation
         public double realSpeedPosition; // швидкість модуляції
         public double realCentralFrequencyPosition; // центральна частота
         float sin_cos_position;
+        public Complex[] avering_buffer = new Complex[65536];
 
         public void sin_cos_init()
         {

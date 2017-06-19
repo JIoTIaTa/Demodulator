@@ -19,3 +19,5 @@ B:\Repositories\Demodulator\Quadrature_AM_detector\obj\Debug\Exponentiation.Visu
 B:\Repositories\Demodulator\Quadrature_AM_detector\obj\Debug\Quadrature_AM_detector.csproj.GenerateResource.Cache
 B:\Repositories\Demodulator\Quadrature_AM_detector\obj\Debug\Quadrature_AM_detector.dll
 B:\Repositories\Demodulator\Quadrature_AM_detector\obj\Debug\Quadrature_AM_detector.pdb
+B:\SPARK\plaZma\Decoders\Утиліти\Quadrature_AM_detector.dll
+B:\SPARK\plaZma\Decoders\Утиліти\Quadrature_AM_detector.pdb

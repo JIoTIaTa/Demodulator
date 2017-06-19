@@ -86,15 +86,23 @@ namespace Exponentiation
 
         public void Visual()
         {
-            if (visual == null || visual.IsDisposed)
-            {
-                visual = new VisualForm() { Quadrature_AM_detector = Quadrature_AM_detector };
-                visual.Show();
+            if (Quadrature_AM_detector.busy == true)
+                {
+                if (visual == null || visual.IsDisposed)
+                {
+                    visual = new VisualForm() { Quadrature_AM_detector = Quadrature_AM_detector };
+                    visual.Show();
+                }
+                else
+                {
+                    visual.Focus();
+                }
             }
             else
             {
-                visual.Focus();
+                MessageBox.Show("Can't do it, bro");
             }
+            
         }
 
         public void Start(string mesage, byte[] inData)
