@@ -54,4 +54,3 @@ B:\Repositories\Demodulator\FormVisualizator\bin\Debug\data\Interface.dll
 B:\Repositories\Demodulator\FormVisualizator\bin\Debug\data\Interface.pdb
 B:\Repositories\Demodulator\Interface\obj\Debug\Interface.dll
 B:\Repositories\Demodulator\Interface\obj\Debug\Interface.pdb
-B:\Repositories\Demodulator\Interface\obj\Debug\Interface.csprojResolveAssemblyReference.cache

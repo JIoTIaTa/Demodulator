@@ -167,8 +167,7 @@ namespace Exponentiation
                     int t = (i * (int)sin_cos_position) % 1024;
                     _shiftingData.iq[i].i = (short)(_shiftingData.iq[i].i + (short)(_inData.iq[i].i * cos_1024[t] + (float)_inData.iq[i].q * sin_1024[t]));
                     _shiftingData.iq[i].q = (short)(_shiftingData.iq[i].q + (short)(_inData.iq[i].q * cos_1024[t] - (float)_inData.iq[i].i * sin_1024[t]));
-                }         
-            
+                }                     
         }
     }
 }
