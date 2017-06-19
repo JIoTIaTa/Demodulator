@@ -161,6 +161,9 @@ namespace Exponentiation
                 }
                 try
                 {
+                    int k = 0;
+                    do
+                    {
                         visual_data = Fft.fft(visual_data);
                         visual_data = Fft.nfft(visual_data);
 
@@ -168,26 +171,20 @@ namespace Exponentiation
                         {
                             avering_buffer[i] += visual_data[i];
                         }
-                    k++;
-                    if(k == Quadrature_AM_detector.averagingValue)
-                    {
-                        k = 0;
-                        for (int i = 0; i < visual_data.Length; i++)
-                        {
-                            xAxes[i] = (float)(i * SR / 65536);
-                            outFFTdata[i] = (float)(10 * Math.Log(avering_buffer[i].Magnitude / Quadrature_AM_detector.averagingValue, 10));
-                        }
-                        MitovScope.Channels[0].Data.SetXYData(xAxes, outFFTdata);
-                        avering_buffer = null;
-                    }
-                    toolStripStatusLabel.Text = String.Format("k =  {0}", k) ;                
-
+                        k++;
+                    } while (k< Quadrature_AM_detector.averagingValue);
+                    
                 }
                 catch
                 {
-                    toolStripStatusLabel.Text = "ШПФ не проведено :(";
+                    MessageBox.Show("ШПФ не проведено :(");
                 }
-                          
+                for (int i = 0; i < visual_data.Length; i++)
+                {
+                    xAxes[i] = (float)(i * SR / 65536);                    
+                    outFFTdata[i] = (float)(10 * Math.Log(avering_buffer[i].Magnitude / Quadrature_AM_detector.averagingValue, 10));
+                }                
+                MitovScope.Channels[0].Data.SetXYData(xAxes, outFFTdata);                
                 Speed_label.Text = "Символьна швидкість: " + Quadrature_AM_detector.realSpeedPosition + " Бод";
                 T_label.Text = "Період маніпуляції:  " + (1 / Quadrature_AM_detector.realSpeedPosition * 1000000.0d) + " мкс";
                 F_label.Text = "Центральна частота:  " + (Quadrature_AM_detector.realCentralFrequencyPosition / 1000.0d) + " кГц";
