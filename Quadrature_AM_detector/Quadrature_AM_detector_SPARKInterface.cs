@@ -14,6 +14,7 @@ namespace Exponentiation
 
     public class Quadrature_AM_detectorSPARKInterface : IDecoder
     {
+       
         private bool _busy;
         private double _incom = 0; // вхідні відліки в байтах
         private double _outcom = 0; // вихідні відліки в байтах
@@ -106,7 +107,7 @@ namespace Exponentiation
         }
 
         public void Start(string mesage, byte[] inData)
-        {            
+        {
             Quadrature_AM_detector.busy = true;
             string outMessage = ""; // команда, що буде предана наступному модулю
             _incom += inData.Length;            
@@ -148,8 +149,6 @@ namespace Exponentiation
                     {
                         outMessage = "%%FPCH&" + ((long)(Quadrature_AM_detector.F)) + "%%SAMPLERATE&" + ((long)(Quadrature_AM_detector.SR));
                         Quadrature_AM_detector.sendComand = false;
-                        //DoneWorck(this, outMessage, outData);
-                        //MessageBox.Show("переписав частоту");
                         info = string.Format("Частота дискретизації:  {0} МГц\nЦентральна частота:  {1} МГц", Quadrature_AM_detector.SR / 1000000.0, Quadrature_AM_detector.F / 1000000.0);
                     }
                 Quadrature_AM_detector.detection(inData, outData);

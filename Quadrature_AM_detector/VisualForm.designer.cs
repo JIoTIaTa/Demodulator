@@ -33,6 +33,9 @@
             Mitov.PlotLab.ScopeChannel scopeChannel1 = new Mitov.PlotLab.ScopeChannel();
             Mitov.PlotLab.ScopePoints scopePoints1 = new Mitov.PlotLab.ScopePoints();
             Vcl.VclPen vclPen1 = new Vcl.VclPen();
+            Mitov.PlotLab.ScopeCursor scopeCursor1 = new Mitov.PlotLab.ScopeCursor();
+            Mitov.PlotLab.DisplayCursorMouseCursor displayCursorMouseCursor1 = new Mitov.PlotLab.DisplayCursorMouseCursor();
+            Mitov.PlotLab.DisplayCursorPosition displayCursorPosition1 = new Mitov.PlotLab.DisplayCursorPosition();
             Mitov.PlotLab.ScopeDataView scopeDataView1 = new Mitov.PlotLab.ScopeDataView();
             Mitov.PlotLab.DisplayViewBackground displayViewBackground1 = new Mitov.PlotLab.DisplayViewBackground();
             Mitov.PlotLab.DisplayGridLineSettings displayGridLineSettings1 = new Mitov.PlotLab.DisplayGridLineSettings();
@@ -206,7 +209,10 @@
             this.label27 = new System.Windows.Forms.Label();
             this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.BW_label = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.MitovScope)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -300,6 +306,19 @@
             scopeChannel1.YAxisIndex = 0;
             this.MitovScope.Channels.AddRange(new Mitov.PlotLab.ScopeChannel[] {
             scopeChannel1});
+            scopeCursor1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            displayCursorMouseCursor1.Both = System.Windows.Forms.Cursors.Default;
+            displayCursorMouseCursor1.Horizontal = System.Windows.Forms.Cursors.Default;
+            displayCursorMouseCursor1.Vertical = System.Windows.Forms.Cursors.Default;
+            scopeCursor1.MouseCursors = displayCursorMouseCursor1;
+            scopeCursor1.Name = "Bandwich";
+            displayCursorPosition1.X = 0D;
+            displayCursorPosition1.Y = 0D;
+            scopeCursor1.Position = displayCursorPosition1;
+            scopeCursor1.XAxisIndex = 0;
+            scopeCursor1.YAxisIndex = 0;
+            this.MitovScope.Cursors.AddRange(new Mitov.PlotLab.ScopeCursor[] {
+            scopeCursor1});
             displayViewBackground1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             scopeDataView1.Background = displayViewBackground1;
             vclPen2.Color = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
@@ -379,10 +398,10 @@
             legendGroup8.Cursor = System.Windows.Forms.Cursors.Default;
             scopeLegendView1.Zones = legendGroup8;
             this.MitovScope.Legend = scopeLegendView1;
-            this.MitovScope.Location = new System.Drawing.Point(-2, -1);
+            this.MitovScope.Location = new System.Drawing.Point(-2, 4);
             this.MitovScope.Name = "MitovScope";
             this.MitovScope.RefreshInterval = ((uint)(100u));
-            this.MitovScope.Size = new System.Drawing.Size(592, 344);
+            this.MitovScope.Size = new System.Drawing.Size(592, 339);
             this.MitovScope.SizeLimit = ((uint)(0u));
             this.MitovScope.TabIndex = 19;
             this.MitovScope.Text = "scope1";
@@ -643,7 +662,6 @@
             // timer1
             // 
             this.timer1.Enabled = true;
-            this.timer1.Interval = 50;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // label27
@@ -677,12 +695,20 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 419);
+            this.toolStripProgressBar1,
+            this.toolStripStatusLabel,
+            this.toolStripStatusLabel1});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 447);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(591, 22);
             this.statusStrip1.TabIndex = 107;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripProgressBar1
+            // 
+            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
+            this.toolStripProgressBar1.Step = 1;
             // 
             // toolStripStatusLabel
             // 
@@ -690,11 +716,29 @@
             this.toolStripStatusLabel.Size = new System.Drawing.Size(118, 17);
             this.toolStripStatusLabel.Text = "toolStripStatusLabel1";
             // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(112, 17);
+            this.toolStripStatusLabel1.Text = "toolStripStatusLabel";
+            // 
+            // BW_label
+            // 
+            this.BW_label.AutoSize = true;
+            this.BW_label.BackColor = System.Drawing.Color.GhostWhite;
+            this.BW_label.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.BW_label.Location = new System.Drawing.Point(313, 420);
+            this.BW_label.Name = "BW_label";
+            this.BW_label.Size = new System.Drawing.Size(99, 15);
+            this.BW_label.TabIndex = 108;
+            this.BW_label.Text = "Смуга фільтрації: ";
+            // 
             // VisualForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(591, 441);
+            this.ClientSize = new System.Drawing.Size(591, 469);
+            this.Controls.Add(this.BW_label);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.label27);
             this.Controls.Add(this.numericUpDown3);
@@ -734,5 +778,8 @@
         private System.Windows.Forms.NumericUpDown numericUpDown3;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
+        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
+        private System.Windows.Forms.Label BW_label;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
     }
 }
