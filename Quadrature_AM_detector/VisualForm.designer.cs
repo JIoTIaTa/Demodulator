@@ -213,6 +213,8 @@
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.BW_label = new System.Windows.Forms.Label();
+            this.deltaF_label = new System.Windows.Forms.Label();
+            this.calculate_parametrs = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.MitovScope)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -686,7 +688,7 @@
             this.numericUpDown3.TabIndex = 105;
             this.numericUpDown3.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numericUpDown3.Value = new decimal(new int[] {
-            1,
+            10,
             0,
             0,
             0});
@@ -698,7 +700,7 @@
             this.toolStripProgressBar1,
             this.toolStripStatusLabel,
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 447);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 469);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(591, 22);
             this.statusStrip1.TabIndex = 107;
@@ -727,17 +729,42 @@
             this.BW_label.AutoSize = true;
             this.BW_label.BackColor = System.Drawing.Color.GhostWhite;
             this.BW_label.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.BW_label.Location = new System.Drawing.Point(313, 420);
+            this.BW_label.Location = new System.Drawing.Point(313, 443);
             this.BW_label.Name = "BW_label";
             this.BW_label.Size = new System.Drawing.Size(99, 15);
             this.BW_label.TabIndex = 108;
             this.BW_label.Text = "Смуга фільтрації: ";
             // 
+            // deltaF_label
+            // 
+            this.deltaF_label.AutoSize = true;
+            this.deltaF_label.BackColor = System.Drawing.Color.GhostWhite;
+            this.deltaF_label.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.deltaF_label.Location = new System.Drawing.Point(313, 419);
+            this.deltaF_label.Name = "deltaF_label";
+            this.deltaF_label.Size = new System.Drawing.Size(71, 15);
+            this.deltaF_label.TabIndex = 109;
+            this.deltaF_label.Text = "Відхилення: ";
+            // 
+            // calculate_parametrs
+            // 
+            this.calculate_parametrs.AutoSize = true;
+            this.calculate_parametrs.Checked = true;
+            this.calculate_parametrs.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.calculate_parametrs.Location = new System.Drawing.Point(39, 417);
+            this.calculate_parametrs.Name = "calculate_parametrs";
+            this.calculate_parametrs.Size = new System.Drawing.Size(152, 17);
+            this.calculate_parametrs.TabIndex = 110;
+            this.calculate_parametrs.Text = "Обчислювати параметри";
+            this.calculate_parametrs.UseVisualStyleBackColor = true;
+            // 
             // VisualForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(591, 469);
+            this.ClientSize = new System.Drawing.Size(591, 491);
+            this.Controls.Add(this.calculate_parametrs);
+            this.Controls.Add(this.deltaF_label);
             this.Controls.Add(this.BW_label);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.label27);
@@ -781,5 +808,7 @@
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
         private System.Windows.Forms.Label BW_label;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.Label deltaF_label;
+        private System.Windows.Forms.CheckBox calculate_parametrs;
     }
 }

@@ -25,7 +25,8 @@ namespace Exponentiation
         private long SR = 9999999; // частота дискретизації (вхідного сигналу)
         private long F = 5555555; // центральна частота (вхідного сигналу)
         private string info; // строка виведення інформації в вікні СПАРК
-        public VisualForm visual; // форма візуалізації                
+        public VisualForm visual; // форма візуалізації            
+            
 
         public string Name
         {
@@ -67,28 +68,8 @@ namespace Exponentiation
 
         public string Init()
         {
-            if (Quadrature_AM_detectorForm == null || Quadrature_AM_detectorForm.IsDisposed)
-            {
-                Quadrature_AM_detectorForm = new Quadrature_AM_detectorForm { Quadrature_AM_detector = Quadrature_AM_detector };
-            }
-            Quadrature_AM_detectorForm.Show();
-            return "Квадратурний детектор";
-        }
-
-        public void Info()
-        {
-            MessageBox.Show("\nКвадратурний детектор");
-        }
-
-        public void Start()
-        {
-
-        }
-
-        public void Visual()
-        {
             if (Quadrature_AM_detector.busy == true)
-                {
+            {
                 if (visual == null || visual.IsDisposed)
                 {
                     visual = new VisualForm() { Quadrature_AM_detector = Quadrature_AM_detector };
@@ -103,7 +84,26 @@ namespace Exponentiation
             {
                 MessageBox.Show("Can't do it, bro");
             }
-            
+            return "Квадратурний детектор";
+        }
+
+        public void Info()
+        {
+            MessageBox.Show("\nКвадратурний детектор");
+        }
+
+        public void Start()
+        {
+
+        }
+
+        public void Visual()
+        {            
+            if (Quadrature_AM_detectorForm == null || Quadrature_AM_detectorForm.IsDisposed)
+            {
+                Quadrature_AM_detectorForm = new Quadrature_AM_detectorForm { Quadrature_AM_detector = Quadrature_AM_detector };
+            }
+            Quadrature_AM_detectorForm.Show();
         }
 
         public void Start(string mesage, byte[] inData)
@@ -151,7 +151,13 @@ namespace Exponentiation
                         Quadrature_AM_detector.sendComand = false;
                         info = string.Format("Частота дискретизації:  {0} МГц\nЦентральна частота:  {1} МГц", Quadrature_AM_detector.SR / 1000000.0, Quadrature_AM_detector.F / 1000000.0);
                     }
-                Quadrature_AM_detector.detection(inData, outData);
+                Quadrature_AM_detector.outDataLeght = outData.Length;                
+                Quadrature_AM_detector.exponentiation(ref inData);
+                Quadrature_AM_detector.F_calculating();
+                Quadrature_AM_detector.shifting(ref inData, outData);
+                Quadrature_AM_detector.detection(ref inData);
+                Quadrature_AM_detector.speed_calculating();
+                if (visual != null && visual.Visible) { visual.displayFFT(); }                
                 Array.Resize(ref outData, inData.Length * Quadrature_AM_detector.x); // для інтерполяції
                 _outcom += outData.Length;
                 DoneWorck(this, outMessage, outData);
