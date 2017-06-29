@@ -21,29 +21,29 @@ namespace Exponentiation
         public Quadrature_AM_detector Quadrature_AM_detector;
         private double fNormolize = 1d / 4294967296; // коефициент нормализации сигнала
         private double SR = 0.0d; // частота дискретизации
-        private double F = 0.0d; // цетральная частота спектра (половина частоты дискретизации)
+        //private double F = 0.0d; // цетральная частота спектра (половина частоты дискретизации)
         private double FFIR = 0.0d;// реальная частота сигнала
         private double bw = 0.0d;//полоса пропускания
         private int N;//порядок ШПФ
         private float ACHAvering;
         private float SignalAvering ;
-        Complex[] detection = new Complex[65536]; // для детектування  //коли визначення параметрів було тут
-        Complex[] exponentiation = new Complex[65536]; // для піднесення до степені    //коли визначення параметрів було тут
+        //Complex[] detection = new Complex[65536]; // для детектування  //коли визначення параметрів було тут
+        //Complex[] exponentiation = new Complex[65536]; // для піднесення до степені    //коли визначення параметрів було тут
         Complex[] visual_data = new Complex[65536];
         //Complex[] avering_buffer = new Complex[65536];
         double [] avering_buffer = new double[65536];
         public float[] xAxes = new float[65536]; // значення осі Х ШТП
         public float[] outFFTdata = new float[65536]; // значення осі У ШПФ
         /*зона пошуку гармоніки швидкості модуляції*/
-        int minSpeedZoneCoef;
-        int maxSpeedZoneCoef;
+        //int minSpeedZoneCoef;
+        //int maxSpeedZoneCoef;
         /*зона пошуку центральної частоти*/
-        int minCentralFrequencyZoneCoef;
-        int maxCentralFrequencyZoneCoef;
+        //int minCentralFrequencyZoneCoef;
+        //int maxCentralFrequencyZoneCoef;
         /**/
-        float maxValue; // змінна для знаходження пікової гармоніки
-        int speedPosition; // позиція пікової гармоніки швидкості
-        int centralPosition; // позиція пікової гармоніки центральної частоти
+        //float maxValue; // змінна для знаходження пікової гармоніки
+        //int speedPosition; // позиція пікової гармоніки швидкості
+        //int centralPosition; // позиція пікової гармоніки центральної частоти
         int averingRepeat = 0;
 
 
@@ -60,7 +60,6 @@ namespace Exponentiation
         private void LoadVisualForm()
         {
             MitovScope.Channels[0].Color = Color.Gray;
-            //Quadrature_AM_detector.sin_cos_init();
             if (Quadrature_AM_detector.maxFFT == 256) { comboBoxFFT.SelectedIndex = 0; }
             if (Quadrature_AM_detector.maxFFT == 512) { comboBoxFFT.SelectedIndex = 1; }
             if (Quadrature_AM_detector.maxFFT == 1024) { comboBoxFFT.SelectedIndex = 2; }
@@ -70,12 +69,12 @@ namespace Exponentiation
             if (Quadrature_AM_detector.maxFFT == 16384) { comboBoxFFT.SelectedIndex = 6; }
             if (Quadrature_AM_detector.maxFFT == 32768) { comboBoxFFT.SelectedIndex = 7; }
             if (Quadrature_AM_detector.maxFFT == 65536) { comboBoxFFT.SelectedIndex = 8; }
-            SR = Quadrature_AM_detector.SR;
-            F = Quadrature_AM_detector.F;            
-            N = Quadrature_AM_detector.Count; //коли визначення параметрів було тут
-            Quadrature_AM_detector.FFTdeep = Quadrature_AM_detector.Count;
+            SR = Quadrature_AM_detector.SR;    
+            //Quadrature_AM_detector.FFTdeep = Quadrature_AM_detector.Count; //???????????????????????????????????
             toolStripStatusLabel1.Text = "Працюю без помилок";
             numericUpDown3.Value = Quadrature_AM_detector.averagingValue;
+            if (Quadrature_AM_detectorSPARKInterface.calculate_parametrs_bool) { calculate_parametrs.Checked = true; } else { calculate_parametrs.Checked = false; }
+            //calculate_parametrs.Checked = Quadrature_AM_detectorSPARKInterface.calculate_parametrs_bool;
         }             
 
         private void refreshButton_Click(object sender, EventArgs e)
@@ -94,7 +93,7 @@ namespace Exponentiation
         }
 
         private void timer1_Tick(object sender, EventArgs e)
-        {
+        {            
             if (BW != (float)MitovScope.Cursors[0].Position.X) { BW = (float)MitovScope.Cursors[0].Position.X; Quadrature_AM_detector.configureFirFilter(BW); toolStripStatusLabel1.Text = string.Format("{0}", (float)MitovScope.Cursors[0].Position.X); }            
              try
             {
@@ -203,15 +202,15 @@ namespace Exponentiation
         //    }
         //    else { MitovScope.Channels[0].Data.Clear(); }
         //}
-        public void displayFFT()
+        public void displayFFT(int length)
         {
             try
             {
-                Parallel.For(0, N, k =>
+                Parallel.For(0, length, k =>
             {
                 visual_data[k] = new Complex(Quadrature_AM_detector._shiftingData.iq[k].i, Quadrature_AM_detector._shiftingData.iq[k].q);
             });
-                Parallel.For(N, 65536, k =>
+                Parallel.For(length, 65536, k =>
                 {
                     visual_data[k] = new Complex(0, 0);
                 });
@@ -245,6 +244,12 @@ namespace Exponentiation
         {
             Quadrature_AM_detector.averagingValue = (int)numericUpDown3.Value;
             toolStripStatusLabel1.Text = string.Format("Усереднення ШПФ змінено на {0}", Quadrature_AM_detector.averagingValue);
+        }
+
+        private void calculate_parametrs_CheckedChanged(object sender, EventArgs e)
+        {
+            //if (calculate_parametrs.Checked) { Quadrature_AM_detector.calculate_parametrs_bool = true; } else { Quadrature_AM_detector.calculate_parametrs_bool = false; }            
+            Quadrature_AM_detectorSPARKInterface.calculate_parametrs_bool = calculate_parametrs.Checked;
         }
     }
 }

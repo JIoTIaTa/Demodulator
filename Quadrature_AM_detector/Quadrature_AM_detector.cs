@@ -59,7 +59,7 @@ namespace Exponentiation
 
         [DllImport("..\\..\\data\\FIR.dll", EntryPoint = "BasicFIR", CallingConvention = CallingConvention.StdCall)]
         static extern void _FIR(ref float FIRCoeff, int numTaps, TPassTypeName PassType, float OmegaC, float BW, TWindowType WindowTyte, float WinBeta);
-        public static double SR = 0.0d; // частота дискретизації
+        public  double SR = 0.0d; // частота дискретизації
         public static sIQData _inData, _outData, _detectedData, _expData, _shiftingData, _data;
         public static sIQData _testBuffer;
         public long F = 0; // центральная частота
@@ -96,7 +96,7 @@ namespace Exponentiation
         public TWindowType WindowType = TWindowType.KAISER; // тип вікна фільтра
         public float beta = 3.2f; // коефіціент БЕТА фільтра
         public int N = 0;   // для сноса       
-        public int FFTdeep = 65536; // глибина FFT
+        //public int FFTdeep = 65536; // глибина FFT
         Complex[] detectionBuffer = new Complex[65536]; // для детектування  
         Complex[] exponentiationBuffer = new Complex[65536]; // для піднесення до степені    
         /*зона пошуку гармоніки швидкості модуляції*/
@@ -128,7 +128,7 @@ namespace Exponentiation
         /// /// <param name="outData">Масив даних, найбільша гармоніка по амплітуді якої відповідає частоті маніпуляції</param>
         public void detection(ref byte[] inData)
         {            
-            Count = inData.Length / 4; // величина вхідних масивів
+            Count = inDataLeght / 4; // величина вхідних масивів
             //_inData.bytes = shifting_data;
             _inData.bytes = shifting_data;
             _detectedData.bytes = bufferDetectData;
@@ -167,7 +167,7 @@ namespace Exponentiation
         /// /// <param name="outData">Масив даних, найбільша гармоніка по амплітуді якої відповідає центральній частоті</param>
         public void exponentiation(ref byte[] inData)
         {
-            Count = inData.Length / 4; // величина вхідних масивів
+            Count = inDataLeght / 4; // величина вхідних масивів
             _inData.bytes = inData;
             _expData.bytes = bufferExpData;
             if (degree == 2)
@@ -207,7 +207,8 @@ namespace Exponentiation
         }
 
         public void shifting(ref byte[] inData, byte[] outData)
-        {            
+        {
+            Count = inDataLeght / 4; // величина вхідних масивів    
             _shiftingData.bytes = shifting_data;
             _inData.bytes = inData;
             _outData.bytes = outData;
@@ -272,19 +273,20 @@ namespace Exponentiation
             });
         }
 
-        public void F_calculating()
+        public void F_calculating(double F)
         {
+            Count = inDataLeght / 4; // величина вхідних масивів
             if (busy)
             {
-                if (FFTdeep > maxFFT) { FFTdeep = maxFFT; }
+                if (Count > maxFFT) { Count = maxFFT; }
                 //-----Блок визначення центральної частоти-----               
                 try
                 {
-                    Parallel.For(0, FFTdeep, k =>
+                    Parallel.For(0, Count, k =>
                     {
                         exponentiationBuffer[k] = new Complex(_expData.iq[k].i, _expData.iq[k].q);
                     });
-                    Parallel.For(FFTdeep, 65536, k =>
+                    Parallel.For(Count, 65536, k =>
                     {
                         exponentiationBuffer[k] = new Complex(0, 0);
                     });
@@ -306,6 +308,7 @@ namespace Exponentiation
                         }
                     });
                     realCentralFrequencyPosition = (SR / 65536) * centralPosition;
+                    F = realCentralFrequencyPosition;
                 }
                 catch
                 {                    
@@ -315,17 +318,18 @@ namespace Exponentiation
         }
         public void speed_calculating()
         {
+            Count = inDataLeght / 4; // величина вхідних масивів
             if (busy)
             {
                 //-----Блок визначення швидкості маніпуляції-----   
                 try
                 {
-                    Parallel.For(0, FFTdeep, k =>
+                    Parallel.For(0, Count, k =>
                     {
                         detectionBuffer[k] = new Complex(_detectedData.iq[k].i, _detectedData.iq[k].q);
                     });
 
-                    Parallel.For(FFTdeep, 65536, k =>
+                    Parallel.For(Count, 65536, k =>
                     {
                         detectionBuffer[k] = new Complex(0, 0);
                     });

@@ -26,9 +26,8 @@ namespace Exponentiation
         private long F = 5555555; // центральна частота (вхідного сигналу)
         private string info; // строка виведення інформації в вікні СПАРК
         public VisualForm visual; // форма візуалізації    
-        private bool sin_cos_init_flag = true;  // для одноразової ініціалізації масиву синусів та косинусів      
-
-            
+        private bool sin_cos_init_flag = true;  // для одноразової ініціалізації масиву синусів та косинусів           
+        public static bool calculate_parametrs_bool = true;
 
         public string Name
         {
@@ -152,18 +151,19 @@ namespace Exponentiation
                     {
                         outMessage = "%%FPCH&" + ((long)(Quadrature_AM_detector.F)) + "%%SAMPLERATE&" + ((long)(Quadrature_AM_detector.SR));
                         Quadrature_AM_detector.sendComand = false;
-                        info = string.Format("Частота дискретизації:  {0} МГц\nЦентральна частота:  {1} МГц", Quadrature_AM_detector.SR / 1000000.0, Quadrature_AM_detector.F / 1000000.0);
+                        info = string.Format("Частота дискретизації:  {0} МГц\nЦентральна частота:  {1} МГц ", Quadrature_AM_detector.SR / 1000000.0, Quadrature_AM_detector.F / 1000000.0);
                     }
-                Quadrature_AM_detector.outDataLeght = outData.Length;                
-                Quadrature_AM_detector.exponentiation(ref inData);
-                Quadrature_AM_detector.F_calculating();
+                info = string.Format("Частота дискретизації:  {0} МГц\nЦентральна частота:  {1} МГц\nФАПЧ status: {2} ", Quadrature_AM_detector.SR / 1000000.0, Quadrature_AM_detector.F / 1000000.0, Convert.ToString(calculate_parametrs_bool));
+                Quadrature_AM_detector.inDataLeght = inData.Length;
+                Quadrature_AM_detector.outDataLeght = outData.Length;
+                if (calculate_parametrs_bool) { Quadrature_AM_detector.exponentiation(ref inData); Quadrature_AM_detector.F_calculating(F); }
                 Quadrature_AM_detector.shifting(ref inData, outData);
-                Quadrature_AM_detector.detection(ref inData);
-                Quadrature_AM_detector.speed_calculating();
-                if (visual != null && visual.Visible) { visual.displayFFT(); }                
+                if (calculate_parametrs_bool) { Quadrature_AM_detector.detection(ref inData); Quadrature_AM_detector.speed_calculating(); }
+                try { if (visual != null && visual.Visible) { visual.displayFFT(inData.Length); } } catch { MessageBox.Show("Братан, сорян"); }    
                 Array.Resize(ref outData, inData.Length * Quadrature_AM_detector.x); // для інтерполяції
                 _outcom += outData.Length;
                 DoneWorck(this, outMessage, outData);
+                info = string.Format("{0}",F);
                 //outMessage = "";
             }
             catch
