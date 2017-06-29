@@ -60,7 +60,7 @@ namespace Exponentiation
         private void LoadVisualForm()
         {
             MitovScope.Channels[0].Color = Color.Gray;
-            Quadrature_AM_detector.sin_cos_init();
+            //Quadrature_AM_detector.sin_cos_init();
             if (Quadrature_AM_detector.maxFFT == 256) { comboBoxFFT.SelectedIndex = 0; }
             if (Quadrature_AM_detector.maxFFT == 512) { comboBoxFFT.SelectedIndex = 1; }
             if (Quadrature_AM_detector.maxFFT == 1024) { comboBoxFFT.SelectedIndex = 2; }

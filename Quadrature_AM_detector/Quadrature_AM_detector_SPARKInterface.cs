@@ -25,7 +25,9 @@ namespace Exponentiation
         private long SR = 9999999; // частота дискретизації (вхідного сигналу)
         private long F = 5555555; // центральна частота (вхідного сигналу)
         private string info; // строка виведення інформації в вікні СПАРК
-        public VisualForm visual; // форма візуалізації            
+        public VisualForm visual; // форма візуалізації    
+        private bool sin_cos_init_flag = true;  // для одноразової ініціалізації масиву синусів та косинусів      
+
             
 
         public string Name
@@ -108,6 +110,7 @@ namespace Exponentiation
 
         public void Start(string mesage, byte[] inData)
         {
+            if (sin_cos_init_flag) { sin_cos_init_flag = false; Quadrature_AM_detector.sin_cos_init(); /*MessageBox.Show("sin_cos initializated"); */}
             Quadrature_AM_detector.busy = true;
             string outMessage = ""; // команда, що буде предана наступному модулю
             _incom += inData.Length;            
@@ -176,6 +179,7 @@ namespace Exponentiation
 
     public void Stop()
     {
+            sin_cos_init_flag = true;
             Quadrature_AM_detector.busy = false;
             _busy = false;
             _incom = 0;

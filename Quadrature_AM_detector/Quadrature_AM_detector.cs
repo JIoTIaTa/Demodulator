@@ -207,7 +207,7 @@ namespace Exponentiation
         }
 
         public void shifting(ref byte[] inData, byte[] outData)
-        {
+        {            
             _shiftingData.bytes = shifting_data;
             _inData.bytes = inData;
             _outData.bytes = outData;
