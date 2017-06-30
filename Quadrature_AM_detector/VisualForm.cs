@@ -70,11 +70,13 @@ namespace Exponentiation
             if (Quadrature_AM_detector.maxFFT == 32768) { comboBoxFFT.SelectedIndex = 7; }
             if (Quadrature_AM_detector.maxFFT == 65536) { comboBoxFFT.SelectedIndex = 8; }
             SR = Quadrature_AM_detector.SR;    
-            //Quadrature_AM_detector.FFTdeep = Quadrature_AM_detector.Count; //???????????????????????????????????
             toolStripStatusLabel1.Text = "Працюю без помилок";
             numericUpDown3.Value = Quadrature_AM_detector.averagingValue;
             if (Quadrature_AM_detectorSPARKInterface.calculate_parametrs_bool) { calculate_parametrs.Checked = true; } else { calculate_parametrs.Checked = false; }
-            //calculate_parametrs.Checked = Quadrature_AM_detectorSPARKInterface.calculate_parametrs_bool;
+            if (Quadrature_AM_detector.display_data == Quadrature_AM_detector.FFT_data_display.SHIFTING ) { FFT_data_display.SelectedIndex = 0; }
+            if (Quadrature_AM_detector.display_data == Quadrature_AM_detector.FFT_data_display.EXPONENT) { FFT_data_display.SelectedIndex = 1; }
+            if (Quadrature_AM_detector.display_data == Quadrature_AM_detector.FFT_data_display.DETECTED) { FFT_data_display.SelectedIndex = 2; }
+            if (Quadrature_AM_detector.display_data == Quadrature_AM_detector.FFT_data_display.FILTERING) { FFT_data_display.SelectedIndex = 3; }
         }             
 
         private void refreshButton_Click(object sender, EventArgs e)
@@ -111,111 +113,47 @@ namespace Exponentiation
             Speed_label.Text = "Символьна швидкість: " + Quadrature_AM_detector.realSpeedPosition + " Бод";
             T_label.Text = "Період маніпуляції:  " + (1 / Quadrature_AM_detector.realSpeedPosition * 1000000.0d) + " мкс";
             F_label.Text = "Центральна частота:  " + (Quadrature_AM_detector.realCentralFrequencyPosition / 1000.0d) + " кГц";
-            deltaF_label.Text = "Відхилення:  " + ((Quadrature_AM_detector.realCentralFrequencyPosition - Quadrature_AM_detector.SR / 2) / 1000.0d) + " кГц";
-            //}
-            //else { MitovScope.Channels[0].Data.Clear(); }
+            deltaF_label.Text = "Відхилення:  " + ((Quadrature_AM_detector.realCentralFrequencyPosition - Quadrature_AM_detector.SR / 2) / 1000.0d) + " кГц";           
         }
-        //public void F_calculating()
-        //{
-        //    if (Quadrature_AM_detector.busy)
-        //    {
-        //        if (N > Quadrature_AM_detector.maxFFT) { N = Quadrature_AM_detector.maxFFT; }
-        //        //-----Блок визначення центральної частоти-----               
-        //        try
-        //        {
-        //            Parallel.For(0, N, k =>
-        //            {
-        //                exponentiation[k] = new Complex(Quadrature_AM_detector._expData.iq[k].i, Quadrature_AM_detector._expData.iq[k].q); // тут поки outData, щоб бачити в наступному модулі цей вихід !!!
-        //            });
-        //            Parallel.For(N, 65536, k =>
-        //            {
-        //                exponentiation[k] = new Complex(0, 0);
-        //            });
-
-        //            exponentiation = Fft.fft(exponentiation);
-        //            exponentiation = Fft.nfft(exponentiation);
-
-        //            minCentralFrequencyZoneCoef = (exponentiation.Length / 10) * 1;
-        //            maxCentralFrequencyZoneCoef = (exponentiation.Length / 10) * 9;
-        //            centralPosition = 0;
-        //            Quadrature_AM_detector.realCentralFrequencyPosition = 0;
-        //            Parallel.For(0, exponentiation.Length, i =>
-        //            {
-        //                if (i > minCentralFrequencyZoneCoef & i < maxCentralFrequencyZoneCoef)
-        //                {
-        //                    if (maxValue < Math.Log(exponentiation[i].Magnitude, 10))
-        //                    {
-        //                        maxValue = (float)Math.Log(exponentiation[i].Magnitude, 10);
-        //                        centralPosition = i;
-        //                    }
-        //                }
-        //            });
-        //            Quadrature_AM_detector.realCentralFrequencyPosition = (SR / 65536) * centralPosition;
-        //        }
-        //        catch
-        //        {
-        //            toolStripStatusLabel1.Text = "Trouble with definding central frequency :(";
-        //        }
-        //    }
-        //    else { MitovScope.Channels[0].Data.Clear(); }
-        //}
-        //public void speed_calculating()
-        //{
-        //    if (Quadrature_AM_detector.busy)
-        //    {
-        //        //-----Блок визначення швидкості маніпуляції-----   
-        //        try
-        //        {
-        //            Parallel.For(0, N, k =>
-        //            {
-        //                detection[k] = new Complex(Quadrature_AM_detector._detectedData.iq[k].i, Quadrature_AM_detector._detectedData.iq[k].q);
-        //            });
-
-        //            Parallel.For(N, 65536, k =>
-        //            {
-        //                detection[k] = new Complex(0, 0);
-        //            });
-
-        //            detection = Fft.fft(detection);
-        //            minSpeedZoneCoef = (detection.Length / 10) * 6;
-        //            maxSpeedZoneCoef = (detection.Length / 10) * 9;
-        //            maxValue = 0;
-        //            speedPosition = 0;
-        //            Quadrature_AM_detector.realSpeedPosition = 0;
-        //            Parallel.For(0, detection.Length, i =>
-        //            {
-        //                if (i > minSpeedZoneCoef & i < maxSpeedZoneCoef)
-        //                {
-        //                    if (maxValue < Math.Log(detection[i].Magnitude, 10))
-        //                    {
-        //                        maxValue = (float)Math.Log(detection[i].Magnitude, 10);
-        //                        speedPosition = i;
-        //                    }
-        //                }
-        //            });
-        //            Quadrature_AM_detector.realSpeedPosition = (SR / 65536) * speedPosition;
-        //        }
-        //        catch
-        //        {
-        //            toolStripStatusLabel1.Text = "Trouble with definding speed :(";
-        //        }
-        //    }
-        //    else { MitovScope.Channels[0].Data.Clear(); }
-        //}
         public void displayFFT(int length)
         {
             try
             {
-                Parallel.For(0, length, k =>
-            {
-                visual_data[k] = new Complex(Quadrature_AM_detector._shiftingData.iq[k].i, Quadrature_AM_detector._shiftingData.iq[k].q);
-            });
+                if(Quadrature_AM_detector.display_data == Quadrature_AM_detector.FFT_data_display.SHIFTING)
+                {
+                    Parallel.For(0, length, k =>
+                    {
+                        visual_data[k] = new Complex(Quadrature_AM_detector._shiftingData.iq[k].i, Quadrature_AM_detector._shiftingData.iq[k].q);
+                    });
+                }
+                if (Quadrature_AM_detector.display_data == Quadrature_AM_detector.FFT_data_display.DETECTED)
+                {
+                    Parallel.For(0, length, k =>
+                    {
+                        visual_data[k] = new Complex(Quadrature_AM_detector._detectedData.iq[k].i, Quadrature_AM_detector._detectedData.iq[k].q);
+                    });
+                }
+                if (Quadrature_AM_detector.display_data == Quadrature_AM_detector.FFT_data_display.EXPONENT)
+                {
+                    Parallel.For(0, length, k =>
+                    {
+                        visual_data[k] = new Complex(Quadrature_AM_detector._expData.iq[k].i, Quadrature_AM_detector._expData.iq[k].q);
+                    });
+                }
+                if (Quadrature_AM_detector.display_data == Quadrature_AM_detector.FFT_data_display.FILTERING)
+                {
+                    Parallel.For(0, length, k =>
+                    {
+                        visual_data[k] = new Complex(Quadrature_AM_detector._filtering_data.iq[k].i, Quadrature_AM_detector._filtering_data.iq[k].q);
+                    });
+                }
+
                 Parallel.For(length, 65536, k =>
                 {
                     visual_data[k] = new Complex(0, 0);
                 });
                 visual_data = Fft.fft(visual_data);
-                visual_data = Fft.nfft(visual_data);
+                if (Quadrature_AM_detector.display_data != Quadrature_AM_detector.FFT_data_display.DETECTED) { visual_data = Fft.nfft(visual_data); } else { }
                 Parallel.For(0, 65536, i =>
                 {
                     avering_buffer[i] = (avering_buffer[i] + visual_data[i].Magnitude) /2;
@@ -250,6 +188,14 @@ namespace Exponentiation
         {
             //if (calculate_parametrs.Checked) { Quadrature_AM_detector.calculate_parametrs_bool = true; } else { Quadrature_AM_detector.calculate_parametrs_bool = false; }            
             Quadrature_AM_detectorSPARKInterface.calculate_parametrs_bool = calculate_parametrs.Checked;
+        }
+
+        private void FFT_data_display_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (FFT_data_display.SelectedIndex == 0) { Quadrature_AM_detector.display_data = Quadrature_AM_detector.FFT_data_display.SHIFTING; }
+            if (FFT_data_display.SelectedIndex == 1) { Quadrature_AM_detector.display_data = Quadrature_AM_detector.FFT_data_display.EXPONENT; }
+            if (FFT_data_display.SelectedIndex == 2) { Quadrature_AM_detector.display_data = Quadrature_AM_detector.FFT_data_display.DETECTED; }
+            if (FFT_data_display.SelectedIndex == 3) { Quadrature_AM_detector.display_data = Quadrature_AM_detector.FFT_data_display.FILTERING; }
         }
     }
 }

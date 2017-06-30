@@ -57,34 +57,37 @@ namespace Exponentiation
             KAISER_BESSEL, TRAPEZOID, GAUSS, SINE, TEST
         };
 
+        public enum FFT_data_display
+        {
+            SHIFTING, EXPONENT, DETECTED, FILTERING
+        };
         [DllImport("..\\..\\data\\FIR.dll", EntryPoint = "BasicFIR", CallingConvention = CallingConvention.StdCall)]
         static extern void _FIR(ref float FIRCoeff, int numTaps, TPassTypeName PassType, float OmegaC, float BW, TWindowType WindowTyte, float WinBeta);
         public  double SR = 0.0d; // частота дискретизації
-        public static sIQData _inData, _outData, _detectedData, _expData, _shiftingData, _data;
-        public static sIQData _testBuffer;
+        public static sIQData _inData, _outData, _detectedData, _expData, _shiftingData, _data, _filtering_data;
         public long F = 0; // центральная частота
         public int login;
         public bool sendComand = false;
-        private double tempI = 0;
-        private double tempQ = 0;
-        public bool show;
+        private double tempI = 0; // змінна для тимчасових даних
+        private double tempQ = 0; // змінна для тимчасових даних
+        public bool show; 
         long normalizeCoeff = 1;
         public static int x = 1; // коеф інтерполяції
-        public int Count;
+        public int Count; // кількість I/Q відліків
         public int maxFFT = 65536; // максимальний порядок ШПФ
         public int degree = 4; // кратність модуляції
-        public bool busy = false;
-        public int averagingValue = 1; // усреднение ШПФ
-        public static int outDataLeght = 65536;
-        public static int inDataLeght = 65536;
-        //byte[] expData = new byte[outDataLeght];
-        byte[] bufferDetectData = new byte[inDataLeght * x];
-        byte[] bufferExpData = new byte[inDataLeght];
-        byte[] shifting_data = new byte[inDataLeght];
-        double[] tempI_buffer = new double[inDataLeght];
-        double[] tempQ_buffer = new double[inDataLeght];
-        float[] sin_1024 = new float[1024];
-        float[] cos_1024 = new float[1024];
+        public bool busy = false; // прапорець роботи тракту
+        public int averagingValue = 1; // усереднення ШПФ
+        public static int outDataLeght = 65536; // величина вихідних даних
+        public static int inDataLeght = 65536; //величина вхідних даних
+        byte[] bufferDetectData = new byte[inDataLeght * x]; // для визначення швикості
+        byte[] bufferExpData = new byte[inDataLeght]; // піднесений в степінь, для визначення центральної частоти
+        byte[] shifting_data = new byte[inDataLeght]; // знесений сигнал
+        byte[] filtering_data = new byte[inDataLeght]; // відфільтрований сигнал
+        double[] tempI_buffer = new double[inDataLeght]; // для зберігання I відліків подвійної точності 
+        double[] tempQ_buffer = new double[inDataLeght]; // для зберігання Q відліків подвійної точності 
+        float[] sin_1024 = new float[1024]; // масив синусів для зносу
+        float[] cos_1024 = new float[1024]; // масив косинусів для зносу
         public double realSpeedPosition = 0; // швидкість модуляції
         public double realCentralFrequencyPosition = 0; // центральна частота
         float sin_cos_position = 0; // позиція син/кос для вибору з таблиці
@@ -96,7 +99,6 @@ namespace Exponentiation
         public TWindowType WindowType = TWindowType.KAISER; // тип вікна фільтра
         public float beta = 3.2f; // коефіціент БЕТА фільтра
         public int N = 0;   // для сноса       
-        //public int FFTdeep = 65536; // глибина FFT
         Complex[] detectionBuffer = new Complex[65536]; // для детектування  
         Complex[] exponentiationBuffer = new Complex[65536]; // для піднесення до степені    
         /*зона пошуку гармоніки швидкості модуляції*/
@@ -109,7 +111,8 @@ namespace Exponentiation
         float maxValue; // змінна для знаходження пікової гармоніки
         int speedPosition; // позиція пікової гармоніки швидкості
         int centralPosition; // позиція пікової гармоніки центральної частоти
-
+        public FFT_data_display display_data = FFT_data_display.SHIFTING;
+        
         /// <summary>
         /// Функція ініціалізації масивів косинісів та сінусів, необхідних для зносу сигналу на необхідну частоту
         /// </summary>
@@ -129,7 +132,6 @@ namespace Exponentiation
         public void detection(ref byte[] inData)
         {            
             Count = inDataLeght / 4; // величина вхідних масивів
-            //_inData.bytes = shifting_data;
             _inData.bytes = shifting_data;
             _detectedData.bytes = bufferDetectData;
             if (x == 1)
@@ -205,7 +207,11 @@ namespace Exponentiation
                 });
             }
         }
-
+        /// <summary>
+        /// Функція зносу сигналу
+        /// </summary>
+        /// <param name="inData">Масив даних сигналу, який потрібно знести</param>
+        /// /// <param name="outData">Масив даних знесеного сигналу</param>
         public void shifting(ref byte[] inData, byte[] outData)
         {
             Count = inDataLeght / 4; // величина вхідних масивів    
@@ -272,8 +278,10 @@ namespace Exponentiation
                 _data.iq[j].q = (short)_tempData[Count - j - 1].q;
             });
         }
-
-        public void F_calculating(double F)
+        /// <summary>
+        /// Функція визначення центральної частоти
+        /// </summary>
+        public void F_calculating()
         {
             Count = inDataLeght / 4; // величина вхідних масивів
             if (busy)
@@ -308,7 +316,6 @@ namespace Exponentiation
                         }
                     });
                     realCentralFrequencyPosition = (SR / 65536) * centralPosition;
-                    F = realCentralFrequencyPosition;
                 }
                 catch
                 {                    
@@ -316,6 +323,9 @@ namespace Exponentiation
                 }
             }
         }
+        /// <summary>
+        /// Функція визначення частоти маніпуляції (символьної швидкості)
+        /// </summary>
         public void speed_calculating()
         {
             Count = inDataLeght / 4; // величина вхідних масивів

@@ -156,10 +156,10 @@ namespace Exponentiation
                 info = string.Format("Частота дискретизації:  {0} МГц\nЦентральна частота:  {1} МГц\nФАПЧ status: {2} ", Quadrature_AM_detector.SR / 1000000.0, Quadrature_AM_detector.F / 1000000.0, Convert.ToString(calculate_parametrs_bool));
                 Quadrature_AM_detector.inDataLeght = inData.Length;
                 Quadrature_AM_detector.outDataLeght = outData.Length;
-                if (calculate_parametrs_bool) { Quadrature_AM_detector.exponentiation(ref inData); Quadrature_AM_detector.F_calculating(F); }
+                if (calculate_parametrs_bool) { Quadrature_AM_detector.exponentiation(ref inData); Quadrature_AM_detector.F_calculating(); }
                 Quadrature_AM_detector.shifting(ref inData, outData);
                 if (calculate_parametrs_bool) { Quadrature_AM_detector.detection(ref inData); Quadrature_AM_detector.speed_calculating(); }
-                try { if (visual != null && visual.Visible) { visual.displayFFT(inData.Length); } } catch { MessageBox.Show("Братан, сорян"); }    
+                if (visual != null && visual.Visible) { visual.displayFFT(inData.Length); }
                 Array.Resize(ref outData, inData.Length * Quadrature_AM_detector.x); // для інтерполяції
                 _outcom += outData.Length;
                 DoneWorck(this, outMessage, outData);
