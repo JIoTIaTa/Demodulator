@@ -1,6 +1,6 @@
-﻿namespace Exponentiation
+﻿namespace demodulation_namespace
 {
-    partial class Quadrature_AM_detectorForm
+    partial class Demodulator_DoubleClick_Form
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Quadrature_AM_detectorForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Demodulator_DoubleClick_Form));
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.save = new System.Windows.Forms.Button();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);

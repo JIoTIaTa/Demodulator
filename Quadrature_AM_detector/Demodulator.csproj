@@ -68,7 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FFT.cs" />
-    <Compile Include="Quadrature_AM_detector.cs" />
+    <Compile Include="Demodulator.cs" />
     <Compile Include="cloo\binding\CL10.cs" />
     <Compile Include="cloo\binding\CL11.cs" />
     <Compile Include="cloo\binding\CLCommandQueueHandle.cs" />
@@ -111,24 +111,24 @@
     <Compile Include="cloo\ComputeUserEvent.cs" />
     <Compile Include="cloo\SysIntX2.cs" />
     <Compile Include="cloo\SysIntX3.cs" />
-    <Compile Include="Quadrature_AM_detector_Form.cs">
+    <Compile Include="Demodulator_DouleClick_Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Quadrature_AM_detector_Form.Designer.cs">
-      <DependentUpon>Quadrature_AM_detector_Form.cs</DependentUpon>
+    <Compile Include="Demodulator_DouleClick_Form.Designer.cs">
+      <DependentUpon>Demodulator_DouleClick_Form.cs</DependentUpon>
     </Compile>
-    <Compile Include="Quadrature_AM_detector_SPARKInterface.cs" />
+    <Compile Include="Demodulator_SPARKInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="VisualForm.cs">
+    <Compile Include="Demodulator_VisualForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="VisualForm.designer.cs">
-      <DependentUpon>VisualForm.cs</DependentUpon>
+    <Compile Include="Demodulator_VisualForm.designer.cs">
+      <DependentUpon>Demodulator_VisualForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -138,15 +138,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Quadrature_AM_detector_Form.resx">
-      <DependentUpon>Quadrature_AM_detector_Form.cs</DependentUpon>
+    <EmbeddedResource Include="Demodulator_DouleClick_Form.resx">
+      <DependentUpon>Demodulator_DouleClick_Form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="VisualForm.resx">
-      <DependentUpon>VisualForm.cs</DependentUpon>
+    <EmbeddedResource Include="Demodulator_VisualForm.resx">
+      <DependentUpon>Demodulator_VisualForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quadrature_AM_detector", "Quadrature_AM_detector\Quadrature_AM_detector.csproj", "{959F90A0-B231-43CB-97B6-AE921A7B5686}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demodulator", "Quadrature_AM_detector\Demodulator.csproj", "{959F90A0-B231-43CB-97B6-AE921A7B5686}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interface", "Interface\Interface.csproj", "{DCE50944-9241-4F8E-B23D-8FBC731E2F7C}"
 EndProject
