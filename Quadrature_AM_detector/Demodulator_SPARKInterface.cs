@@ -31,7 +31,7 @@ namespace demodulation_namespace
 
         public string Name
         {
-            get { return "Квадратурний детектор"; }
+            get { return "Демодулятор"; }
         }
 
         public string Version
@@ -85,12 +85,12 @@ namespace demodulation_namespace
             {
                 MessageBox.Show("Can't do it, bro");
             }
-            return "Квадратурний детектор";
+            return "Демодулятор";
         }
 
         public void Info()
         {
-            MessageBox.Show("\nКвадратурний детектор");
+            MessageBox.Show("\nДемодулятор");
         }
 
         public void Start()
@@ -151,18 +151,21 @@ namespace demodulation_namespace
                 demodulation_functions.sendComand = false;
                 info = string.Format("Частота дискретизації:  {0} МГц\nЦентральна частота:  {1} МГц ", demodulation_functions.SR / 1000000.0, demodulation_functions.F / 1000000.0);
             }
+            info = string.Format(string.Format("{0}", inData.Length));
             Array.Resize(ref outData, inData.Length);
             try
             {
-                info = string.Format("Частота дискретизації:  {0} МГц\nЦентральна частота:  {1} МГц\nФАПЧ status: {2} ", demodulation_functions.SR / 1000000.0, demodulation_functions.F / 1000000.0, Convert.ToString(calculate_parametrs_bool));
                 if (inDataLength_change.new_value != inData.Length) { inDataLength_change.new_value = inDataLength_change.old_value; demodulation_functions.demodulator_init(inData.Length); }
                 if (calculate_parametrs_bool) { demodulation_functions.exponentiation(ref inData); demodulation_functions.F_calculating(); }
-                demodulation_functions.shifting_function(ref inData, ref outData);
-                if (calculate_parametrs_bool) { demodulation_functions.detection(ref inData); demodulation_functions.speed_calculating(); }
+                demodulation_functions.shifting_function(ref inData);
+                if (calculate_parametrs_bool) { demodulation_functions.detection(); demodulation_functions.speed_calculating(); }
                 if (visual_Form != null && visual_Form.Visible) { visual_Form.displayFFT(inData.Length); }
+                demodulation_functions.configFilter();
+                demodulation_functions.filtering_function(ref outData);
                 _outcom += outData.Length;
-                info = string.Format(string.Format("input[0] ->{0}\noutput[0] ->{1}", inData[0], outData[0]));
-                //MessageBox.Show(string.Format(string.Format("{0}", outMessage)));
+
+                //info = string.Format("Частота дискретизації:  {0} МГц\nЦентральна частота:  {1} МГц\nФАПЧ status: {2}\n ", demodulation_functions.SR / 1000000.0, demodulation_functions.F / 1000000.0, Convert.ToString(calculate_parametrs_bool));
+                
                 DoneWorck(this, outMessage, outData);               
             }
             catch

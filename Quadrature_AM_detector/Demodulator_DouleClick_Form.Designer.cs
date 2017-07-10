@@ -41,11 +41,8 @@
             this.Show = new System.Windows.Forms.CheckBox();
             this.button1 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.exponentiationLevel = new System.Windows.Forms.NumericUpDown();
-            this.label3 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.exponentiationLevel)).BeginInit();
             this.SuspendLayout();
             // 
             // notifyIcon1
@@ -141,37 +138,6 @@
             this.label2.TabIndex = 17;
             this.label2.Text = "Інтерполяція";
             // 
-            // exponentiationLevel
-            // 
-            this.exponentiationLevel.Location = new System.Drawing.Point(129, 58);
-            this.exponentiationLevel.Maximum = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-            this.exponentiationLevel.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.exponentiationLevel.Name = "exponentiationLevel";
-            this.exponentiationLevel.Size = new System.Drawing.Size(40, 20);
-            this.exponentiationLevel.TabIndex = 18;
-            this.exponentiationLevel.Value = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 60);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(111, 13);
-            this.label3.TabIndex = 19;
-            this.label3.Text = "Піднести до степеня";
-            // 
             // button2
             // 
             this.button2.Location = new System.Drawing.Point(241, 21);
@@ -191,15 +157,13 @@
             this.label4.TabIndex = 21;
             this.label4.Text = "1";
             // 
-            // Quadrature_AM_detectorForm
+            // Demodulator_DoubleClick_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(341, 107);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.exponentiationLevel);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.Show);
@@ -213,13 +177,12 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "Quadrature_AM_detectorForm";
+            this.Name = "Demodulator_DoubleClick_Form";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Визначення параметрів";
             this.TopMost = true;
             this.Load += new System.EventHandler(this.ExponentiationForm_Load);
             this.Shown += new System.EventHandler(this.FirFilterForm_Shown);
-            ((System.ComponentModel.ISupportInitialize)(this.exponentiationLevel)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -237,8 +200,6 @@
         private System.Windows.Forms.CheckBox Show;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.NumericUpDown exponentiationLevel;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label4;
     }

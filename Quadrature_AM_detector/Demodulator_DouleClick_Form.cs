@@ -26,7 +26,6 @@ namespace demodulation_namespace
             //button1.Text = String.Format("x{0}", Quadrature_AM_detector.x);
             Fvalue.Text = String.Format("{0}", demodulation_functions.F);
             if (demodulation_functions.show) { Show.Checked = true; } else { Show.Checked = false; }
-            exponentiationLevel.Value = demodulation_functions.modulation_multiplicity;
             label4.Text = String.Format("{0}", Demodulator.x);
         }
 
@@ -35,7 +34,6 @@ namespace demodulation_namespace
             demodulation_functions.sendComand = true;
             demodulation_functions.F = Convert.ToInt64(Fvalue.Text);
             if (Show.Checked) { demodulation_functions.show = true; } else { demodulation_functions.show = false; }
-            demodulation_functions.modulation_multiplicity = (int)exponentiationLevel.Value;
             this.Close();
         }
 
@@ -46,7 +44,6 @@ namespace demodulation_namespace
             //button1.Text = String.Format("x{0}", Quadrature_AM_detector.x);
             Fvalue.Text = String.Format("{0}", demodulation_functions.F);
             if (demodulation_functions.show) { Show.Checked = true; } else { Show.Checked = false; }
-            exponentiationLevel.Value = demodulation_functions.modulation_multiplicity;
         }
 
         private void button1_Click(object sender, EventArgs e)
