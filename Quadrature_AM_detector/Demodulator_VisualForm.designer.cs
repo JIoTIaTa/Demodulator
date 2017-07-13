@@ -1,4 +1,4 @@
-﻿namespace demodulation_namespace
+﻿namespace demodulation
 {
     partial class DemodulatorVisual_Form
     {

@@ -67,8 +67,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FFT.cs" />
     <Compile Include="Demodulator.cs" />
+    <Compile Include="FFT.cs" />
+    <Compile Include="Demodulator.Core.cs" />
     <Compile Include="cloo\binding\CL10.cs" />
     <Compile Include="cloo\binding\CL11.cs" />
     <Compile Include="cloo\binding\CLCommandQueueHandle.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="Demodulator_VisualForm.designer.cs">
       <DependentUpon>Demodulator_VisualForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="VisualFunctions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Interface\Interface.csproj">

@@ -5,7 +5,7 @@ using System.Text;
 using System.Numerics;
 using System.Threading.Tasks;
 
-namespace FirFilterNew
+namespace FFT
 {
     static class Fft
     {

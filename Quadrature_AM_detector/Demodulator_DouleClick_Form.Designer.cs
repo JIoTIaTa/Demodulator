@@ -1,4 +1,4 @@
-﻿namespace demodulation_namespace
+﻿namespace demodulation
 {
     partial class Demodulator_DoubleClick_Form
     {

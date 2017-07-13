@@ -7,13 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Numerics;
-using FirFilterNew;
+using FFT;
 using System.Threading.Tasks;
 
 //using Filter;
 
-namespace demodulation_namespace
+namespace demodulation
 {
+
     public partial class DemodulatorVisual_Form : Form
     {
         public float beginBW = 0.0f; // для порівняння і конфігурації фільтра
@@ -28,21 +29,11 @@ namespace demodulation_namespace
         private float ACHAvering;
         private float SignalAvering;
         Complex[] visual_data = new Complex[65536];
-        //Complex[] visual_data;
         double[] avering_buffer = new double[65536];
         public float[] xAxes = new float[65536]; // значення осі Х ШТП
         public float[] outFFTdata = new float[65536]; // значення осі У ШПФ
         int averingRepeat = 0;
         private int inData_length;
-
-        private void ReSize_visual_buffers(int length)
-        {
-            //MessageBox.Show(string.Format("{0}", demodulation_functions.maxFFT));
-            Array.Resize(ref avering_buffer, length);
-            Array.Resize(ref visual_data, length);
-            Array.Resize(ref xAxes, length);
-            Array.Clear(avering_buffer, 0, length);
-        }
 
         public DemodulatorVisual_Form()
         {
@@ -116,40 +107,7 @@ namespace demodulation_namespace
             deltaF_label.Text = "Відхилення від центру:  " + ((demodulation_functions.realCentralFrequencyPosition - demodulation_functions.SR / 2) / 1000.0d) + " кГц";
             BW_label.Text = "Смуга фільтрації:  " + demodulation_functions.FilterBandwich + " кГц";
         }
-        public void displayFFT(int length)
-        {
-            inData_length = length;
-            length = length / 4;
-            try
-            {
-                //visual_data = new Complex[demodulation_functions.maxFFT];
-                array_for_FFT = new FFT_array_creating();
-                array_for_FFT.create(ref visual_data, demodulation_functions.display, length, demodulation_functions.maxFFT);
-                visual_data = Fft.fft(visual_data);
-                if (demodulation_functions.display != Demodulator.FFT_data_display.DETECTED) { visual_data = Fft.nfft(visual_data); } else { }
-                for (int i = 0; i < demodulation_functions.maxFFT; i++)
-                {
-                    avering_buffer[i] = (avering_buffer[i] + visual_data[i].Magnitude);
-                }
-                averingRepeat++;
-                if (averingRepeat >= demodulation_functions.fftAveragingValue)
-                {
-                    averingRepeat = 0;
-                    for (int i = 0; i < visual_data.Length; i++)
-                    {
-                        xAxes[i] = (float)(i * SR / demodulation_functions.maxFFT);
-                        outFFTdata[i] = (float)(10 * Math.Log((avering_buffer[i] / demodulation_functions.fftAveragingValue) * fNormolize, 10));
-                    }
-                    MitovScope.Channels[0].Data.SetXYData(xAxes, outFFTdata);
-                    Array.Clear(avering_buffer, 0, demodulation_functions.maxFFT);
-                    Array.Clear(outFFTdata, 0, demodulation_functions.maxFFT);
-                }
-            }
-            catch (Exception)
-            {
-                toolStripStatusLabel1.Text = "Стан: Trouble with averingFFT :(";
-            }
-        }
+       
 
         private void numericUpDown3_ValueChanged(object sender, EventArgs e)
         {
@@ -176,67 +134,111 @@ namespace demodulation_namespace
             exponentiationLevel.Increment = exponentiationLevel.Value;
             demodulation_functions.modulation_multiplicity = (int)exponentiationLevel.Value;
         }
-    }
 
-    /// <summary>Клас, що реалізує функцію заповнення комплексного масиву даними для відображення</summary>
-    public class FFT_array_creating
-    {
-        /// <summary> Функція зоповнення комплексного масиву </summary>
-        /// <param name="visual_data">Посилання на комплексний масив, який буде використаний ШПФ</param>
-        /// <param name="data_type">Тип даних, над якими буде проводитися ШПФ</param>
-        /// <param name="length">Довжина I = Q відліків, над якими буде проводитися ШПФ </param>
-        public void create (ref Complex[] visual_data, Demodulator.FFT_data_display data_type, int length, int FFT_deep)
+
+        private void ReSize_visual_buffers(int length)
         {
-            switch (data_type)
+            Array.Resize(ref avering_buffer, length);
+            Array.Resize(ref visual_data, length);
+            Array.Resize(ref xAxes, length);
+            Array.Clear(avering_buffer, 0, length);
+        }
+        public void displayFFT(int length)
+        {
+            inData_length = length;
+            length = length / 4;
+            try
             {
-                case Demodulator.FFT_data_display.SHIFTING:
+                VisuaslFactory visual = new VisuaslFactory();
+                visual.CreateVisual(ref visual_data, demodulation_functions.display, length, demodulation_functions.maxFFT);
+                visual_data = Fft.fft(visual_data);
+                if (demodulation_functions.display != Demodulator.FFT_data_display.DETECTED) { visual_data = Fft.nfft(visual_data); } else { }
+                for (int i = 0; i < demodulation_functions.maxFFT; i++)
+                {
+                    avering_buffer[i] = (avering_buffer[i] + visual_data[i].Magnitude);
+                }
+                Array.Clear(visual_data, 0, demodulation_functions.maxFFT);
+                averingRepeat++;
+                if (averingRepeat >= demodulation_functions.fftAveragingValue)
+                {
+                    averingRepeat = 0;
+                    for (int i = 0; i < visual_data.Length; i++)
                     {
-                        for (int k = 0; k < length; k++)
-                        {
-                            for (int i = 0; i < length; i++)
-                                visual_data[k] = new Complex(Demodulator.IQ_shifted.iq[k].i, Demodulator.IQ_shifted.iq[k].q);
-                        }
+                        xAxes[i] = (float)(i * SR / demodulation_functions.maxFFT);
+                        outFFTdata[i] = (float)(10 * Math.Log((avering_buffer[i] / demodulation_functions.fftAveragingValue) * fNormolize, 10));
                     }
-                    break;
-                case Demodulator.FFT_data_display.EXPONENT:
-                    {
-                        for (int k = 0; k < length; k++)
-                        {
-                            visual_data[k] = new Complex(Demodulator.IQ_elevated.iq[k].i, Demodulator.IQ_elevated.iq[k].q);
-                        }
-                    }
-                    break;
-                case Demodulator.FFT_data_display.DETECTED:
-                    {
-                        for (int k = 0; k < length; k++)
-                        {
-                            visual_data[k] = new Complex(Demodulator.IQ_detected.iq[k].i, Demodulator.IQ_detected.iq[k].q);
-                        }
-                    }
-                    break;
-                case Demodulator.FFT_data_display.FILTERING:
-                    {
-                        for (int k = 0; k < length; k++)
-                        {
-                            visual_data[k] = new Complex(Demodulator.IQ_filtered.iq[k].i, Demodulator.IQ_filtered.iq[k].q);
-                        }
-                    }
-                    break;
-                case Demodulator.FFT_data_display.INPUT:
-                    {
-                        for (int k = 0; k < length; k++)
-                        {
-                            visual_data[k] = new Complex(Demodulator.IQ_inData.iq[k].i, Demodulator.IQ_inData.iq[k].q);
-                        }
-                    }
-                    break;
-                default:
-                    break;
+                    MitovScope.Channels[0].Data.SetXYData(xAxes, outFFTdata);
+                    Array.Clear(avering_buffer, 0, demodulation_functions.maxFFT);
+                    Array.Clear(outFFTdata, 0, demodulation_functions.maxFFT);
+                }
             }
-            for (int k = length; k < FFT_deep; k++)
+            catch (Exception)
             {
-                visual_data[k] = new Complex(0, 0);
+                toolStripStatusLabel1.Text = "Стан: Trouble with averingFFT :(";
             }
         }
-    }
+        /// <summary>Клас, що реалізує функцію заповнення комплексного масиву даними для відображення</summary>
+        sealed public class FFT_array_creating
+        {
+            /// <summary> Функція зоповнення комплексного масиву </summary>
+            /// <param name="visual_data">Посилання на комплексний масив, який буде використаний ШПФ</param>
+            /// <param name="data_type">Тип даних, над якими буде проводитися ШПФ</param>
+            /// <param name="length">Довжина I = Q відліків, над якими буде проводитися ШПФ </param>
+            public void create(ref Complex[] visual_data, Demodulator.FFT_data_display data_type, int length, int FFT_deep)
+            {
+                switch (data_type)
+                {
+                    case Demodulator.FFT_data_display.SHIFTING:
+                        {
+                            for (int k = 0; k < length; k++)
+                            {
+                                for (int i = 0; i < length; i++)
+                                    visual_data[k] = new Complex(Demodulator.IQ_shifted.iq[k].i, Demodulator.IQ_shifted.iq[k].q);
+                            }
+                        }
+                        break;
+                    case Demodulator.FFT_data_display.EXPONENT:
+                        {
+                            for (int k = 0; k < length; k++)
+                            {
+                                visual_data[k] = new Complex(Demodulator.IQ_elevated.iq[k].i, Demodulator.IQ_elevated.iq[k].q);
+                            }
+                        }
+                        break;
+                    case Demodulator.FFT_data_display.DETECTED:
+                        {
+                            for (int k = 0; k < length; k++)
+                            {
+                                visual_data[k] = new Complex(Demodulator.IQ_detected.iq[k].i, Demodulator.IQ_detected.iq[k].q);
+                            }
+                        }
+                        break;
+                    case Demodulator.FFT_data_display.FILTERING:
+                        {
+                            for (int k = 0; k < length; k++)
+                            {
+                                visual_data[k] = new Complex(Demodulator.IQ_filtered.iq[k].i, Demodulator.IQ_filtered.iq[k].q);
+                            }
+                        }
+                        break;
+                    case Demodulator.FFT_data_display.INPUT:
+                        {
+                            for (int k = 0; k < length; k++)
+                            {
+                                visual_data[k] = new Complex(Demodulator.IQ_inData.iq[k].i, Demodulator.IQ_inData.iq[k].q);
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                for (int k = length; k < FFT_deep; k++)
+                {
+                    visual_data[k] = new Complex(0, 0);
+                }
+            }
+        }
+
+
+    }    
 }

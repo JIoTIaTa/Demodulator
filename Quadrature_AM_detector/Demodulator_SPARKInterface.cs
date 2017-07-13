@@ -9,7 +9,7 @@ using Interface;
 using System.Windows.Forms;
 //using Filter;
 
-namespace demodulation_namespace
+namespace demodulation
 {
 
     public class Quadrature_AM_demodulatorSPARKInterface : IDecoder

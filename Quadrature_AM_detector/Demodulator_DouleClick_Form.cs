@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 //using signal_tester;
 
-namespace demodulation_namespace
+namespace demodulation
 {
     public partial class Demodulator_DoubleClick_Form : Form
     {
