@@ -73,6 +73,7 @@ namespace demodulation
         public FFT_data_display display = FFT_data_display.SHIFTING;// які дані буде відображати ШПФ
         public int firstDecim = 0; // треба згадать, юзав для фільрації
         float BW = 0; // смуга для фунції генерування коефіціентів
+
                 
        
         /// <summary>Функція визначення частоти маніпуляції (символьної швидкості)</summary>
@@ -217,8 +218,8 @@ namespace demodulation
                     }
 
                     detectionBuffer = Fft.fft(detectionBuffer);
-                    minSpeedZone = (detectionBuffer.Length / 10) * 6;
-                    maxSpeedZone = (detectionBuffer.Length / 10) * 9;
+                    minSpeedZone = (detectionBuffer.Length / 10) * 2;
+                    maxSpeedZone = (detectionBuffer.Length / 10) * 3;
                     maxValue = 0;
                     speedPosition = 0;
                     realSpeedPosition = 0;

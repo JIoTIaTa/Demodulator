@@ -79,7 +79,7 @@ namespace demodulation
         {
             try
             {
-                FilterBandwich = (float)(realSpeedPosition / 0.85);
+                FilterBandwich = (float)(realSpeedPosition*2 / 0.85);
                 BW = (float)(FilterBandwich / SR);
                 filterCoefficients = new float[filterOrder];
                 _FIR(ref filterCoefficients[0], filterOrder, TPassTypeName.LPF, BW, 0.0f, FIR_WindowType, FIR_beta);
