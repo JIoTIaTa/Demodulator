@@ -54,3 +54,7 @@ B:\Repositories\Demodulator\FormVisualizator\bin\Debug\data\Interface.dll
 B:\Repositories\Demodulator\FormVisualizator\bin\Debug\data\Interface.pdb
 B:\Repositories\Demodulator\Interface\obj\Debug\Interface.dll
 B:\Repositories\Demodulator\Interface\obj\Debug\Interface.pdb
+D:\Repositories\Demodulator\FormVisualizator\bin\Debug\data\Interface.dll
+D:\Repositories\Demodulator\FormVisualizator\bin\Debug\data\Interface.pdb
+D:\Repositories\Demodulator\Interface\obj\Debug\Interface.dll
+D:\Repositories\Demodulator\Interface\obj\Debug\Interface.pdb

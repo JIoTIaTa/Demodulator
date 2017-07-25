@@ -131,6 +131,7 @@
     <Compile Include="Demodulator_VisualForm.designer.cs">
       <DependentUpon>Demodulator_VisualForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="TXT_writter.cs" />
     <Compile Include="VisualFunctions.cs" />
   </ItemGroup>
   <ItemGroup>

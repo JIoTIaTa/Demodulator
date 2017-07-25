@@ -209,17 +209,22 @@
             this.label27 = new System.Windows.Forms.Label();
             this.numericUpDown_fftAveragingValue = new System.Windows.Forms.NumericUpDown();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.BW_label = new System.Windows.Forms.Label();
             this.deltaF_label = new System.Windows.Forms.Label();
             this.calculate_parametrs = new System.Windows.Forms.CheckBox();
             this.FFT_data_display = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.exponentiationLevel = new System.Windows.Forms.NumericUpDown();
-            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.BPS_label = new System.Windows.Forms.Label();
+            this.deltaMS_I_label = new System.Windows.Forms.Label();
+            this.deltaMS_Q_label = new System.Windows.Forms.Label();
+            this.writter_checkBox = new System.Windows.Forms.CheckBox();
+            this.deltaMS_label = new System.Windows.Forms.Label();
+            this.SR_label = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.MitovScope)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_fftAveragingValue)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -707,11 +712,18 @@
             this.toolStripProgressBar1,
             this.toolStripStatusLabel,
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 517);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 555);
             this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
             this.statusStrip1.Size = new System.Drawing.Size(591, 22);
             this.statusStrip1.TabIndex = 107;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(117, 17);
+            this.toolStripStatusLabel2.Text = "Відображення ШПФ";
             // 
             // toolStripProgressBar1
             // 
@@ -721,8 +733,9 @@
             // 
             // toolStripStatusLabel
             // 
+            this.toolStripStatusLabel.AutoSize = false;
             this.toolStripStatusLabel.Name = "toolStripStatusLabel";
-            this.toolStripStatusLabel.Size = new System.Drawing.Size(118, 17);
+            this.toolStripStatusLabel.Size = new System.Drawing.Size(40, 17);
             this.toolStripStatusLabel.Text = "toolStripStatusLabel1";
             // 
             // toolStripStatusLabel1
@@ -731,23 +744,12 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(112, 17);
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel";
             // 
-            // BW_label
-            // 
-            this.BW_label.AutoSize = true;
-            this.BW_label.BackColor = System.Drawing.Color.GhostWhite;
-            this.BW_label.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.BW_label.Location = new System.Drawing.Point(313, 443);
-            this.BW_label.Name = "BW_label";
-            this.BW_label.Size = new System.Drawing.Size(99, 15);
-            this.BW_label.TabIndex = 108;
-            this.BW_label.Text = "Смуга фільтрації: ";
-            // 
             // deltaF_label
             // 
             this.deltaF_label.AutoSize = true;
             this.deltaF_label.BackColor = System.Drawing.Color.GhostWhite;
             this.deltaF_label.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.deltaF_label.Location = new System.Drawing.Point(313, 419);
+            this.deltaF_label.Location = new System.Drawing.Point(313, 439);
             this.deltaF_label.Name = "deltaF_label";
             this.deltaF_label.Size = new System.Drawing.Size(71, 15);
             this.deltaF_label.TabIndex = 109;
@@ -829,24 +831,91 @@
             0});
             this.exponentiationLevel.ValueChanged += new System.EventHandler(this.exponentiationLevel_ValueChanged);
             // 
-            // toolStripStatusLabel2
+            // BPS_label
             // 
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(117, 17);
-            this.toolStripStatusLabel2.Text = "Відображення ШПФ";
+            this.BPS_label.AutoSize = true;
+            this.BPS_label.BackColor = System.Drawing.Color.GhostWhite;
+            this.BPS_label.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.BPS_label.Location = new System.Drawing.Point(313, 462);
+            this.BPS_label.Name = "BPS_label";
+            this.BPS_label.Size = new System.Drawing.Size(82, 15);
+            this.BPS_label.TabIndex = 115;
+            this.BPS_label.Text = "Біт на символ:";
+            // 
+            // deltaMS_I_label
+            // 
+            this.deltaMS_I_label.AutoSize = true;
+            this.deltaMS_I_label.BackColor = System.Drawing.Color.GhostWhite;
+            this.deltaMS_I_label.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.deltaMS_I_label.Location = new System.Drawing.Point(313, 485);
+            this.deltaMS_I_label.Name = "deltaMS_I_label";
+            this.deltaMS_I_label.Size = new System.Drawing.Size(122, 15);
+            this.deltaMS_I_label.TabIndex = 116;
+            this.deltaMS_I_label.Text = "Відхилення швидкості:";
+            // 
+            // deltaMS_Q_label
+            // 
+            this.deltaMS_Q_label.AutoSize = true;
+            this.deltaMS_Q_label.BackColor = System.Drawing.Color.GhostWhite;
+            this.deltaMS_Q_label.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.deltaMS_Q_label.Location = new System.Drawing.Point(313, 509);
+            this.deltaMS_Q_label.Name = "deltaMS_Q_label";
+            this.deltaMS_Q_label.Size = new System.Drawing.Size(122, 15);
+            this.deltaMS_Q_label.TabIndex = 117;
+            this.deltaMS_Q_label.Text = "Відхилення швидкості:";
+            // 
+            // writter_checkBox
+            // 
+            this.writter_checkBox.AutoSize = true;
+            this.writter_checkBox.Checked = true;
+            this.writter_checkBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.writter_checkBox.Location = new System.Drawing.Point(39, 489);
+            this.writter_checkBox.Name = "writter_checkBox";
+            this.writter_checkBox.Size = new System.Drawing.Size(109, 17);
+            this.writter_checkBox.TabIndex = 118;
+            this.writter_checkBox.Text = "Записати масив";
+            this.writter_checkBox.UseVisualStyleBackColor = true;
+            this.writter_checkBox.CheckedChanged += new System.EventHandler(this.writter_checkBox_CheckedChanged);
+            // 
+            // deltaMS_label
+            // 
+            this.deltaMS_label.AutoSize = true;
+            this.deltaMS_label.BackColor = System.Drawing.Color.GhostWhite;
+            this.deltaMS_label.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.deltaMS_label.Location = new System.Drawing.Point(313, 531);
+            this.deltaMS_label.Name = "deltaMS_label";
+            this.deltaMS_label.Size = new System.Drawing.Size(122, 15);
+            this.deltaMS_label.TabIndex = 119;
+            this.deltaMS_label.Text = "Відхилення швидкості:";
+            // 
+            // SR_label
+            // 
+            this.SR_label.AutoSize = true;
+            this.SR_label.BackColor = System.Drawing.Color.GhostWhite;
+            this.SR_label.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.SR_label.Location = new System.Drawing.Point(313, 417);
+            this.SR_label.Name = "SR_label";
+            this.SR_label.Size = new System.Drawing.Size(130, 15);
+            this.SR_label.TabIndex = 120;
+            this.SR_label.Text = "Частота дискретизації: ";
             // 
             // DemodulatorVisual_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(591, 539);
+            this.ClientSize = new System.Drawing.Size(591, 577);
+            this.Controls.Add(this.SR_label);
+            this.Controls.Add(this.deltaMS_label);
+            this.Controls.Add(this.writter_checkBox);
+            this.Controls.Add(this.deltaMS_Q_label);
+            this.Controls.Add(this.deltaMS_I_label);
+            this.Controls.Add(this.BPS_label);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.exponentiationLevel);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.FFT_data_display);
             this.Controls.Add(this.calculate_parametrs);
             this.Controls.Add(this.deltaF_label);
-            this.Controls.Add(this.BW_label);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.label27);
             this.Controls.Add(this.numericUpDown_fftAveragingValue);
@@ -861,7 +930,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "DemodulatorVisual_Form";
-            this.Text = "Характеристики фільтру";
+            this.Text = "Демодулятор ФМ";
             this.Load += new System.EventHandler(this.VisualForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.MitovScope)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_fftAveragingValue)).EndInit();
@@ -888,7 +957,6 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
-        private System.Windows.Forms.Label BW_label;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.Label deltaF_label;
         private System.Windows.Forms.CheckBox calculate_parametrs;
@@ -897,5 +965,11 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown exponentiationLevel;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+        private System.Windows.Forms.Label BPS_label;
+        private System.Windows.Forms.Label deltaMS_I_label;
+        private System.Windows.Forms.Label deltaMS_Q_label;
+        private System.Windows.Forms.CheckBox writter_checkBox;
+        private System.Windows.Forms.Label deltaMS_label;
+        private System.Windows.Forms.Label SR_label;
     }
 }
