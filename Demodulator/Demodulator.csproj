@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{959F90A0-B231-43CB-97B6-AE921A7B5686}</ProjectGuid>
+    <ProjectGuid>{83C1D5E3-4CA6-443E-9A40-E29539B6FB22}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Quadrature_AM_detector</RootNamespace>
