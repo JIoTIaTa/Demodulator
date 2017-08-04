@@ -106,11 +106,12 @@ namespace demodulation
             T_label.Text = string.Format("Період маніпуляції:  {0:0.00} мкс", (1 / dem_functions.speedFrequency * 1000000.0d));
             F_label.Text = string.Format("Центральна частота:  {0:0.00} кГц", (dem_functions.centralFrequency / 1000.0d));
             deltaF_label.Text = string.Format("Відхилення від центру:  {0:0.00} кГц",((dem_functions.centralFrequency - dem_functions.SR / 2) / 1000.0d));
-            BPS_label.Text = string.Format("Біт на символ:  {0:0.00}", dem_functions.BitPerSapmle);
+            BPS_label.Text = string.Format("Відліків на символ:  {0:0.00}", dem_functions.SymbolsPerSapmle);
             deltaMS_I_label.Text = string.Format("Відхилення швидкості I:  {0}", dem_functions.speed_error_I);
             deltaMS_Q_label.Text = string.Format("Відхилення швидкості Q:  {0}", dem_functions.speed_error_Q);
             deltaMS_label.Text = string.Format("Відхилення швидкості :  {0}", dem_functions.speed_error);
-            SR_label.Text = string.Format("Частота дискретизації:  {0:0.00} МГц", dem_functions.SR / 1000000.0d);
+            SR_label.Text = string.Format("Частота дискретизації:  {0:0.00} кГц", dem_functions.SR / 1000.0d);
+            filterBW_textBox.Text = string.Format("{0:0.00}", dem_functions.FilterBandwich );
         }
        
 
@@ -186,6 +187,16 @@ namespace demodulation
         private void writter_checkBox_CheckedChanged(object sender, EventArgs e)
         {
             dem_functions.write = writter_checkBox.Checked;
+        }
+
+        private void filterBW_textBox_TextChanged(object sender, EventArgs e)
+        {
+            dem_functions.FilterBandwich = (float)Convert.ToDouble(filterBW_textBox.Text);
+        }
+
+        private void MScorrect_textBox_TextChanged(object sender, EventArgs e)
+        {
+            dem_functions.MS_correct = (float)Convert.ToDouble(MScorrect_textBox.Text);
         }
     }    
 }

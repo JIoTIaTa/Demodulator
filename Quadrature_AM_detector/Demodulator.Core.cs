@@ -32,8 +32,6 @@ namespace demodulation
     {        
         public  double SR = 0.0d; // частота дискретизації
         public static sIQData IQ_inData, IQ_outData, IQ_detected, IQ_elevated, IQ_shifted, IQ_remainded, IQ_filtered;
-        public MS_syncronize speed_syncronize_I = new MS_syncronize();
-        public MS_syncronize speed_syncronize_Q = new MS_syncronize();
         public long F = 0; // центральная частота
         public bool sendComand = false;
         private double tempI = 0; // змінна для тимчасових даних
@@ -68,12 +66,13 @@ namespace demodulation
         public FFT_data_display display = FFT_data_display.FILTERING;// які дані буде відображати ШПФ
         public int firstDecim = 0; // треба згадать, юзав для фільрації
         float BW = 0; // смуга для фунції генерування коефіціентів
-        public float BitPerSapmle = 0;
+        public float SymbolsPerSapmle = 0;
         public float speed_error_I = 0;
         public float speed_error_Q = 0;
         public float speed_error = 0;
         public bool write = false;
         public static string warningMessage = "Стан: Працює без збоїв";
+        public float MS_correct = 0.0f;
 
 
 
@@ -172,9 +171,9 @@ namespace demodulation
             {
                 IQ_shifted.bytes = shifted;
                 IQ_inData.bytes = inData;
-                if (centralFrequency > F) sin_cos_position = (float)((centralFrequency - SR / 2) * 1024f / (SR));
-                else sin_cos_position = (float)(1024f + (centralFrequency - F) * 1024f / (SR));
-                sin_cos_position = sin_cos_position / 2;
+                if (centralFrequency > F) { sin_cos_position = (float)((centralFrequency - SR / 2) * 1024f / (SR)); sin_cos_position = sin_cos_position / 2; }
+                else { sin_cos_position = (float)(1024f + (centralFrequency - F) * 1024f / (SR)); sin_cos_position = sin_cos_position * 2; }
+
                 for (int i = 0; i < IQ_lenght; i++)
                 {
                     int t = (i * (int)sin_cos_position) % 1024;
@@ -306,35 +305,22 @@ namespace demodulation
                     IQ_filtered.iq[j].i = (short)(_sum.i);
                     IQ_filtered.iq[j].q = (short)(_sum.q);                    
                 }
-                int BPS_int = (int)Math.Round(BitPerSapmle);
+                //////////////////////////////////////////////////////////////////////////
+                //if (write)
+                //{
+                //    short[] temp_short_I = new short[IQ_shifted.bytes.Length / 4];
+                //    short[] temp_short_Q = new short[IQ_shifted.bytes.Length / 4];
+                //    for (int i = 0; i < IQ_shifted.bytes.Length / 4; i++)
+                //    {
+                //        temp_short_I[i] = IQ_shifted.iq[i].i;
+                //        temp_short_Q[i] = IQ_shifted.iq[i].q;
+                //    }
+                //    Writter Write = new Writter(temp_short_I, temp_short_Q, "I", "Q", "after_shifting");
+                //    //Writter Write1 = new Writter(filterCoefficients,"coef", "filter_coef");
+                //    write = false;
+                //}                
                 ////////////////////////////////////////////////////////////////////////
-                for (int i = 2; i < IQ_filtered.bytes.Length / 4; i+= BPS_int)
-                {
-                    //MessageBox.Show(string.Format("{0}", i));
-                    short[] temp_I = { IQ_filtered.iq[i].i, IQ_filtered.iq[i + (BPS_int ) - 1].i, IQ_filtered.iq[i + (BPS_int * 2) - 1].i };
-                    speed_error_I = speed_syncronize_I.Error_calc(temp_I);
-                }
-                for (int i = 0; i < IQ_filtered.bytes.Length / 4; i += BPS_int)
-                {
-                    //MessageBox.Show(string.Format("{0}", i));
-                    short[] temp_Q = { IQ_filtered.iq[i].q, IQ_filtered.iq[i + (BPS_int) - 1].q, IQ_filtered.iq[i + (BPS_int * 2) - 1].q };
-                    speed_error_Q = speed_syncronize_Q.Error_calc(temp_Q);
-                }
-                speed_error = speed_error_I + speed_error_Q;
-                if (write)
-                {
-                    short[] temp_short_I = new short[IQ_shifted.bytes.Length / 4];
-                    short[] temp_short_Q = new short[IQ_shifted.bytes.Length / 4];
-                    for (int i = 0; i < IQ_shifted.bytes.Length / 4; i++)
-                    {
-                        temp_short_I[i] = IQ_shifted.iq[i].i;
-                        temp_short_Q[i] = IQ_shifted.iq[i].q;
-                    }
-                    Writter Write = new Writter(temp_short_I, temp_short_Q, "I", "Q", "after_shifting");
-                    //Writter Write1 = new Writter(filterCoefficients,"coef", "filter_coef");
-                    write = false;
-                }                
-                ////////////////////////////////////////////////////////////////////////
+
                 for (int j = 0; j < filterOrder; j++)
                 {
                     IQ_remainded.iq[j].i = IQ_shifted.iq[IQ_lenght - j - 1].i;
@@ -358,19 +344,5 @@ namespace demodulation
             catch { warningMessage = "Стан: Проблеми з визначенням бітів на такт"; }
             return BPS;
         }
-        //public float _speed_error()
-        //{
-        //    IQ_filtered.bytes = filtered;
-        //    float MS_error = 0;
-        //    for (int i = 0; i < filtered.Length - 2; i++)
-        //    {                
-        //        short[] temp = { IQ_filtered.iq[i].i, IQ_filtered.iq[i + 1].i,IQ_filtered.iq[i + 2].i};
-        //        MessageBox.Show(string.Format("{0} {1} {2}", temp[0], temp[1], temp[2]));
-        //        MS_error = speed_syncronize.Error_calc(temp);
-        //        return MS_error;
-        //    }
-        //    return MS_error;
-        //}
-
     }
 }

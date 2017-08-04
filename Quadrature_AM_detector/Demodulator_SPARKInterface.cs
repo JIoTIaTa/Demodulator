@@ -7,6 +7,7 @@ using System.Text;
 using Interface;
 //using signal_tester;
 using System.Windows.Forms;
+using TXT_writter;
 //using Filter;
 
 namespace demodulation
@@ -28,6 +29,8 @@ namespace demodulation
         public DemodulatorVisual_Form visual_Form; // форма візуалізації         
         public static bool calculate_parametrs_bool = true;
         private change inDataLength_change = new change(); // для визначення, чи змінилась довжинавхідних даних
+        public int[] demodulate_I_unit;
+        public int[] demodulate_Q_unit;
 
         public string Name
         {
@@ -169,9 +172,8 @@ namespace demodulation
                 if (calculate_parametrs_bool)
                 {
                     dem_functions._detection();
-                    dem_functions.speedFrequency = dem_functions._speed_calculating() + dem_functions.speed_error * 100f; //////?? єбу
-                    dem_functions.BitPerSapmle = dem_functions._BitPerSapmle();
-                    //dem_functions.speed_error = dem_functions._speed_error();
+                    dem_functions.speedFrequency = dem_functions._speed_calculating() + dem_functions.MS_correct;
+                    dem_functions.SymbolsPerSapmle = dem_functions._BitPerSapmle();
                 }
                 if (visual_Form != null && visual_Form.Visible)
                 {
@@ -179,10 +181,26 @@ namespace demodulation
                 }
                 dem_functions.configFilter();
                 dem_functions._filtering_function(ref outData);
-                _outcom += outData.Length;
-
-                //info = string.Format("Частота дискретизації:  {0} МГц\nЦентральна частота:  {1} МГц\nФАПЧ status: {2}\n ", demodulation_functions.SR / 1000000.0, demodulation_functions.F / 1000000.0, Convert.ToString(calculate_parametrs_bool));
-                
+                Gardner_detector ms_sync = new Gardner_detector(Demodulator.IQ_shifted.bytes,dem_functions.SymbolsPerSapmle);
+                ms_sync.BeginPhaseCalc();
+                demodulate_I_unit = new int[(int)((inData.Length / 4) / dem_functions.SymbolsPerSapmle)];
+                demodulate_Q_unit = new int[(int)((inData.Length / 4) / dem_functions.SymbolsPerSapmle)];               
+                demodulate_I_unit = ms_sync.take_I();
+                demodulate_Q_unit = ms_sync.take_Q();
+                if (dem_functions.write)
+                {
+                    short[] temp_short_I = new short[demodulate_I_unit.Length];
+                    short[] temp_short_Q = new short[demodulate_Q_unit.Length];
+                    for (int i = 0; i < demodulate_I_unit.Length; i++)
+                    {
+                        temp_short_I[i] = (short)demodulate_I_unit[i];
+                        temp_short_Q[i] = (short)demodulate_Q_unit[i];
+                    }
+                    Writter Write = new Writter(temp_short_I, temp_short_Q, "I", "Q", "sympols_for_demod");
+                    dem_functions.write = false;                    
+                }
+                    _outcom += outData.Length;
+                info = string.Format("Частота дискретизації:  {0} МГц\nЦентральна частота:  {1} МГц\nФАПЧ status: {2}\n ", dem_functions.SR / 1000000.0, dem_functions.F / 1000000.0, Convert.ToString(calculate_parametrs_bool));
                 DoneWorck(this, outMessage, outData);               
             }
             catch
@@ -191,6 +209,7 @@ namespace demodulation
                 _outcom = 0;
                 DoneWorck(this, outMessage, null);
                 outMessage = "";
+                info = "Помилка роботи модуля";
             }
             _busy = false;
         

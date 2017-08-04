@@ -95,40 +95,41 @@ namespace demodulation
         }       
     }
 
-    public class MS_syncronize
-    {
-        private short[] symbols = new short[3];
-        private float MS_error_prev = 0;
-        private float normalize_coef = 0.01f;
-        float timer = 0f;
-        public float Error_calc(short[] symbols)
-        {
-            try
-            {
-                //MessageBox.Show(string.Format("{0}", timer));
-                this.symbols = symbols;
-                float MS_error = 0;
-                MS_error = (1 - normalize_coef) * MS_error_prev + normalize_coef * ((this.symbols[2] - this.symbols[0]) * this.symbols[1]);
-                MS_error_prev = MS_error;
-                Demodulator.warningMessage = "Стан: Працює без збоїв";
-                if (this.timer >= 1000 & normalize_coef>= 0.000001f)
-                {
-                    this.timer = 0;
-                    normalize_coef_increment();
-                    //MessageBox.Show(string.Format("{0}", normalize_coef));
-                }
-                if (this.timer <= 1000) { this.timer += 0.1f; } 
-                return MS_error;                
-            }
-            catch
-            {
-                Demodulator.warningMessage = "Стан: Проблеми з тактовою синхронізацією";
-                return 0;
-            }
-        }
-        public void normalize_coef_increment()
-        {
-                normalize_coef = normalize_coef / 10;
-        }
-    }    
+    //public class MS_syncronize
+    //{
+    //    private short[] symbols = new short[3];
+    //    private float MS_error_prev = 0;
+    //    private float normalize_coef = 0.0001f;
+    //    float timer = 0f;
+    //    public float Error_calc(short[] symbols)
+    //    {
+    //        try
+    //        {
+    //            //MessageBox.Show(string.Format("{0}", timer));
+    //            this.symbols = symbols;
+    //            float MS_error = 0;
+    //            MS_error = (1 - normalize_coef) * MS_error_prev + normalize_coef * ((this.symbols[2] - this.symbols[0]) * this.symbols[1]);
+    //            MS_error_prev = MS_error;
+    //            //Demodulator.warningMessage = "Стан: Працює без збоїв";
+    //            //if (this.timer >= 1000 & normalize_coef>= 0.000001f)
+    //            //{
+    //            //    this.timer = 0;
+    //            //    normalize_coef_increment();
+    //            //    //MessageBox.Show(string.Format("{0}", normalize_coef));
+    //            //}
+    //            //if (this.timer <= 1000) { this.timer += 0.1f; } 
+    //            //MessageBox.Show(string.Format("({0} - {1}) * {2}", this.symbols[2], this.symbols[0], this.symbols[1]));
+    //            return MS_error;                
+    //        }
+    //        catch
+    //        {
+    //            Demodulator.warningMessage = "Стан: Проблеми з тактовою синхронізацією";
+    //            return 0;
+    //        }
+    //    }
+    //    public void normalize_coef_increment()
+    //    {
+    //            normalize_coef = normalize_coef / 10;
+    //    }
+    //}    
 }
