@@ -175,30 +175,26 @@ namespace demodulation
                     dem_functions.speedFrequency = dem_functions._speed_calculating() + dem_functions.MS_correct;
                     dem_functions.SymbolsPerSapmle = dem_functions._BitPerSapmle();
                 }
-                if (visual_Form != null && visual_Form.Visible)
-                {
-                    visual_Form.displayFFT(inData.Length);
-                }
-                dem_functions.configFilter();
                 dem_functions._filtering_function(ref outData);
-                Gardner_detector ms_sync = new Gardner_detector(Demodulator.IQ_shifted.bytes,dem_functions.SymbolsPerSapmle);
+                if (visual_Form != null && visual_Form.Visible) { visual_Form.displayFFT(); }
+                Gardner_detector ms_sync = new Gardner_detector(Demodulator.IQ_shifted.bytes, dem_functions.SymbolsPerSapmle);
                 ms_sync.BeginPhaseCalc();
                 demodulate_I_unit = new int[(int)((inData.Length / 4) / dem_functions.SymbolsPerSapmle)];
                 demodulate_Q_unit = new int[(int)((inData.Length / 4) / dem_functions.SymbolsPerSapmle)];               
                 demodulate_I_unit = ms_sync.take_I();
                 demodulate_Q_unit = ms_sync.take_Q();
-                if (dem_functions.write)
-                {
-                    short[] temp_short_I = new short[demodulate_I_unit.Length];
-                    short[] temp_short_Q = new short[demodulate_Q_unit.Length];
-                    for (int i = 0; i < demodulate_I_unit.Length; i++)
-                    {
-                        temp_short_I[i] = (short)demodulate_I_unit[i];
-                        temp_short_Q[i] = (short)demodulate_Q_unit[i];
-                    }
-                    Writter Write = new Writter(temp_short_I, temp_short_Q, "I", "Q", "sympols_for_demod");
-                    dem_functions.write = false;                    
-                }
+                //if (dem_functions.write)
+                //{
+                //    short[] temp_short_I = new short[demodulate_I_unit.Length];
+                //    short[] temp_short_Q = new short[demodulate_Q_unit.Length];
+                //    for (int i = 0; i < demodulate_I_unit.Length; i++)
+                //    {
+                //        temp_short_I[i] = (short)demodulate_I_unit[i];
+                //        temp_short_Q[i] = (short)demodulate_Q_unit[i];
+                //    }
+                //    Writter Write = new Writter(temp_short_I, temp_short_Q, "I", "Q", "sympols_for_demod");
+                //    dem_functions.write = false;                    
+                //}
                     _outcom += outData.Length;
                 info = string.Format("Частота дискретизації:  {0} МГц\nЦентральна частота:  {1} МГц\nФАПЧ status: {2}\n ", dem_functions.SR / 1000000.0, dem_functions.F / 1000000.0, Convert.ToString(calculate_parametrs_bool));
                 DoneWorck(this, outMessage, outData);               

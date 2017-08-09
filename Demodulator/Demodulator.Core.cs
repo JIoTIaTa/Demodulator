@@ -73,7 +73,7 @@ namespace demodulation
         public bool write = false;
         public static string warningMessage = "Стан: Працює без збоїв";
         public float MS_correct = 0.0f;
-
+        Poliphase_Filter filter = new Poliphase_Filter();
 
 
         /// <summary>Функція визначення частоти маніпуляції (символьної швидкості)</summary>
@@ -273,10 +273,11 @@ namespace demodulation
             catch { warningMessage = "Стан: Проблеми з визначенням швидкості"; }
             return realSpeedPos;     
         }
-        
+
         /// <summary>Функція фільтрації</summary>
         public void _filtering_function(ref byte[] outData)
         {
+            configFilter();
             try
             {
                 IQ_shifted.bytes = shifted;
@@ -299,28 +300,12 @@ namespace demodulation
                         else
                         {
                             _sum.i += IQ_remainded.iq[Math.Abs(a + 1)].i * filterCoefficients[i];
-                            _sum.q += IQ_remainded.iq[Math.Abs(a + 1)].q * filterCoefficients[i];                            
+                            _sum.q += IQ_remainded.iq[Math.Abs(a + 1)].q * filterCoefficients[i];
                         }
                     }
                     IQ_filtered.iq[j].i = (short)(_sum.i);
-                    IQ_filtered.iq[j].q = (short)(_sum.q);                    
+                    IQ_filtered.iq[j].q = (short)(_sum.q);
                 }
-                //////////////////////////////////////////////////////////////////////////
-                //if (write)
-                //{
-                //    short[] temp_short_I = new short[IQ_shifted.bytes.Length / 4];
-                //    short[] temp_short_Q = new short[IQ_shifted.bytes.Length / 4];
-                //    for (int i = 0; i < IQ_shifted.bytes.Length / 4; i++)
-                //    {
-                //        temp_short_I[i] = IQ_shifted.iq[i].i;
-                //        temp_short_Q[i] = IQ_shifted.iq[i].q;
-                //    }
-                //    Writter Write = new Writter(temp_short_I, temp_short_Q, "I", "Q", "after_shifting");
-                //    //Writter Write1 = new Writter(filterCoefficients,"coef", "filter_coef");
-                //    write = false;
-                //}                
-                ////////////////////////////////////////////////////////////////////////
-
                 for (int j = 0; j < filterOrder; j++)
                 {
                     IQ_remainded.iq[j].i = IQ_shifted.iq[IQ_lenght - j - 1].i;
@@ -331,6 +316,36 @@ namespace demodulation
             }
             catch { warningMessage = "Стан: Проблеми з фільтрацією"; }
         }
+
+        //public void _filtering_function(ref byte[] outData)
+        //{
+        //    try
+        //    {
+        //        IQ_shifted.bytes = shifted;
+        //        FilterBandwich = (float)(speedFrequency * 2 / 0.85);
+        //        filter.configFilter(IQ_shifted.bytes, SR, FilterBandwich, filterOrder, FIR_WindowType, FIR_beta);
+        //        Array.Resize(ref filtered, filter.IQ_outData_length * 4);    
+        //        filtered = filter.filtering();
+        //        //MessageBox.Show(string.Format("{0}", IQ_filtered.bytes.Length));
+        //        IQ_filtered.bytes = filtered;
+        //        if (write)
+        //        {
+        //            short[] temp_short_I = new short[IQ_filtered.bytes.Length / 4];
+        //            short[] temp_short_Q = new short[IQ_filtered.bytes.Length / 4];                    
+        //            for (int i = 0; i < IQ_filtered.bytes.Length / 4; i++)
+        //            {
+        //                temp_short_I[i] = (short)IQ_filtered.iq[i].i;
+        //                temp_short_Q[i] = (short)IQ_filtered.iq[i].q;
+        //            }
+        //            Writter Write = new Writter(temp_short_I, temp_short_Q, "I", "Q", "after_polifiltering");
+        //            write = false;
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        warningMessage = "Стан: Проблеми з фільтрацією";
+        //    }
+        //}
 
         /// <summary>Функція визначення кількості  бітів на символ</summary>
         public float _BitPerSapmle()

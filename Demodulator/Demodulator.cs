@@ -41,21 +41,22 @@ namespace demodulation
         [FieldOffset(0)]
         public iq[] iq;
     }
+    enum TPassTypeName { LPF, HPF, BPF, NOTCH };
+    public enum TWindowType
+    {
+        NONE, KAISER, SINC, HANNING, HAMMING, BLACKMAN,
+        FLATTOP, BLACKMAN_HARRIS, BLACKMAN_NUTTALL, NUTTALL,
+        KAISER_BESSEL, TRAPEZOID, GAUSS, SINE, TEST
+    };
+    public enum FFT_data_display
+    {
+        SHIFTING, EXPONENT, DETECTED, FILTERING, INPUT
+    };
     public partial class Demodulator
     {
-        enum TPassTypeName { LPF, HPF, BPF, NOTCH };
-        public enum TWindowType
-        {
-            NONE, KAISER, SINC, HANNING, HAMMING, BLACKMAN,
-            FLATTOP, BLACKMAN_HARRIS, BLACKMAN_NUTTALL, NUTTALL,
-            KAISER_BESSEL, TRAPEZOID, GAUSS, SINE, TEST
-        };
-        public enum FFT_data_display
-        {
-            SHIFTING, EXPONENT, DETECTED, FILTERING, INPUT
-        };
-        [DllImport("..\\..\\data\\FIR.dll", EntryPoint = "BasicFIR", CallingConvention = CallingConvention.StdCall)]
-        static extern void _FIR(ref float FIRCoeff, int numTaps, TPassTypeName PassType, float OmegaC, float BW, TWindowType WindowTyte, float WinBeta);
+       
+        //[DllImport("..\\..\\data\\FIR.dll", EntryPoint = "BasicFIR", CallingConvention = CallingConvention.StdCall)]
+        //static extern void _FIR(ref float FIRCoeff, int numTaps, TPassTypeName PassType, float OmegaC, float BW, TWindowType WindowTyte, float WinBeta);
         /// <summary>Функція ініціалізації буферів, необхідних для роботи модуля, з вказанням їх довжини</summary>
         /// <param name="Length">Довжина масивів які необхідно виділити в байтах</param>
         public void demodulator_init(int Length)
@@ -81,14 +82,16 @@ namespace demodulation
             //MessageBox.Show(String.Format("bufferDetectData = {0}\nbufferExpData = {1}\nshifting_data = {2}\nfiltering_data = {3}\ntempI_buffer = {4}\ntempQ_buffer = {5}\nCount = {6}", bufferDetectData.Length, bufferExpData.Length, shifting_data.Length, filtering_data.Length, tempI_buffer.Length, tempQ_buffer.Length, Count));
         }
         /// <summary>Функція конфігурації параметрів фільтрації</summary>
-        public void configFilter()
+        private void configFilter()
         {
             try
             {
+                Filter_Math FIR = new Filter_Math();
                 FilterBandwich = (float)(speedFrequency * 2 / 0.85);
                 BW = (float)(FilterBandwich / SR);
                 filterCoefficients = new float[filterOrder];
-                _FIR(ref filterCoefficients[0], filterOrder, TPassTypeName.LPF, BW, 0.0f, FIR_WindowType, FIR_beta);
+                //_FIR(ref filterCoefficients[0], filterOrder, TPassTypeName.LPF, BW, 0.0f, FIR_WindowType, FIR_beta);
+                filterCoefficients = FIR.BasicFIR(filterOrder, TPassTypeName.LPF, BW, 0, FIR_WindowType, FIR_beta, 0.0f);
                 warningMessage = "Стан: Працює без збоїв";
             }
             catch { warningMessage = "Стан: Проблеми з налаштуванням фільтра"; }

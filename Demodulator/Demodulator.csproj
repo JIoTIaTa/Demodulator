@@ -119,7 +119,9 @@
       <DependentUpon>Demodulator_DouleClick_Form.cs</DependentUpon>
     </Compile>
     <Compile Include="Demodulator_SPARKInterface.cs" />
+    <Compile Include="Filter.Math.cs" />
     <Compile Include="Gardner_detector.cs" />
+    <Compile Include="Poliphase_Filter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

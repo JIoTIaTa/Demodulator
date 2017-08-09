@@ -63,11 +63,11 @@ namespace demodulation
             exponentiationLevel.Value = dem_functions.modulation_multiplicity;
             exponentiationLevel.Increment = exponentiationLevel.Value;
             if (Quadrature_AM_demodulatorSPARKInterface.calculate_parametrs_bool) { calculate_parametrs.Checked = true; } else { calculate_parametrs.Checked = false; }
-            if (dem_functions.display == Demodulator.FFT_data_display.INPUT) { FFT_data_display.SelectedIndex = 0; }
-            if (dem_functions.display == Demodulator.FFT_data_display.EXPONENT) { FFT_data_display.SelectedIndex = 1; }
-            if (dem_functions.display == Demodulator.FFT_data_display.DETECTED) { FFT_data_display.SelectedIndex = 2; }
-            if (dem_functions.display == Demodulator.FFT_data_display.SHIFTING) { FFT_data_display.SelectedIndex = 3; }
-            if (dem_functions.display == Demodulator.FFT_data_display.FILTERING) { FFT_data_display.SelectedIndex = 4; }
+            if (dem_functions.display == demodulation.FFT_data_display.INPUT) { FFT_data_display.SelectedIndex = 0; }
+            if (dem_functions.display == demodulation.FFT_data_display.EXPONENT) { FFT_data_display.SelectedIndex = 1; }
+            if (dem_functions.display == demodulation.FFT_data_display.DETECTED) { FFT_data_display.SelectedIndex = 2; }
+            if (dem_functions.display == demodulation.FFT_data_display.SHIFTING) { FFT_data_display.SelectedIndex = 3; }
+            if (dem_functions.display == demodulation.FFT_data_display.FILTERING) { FFT_data_display.SelectedIndex = 4; }
         }
 
         private void refreshButton_Click(object sender, EventArgs e)
@@ -90,7 +90,7 @@ namespace demodulation
         {
             try
             {
-                if (dem_functions.display == Demodulator.FFT_data_display.EXPONENT) { exponentiationLevel.Enabled = true; } else { exponentiationLevel.Enabled = false; }
+                if (dem_functions.display == demodulation.FFT_data_display.EXPONENT) { exponentiationLevel.Enabled = true; } else { exponentiationLevel.Enabled = false; }
                 toolStripProgressBar1.Value = averingRepeat * 100 / dem_functions.fftAveragingValue;
                 toolStripStatusLabel.Text = string.Format("{0} %", toolStripProgressBar1.Value);
                 toolStripStatusLabel1.Text = Demodulator.warningMessage;                
@@ -128,11 +128,11 @@ namespace demodulation
 
         private void FFT_data_display_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (FFT_data_display.SelectedIndex == 0) { dem_functions.display = Demodulator.FFT_data_display.INPUT; }
-            if (FFT_data_display.SelectedIndex == 1) { dem_functions.display = Demodulator.FFT_data_display.EXPONENT; }
-            if (FFT_data_display.SelectedIndex == 2) { dem_functions.display = Demodulator.FFT_data_display.DETECTED; }
-            if (FFT_data_display.SelectedIndex == 3) { dem_functions.display = Demodulator.FFT_data_display.SHIFTING; }
-            if (FFT_data_display.SelectedIndex == 4) { dem_functions.display = Demodulator.FFT_data_display.FILTERING; }
+            if (FFT_data_display.SelectedIndex == 0) { dem_functions.display = demodulation.FFT_data_display.INPUT; }
+            if (FFT_data_display.SelectedIndex == 1) { dem_functions.display = demodulation.FFT_data_display.EXPONENT; }
+            if (FFT_data_display.SelectedIndex == 2) { dem_functions.display = demodulation.FFT_data_display.DETECTED; }
+            if (FFT_data_display.SelectedIndex == 3) { dem_functions.display = demodulation.FFT_data_display.SHIFTING; }
+            if (FFT_data_display.SelectedIndex == 4) { dem_functions.display = demodulation.FFT_data_display.FILTERING; }
         }
 
         private void exponentiationLevel_ValueChanged(object sender, EventArgs e)
@@ -149,16 +149,29 @@ namespace demodulation
             Array.Resize(ref xAxes, length);
             Array.Clear(avering_buffer, 0, length);
         }
-        public void displayFFT(int length)
-        {
-            inData_length = length;
-            length = length / 4;
+        public void displayFFT()
+        {            
             try
             {
+                switch (dem_functions.display)
+                {
+                    case demodulation.FFT_data_display.SHIFTING: inData_length = Demodulator.IQ_shifted.bytes.Length;
+                        break;
+                    case demodulation.FFT_data_display.EXPONENT: inData_length = Demodulator.IQ_elevated.bytes.Length;
+                        break;
+                    case demodulation.FFT_data_display.DETECTED: inData_length = Demodulator.IQ_detected.bytes.Length;
+                        break;
+                    case demodulation.FFT_data_display.FILTERING: inData_length = Demodulator.IQ_filtered.bytes.Length;
+                        break;
+                    case demodulation.FFT_data_display.INPUT: inData_length = Demodulator.IQ_inData.bytes.Length;
+                        break;
+                    default:
+                        break;
+                }
                 visualData = new VisuaslFactory();
-                visualData.CreateVisual(ref visual_data, dem_functions.display, length, dem_functions.maxFFT);
+                visualData.CreateVisual(ref visual_data, dem_functions.display, dem_functions.maxFFT);
                 visual_data = Fft.fft(visual_data);
-                if (dem_functions.display != Demodulator.FFT_data_display.DETECTED) { visual_data = Fft.nfft(visual_data); } else { }
+                if (dem_functions.display != demodulation.FFT_data_display.DETECTED) { visual_data = Fft.nfft(visual_data); } else { }
                 for (int i = 0; i < dem_functions.maxFFT; i++)
                 {
                     avering_buffer[i] = (avering_buffer[i] + visual_data[i].Magnitude);

@@ -16,3 +16,9 @@ D:\Repositories\Demodulator\Quadrature_AM_detector\obj\Debug\demodulation.Demodu
 D:\Repositories\Demodulator\Quadrature_AM_detector\obj\Debug\Demodulator.csproj.GenerateResource.Cache
 D:\Repositories\Demodulator\Quadrature_AM_detector\obj\Debug\Quadrature_AM_detector.dll
 D:\Repositories\Demodulator\Quadrature_AM_detector\obj\Debug\Quadrature_AM_detector.pdb
+D:\Repositories\Demodulator\Demodulator\obj\Debug\demodulation.Demodulator_DoubleClick_Form.resources
+D:\Repositories\Demodulator\Demodulator\obj\Debug\Quadrature_AM_detector.Properties.Resources.resources
+D:\Repositories\Demodulator\Demodulator\obj\Debug\demodulation.DemodulatorVisual_Form.resources
+D:\Repositories\Demodulator\Demodulator\obj\Debug\Demodulator.csproj.GenerateResource.Cache
+D:\Repositories\Demodulator\Demodulator\obj\Debug\Quadrature_AM_detector.dll
+D:\Repositories\Demodulator\Demodulator\obj\Debug\Quadrature_AM_detector.pdb
