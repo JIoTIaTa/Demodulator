@@ -8,8 +8,8 @@
     <ProjectGuid>{83C1D5E3-4CA6-443E-9A40-E29539B6FB22}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Quadrature_AM_detector</RootNamespace>
-    <AssemblyName>Quadrature_AM_detector</AssemblyName>
+    <RootNamespace>demodulation</RootNamespace>
+    <AssemblyName>Demodulator</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

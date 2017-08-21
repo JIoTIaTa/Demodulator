@@ -158,6 +158,7 @@ namespace demodulation
             Array.Resize(ref outData, inData.Length);
             try
             {
+                MessageBox.Show(string.Format("inData = {0}", inData.Length));
                 if (inDataLength_change.new_value != inData.Length)
                 {
                     inDataLength_change.new_value = inDataLength_change.old_value;
@@ -172,17 +173,21 @@ namespace demodulation
                 if (calculate_parametrs_bool)
                 {
                     dem_functions._detection();
-                    dem_functions.speedFrequency = dem_functions._speed_calculating() + dem_functions.MS_correct;
-                    dem_functions.SymbolsPerSapmle = dem_functions._BitPerSapmle();
+                    //dem_functions.speedFrequency = dem_functions._speed_calculating() + dem_functions.MS_correct;
+                    dem_functions.speedFrequency = dem_functions._speed_calculating();
                 }
                 dem_functions._filtering_function(ref outData);
-                if (visual_Form != null && visual_Form.Visible) { visual_Form.displayFFT(); }
-                Gardner_detector ms_sync = new Gardner_detector(Demodulator.IQ_shifted.bytes, dem_functions.SymbolsPerSapmle);
-                ms_sync.BeginPhaseCalc();
-                demodulate_I_unit = new int[(int)((inData.Length / 4) / dem_functions.SymbolsPerSapmle)];
-                demodulate_Q_unit = new int[(int)((inData.Length / 4) / dem_functions.SymbolsPerSapmle)];               
-                demodulate_I_unit = ms_sync.take_I();
-                demodulate_Q_unit = ms_sync.take_Q();
+                if (calculate_parametrs_bool)
+                {
+                    dem_functions.SymbolsPerSapmle = dem_functions._BitPerSapmle();
+                }
+                    if (visual_Form != null && visual_Form.Visible) { visual_Form.displayFFT(); }
+                //Gardner_detector ms_sync = new Gardner_detector(Demodulator.IQ_shifted.bytes, dem_functions.SymbolsPerSapmle);
+                //ms_sync.BeginPhaseCalc();
+                //demodulate_I_unit = new int[(int)((inData.Length / 4) / dem_functions.SymbolsPerSapmle)];
+                //demodulate_Q_unit = new int[(int)((inData.Length / 4) / dem_functions.SymbolsPerSapmle)];               
+                //demodulate_I_unit = ms_sync.take_I();
+                //demodulate_Q_unit = ms_sync.take_Q();
                 //if (dem_functions.write)
                 //{
                 //    short[] temp_short_I = new short[demodulate_I_unit.Length];

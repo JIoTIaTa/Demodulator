@@ -224,12 +224,13 @@
             this.deltaMS_Q_label = new System.Windows.Forms.Label();
             this.writter_checkBox = new System.Windows.Forms.CheckBox();
             this.deltaMS_label = new System.Windows.Forms.Label();
-            this.SR_label = new System.Windows.Forms.Label();
+            this.inputSR_label = new System.Windows.Forms.Label();
             this.filterBW_textBox = new System.Windows.Forms.TextBox();
             this.filterBW_label = new System.Windows.Forms.Label();
             this.MScorrect_textBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.afterFilterSR_label = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.MitovScope)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_fftAveragingValue)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -753,7 +754,7 @@
             this.deltaF_label.AutoSize = true;
             this.deltaF_label.BackColor = System.Drawing.Color.GhostWhite;
             this.deltaF_label.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.deltaF_label.Location = new System.Drawing.Point(313, 439);
+            this.deltaF_label.Location = new System.Drawing.Point(499, 396);
             this.deltaF_label.Name = "deltaF_label";
             this.deltaF_label.Size = new System.Drawing.Size(71, 15);
             this.deltaF_label.TabIndex = 109;
@@ -839,7 +840,7 @@
             this.BPS_label.AutoSize = true;
             this.BPS_label.BackColor = System.Drawing.Color.GhostWhite;
             this.BPS_label.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.BPS_label.Location = new System.Drawing.Point(313, 462);
+            this.BPS_label.Location = new System.Drawing.Point(313, 463);
             this.BPS_label.Name = "BPS_label";
             this.BPS_label.Size = new System.Drawing.Size(82, 15);
             this.BPS_label.TabIndex = 115;
@@ -891,16 +892,16 @@
             this.deltaMS_label.TabIndex = 119;
             this.deltaMS_label.Text = "Відхилення швидкості:";
             // 
-            // SR_label
+            // inputSR_label
             // 
-            this.SR_label.AutoSize = true;
-            this.SR_label.BackColor = System.Drawing.Color.GhostWhite;
-            this.SR_label.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.SR_label.Location = new System.Drawing.Point(313, 417);
-            this.SR_label.Name = "SR_label";
-            this.SR_label.Size = new System.Drawing.Size(130, 15);
-            this.SR_label.TabIndex = 120;
-            this.SR_label.Text = "Частота дискретизації: ";
+            this.inputSR_label.AutoSize = true;
+            this.inputSR_label.BackColor = System.Drawing.Color.GhostWhite;
+            this.inputSR_label.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.inputSR_label.Location = new System.Drawing.Point(313, 418);
+            this.inputSR_label.Name = "inputSR_label";
+            this.inputSR_label.Size = new System.Drawing.Size(173, 15);
+            this.inputSR_label.TabIndex = 120;
+            this.inputSR_label.Text = "Частота дискретизації на вході: ";
             // 
             // filterBW_textBox
             // 
@@ -950,17 +951,29 @@
             this.label5.TabIndex = 125;
             this.label5.Text = "Гц";
             // 
+            // filterSR_label
+            // 
+            this.afterFilterSR_label.AutoSize = true;
+            this.afterFilterSR_label.BackColor = System.Drawing.Color.GhostWhite;
+            this.afterFilterSR_label.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.afterFilterSR_label.Location = new System.Drawing.Point(313, 441);
+            this.afterFilterSR_label.Name = "filterSR_label";
+            this.afterFilterSR_label.Size = new System.Drawing.Size(211, 15);
+            this.afterFilterSR_label.TabIndex = 126;
+            this.afterFilterSR_label.Text = "Частота дискретизації після децимації: ";
+            // 
             // DemodulatorVisual_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(732, 577);
+            this.Controls.Add(this.afterFilterSR_label);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.MScorrect_textBox);
             this.Controls.Add(this.filterBW_label);
             this.Controls.Add(this.filterBW_textBox);
-            this.Controls.Add(this.SR_label);
+            this.Controls.Add(this.inputSR_label);
             this.Controls.Add(this.deltaMS_label);
             this.Controls.Add(this.writter_checkBox);
             this.Controls.Add(this.deltaMS_Q_label);
@@ -1026,11 +1039,12 @@
         private System.Windows.Forms.Label deltaMS_Q_label;
         private System.Windows.Forms.CheckBox writter_checkBox;
         private System.Windows.Forms.Label deltaMS_label;
-        private System.Windows.Forms.Label SR_label;
+        private System.Windows.Forms.Label inputSR_label;
         private System.Windows.Forms.TextBox filterBW_textBox;
         private System.Windows.Forms.Label filterBW_label;
         private System.Windows.Forms.TextBox MScorrect_textBox;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label afterFilterSR_label;
     }
 }

@@ -77,8 +77,12 @@ namespace demodulation
                     cos_1024[i] = (float)Math.Cos(i * Math.PI * 2 / 1024);
                 }
                 warningMessage = "Стан: Працює без збоїв";
-            } catch { warningMessage = "Стан: Проблеми з виділенням пам'яті під масиви"; }
-           
+            }
+            catch (Exception exception)
+            {
+                warningMessage = string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
+            }
+
             //MessageBox.Show(String.Format("bufferDetectData = {0}\nbufferExpData = {1}\nshifting_data = {2}\nfiltering_data = {3}\ntempI_buffer = {4}\ntempQ_buffer = {5}\nCount = {6}", bufferDetectData.Length, bufferExpData.Length, shifting_data.Length, filtering_data.Length, tempI_buffer.Length, tempQ_buffer.Length, Count));
         }
         /// <summary>Функція конфігурації параметрів фільтрації</summary>

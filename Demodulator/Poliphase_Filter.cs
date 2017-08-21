@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Forms;
 
 namespace demodulation
 {
     class Poliphase_Filter
     {
+        double calcDI_coef = 0.0d;
         private int IQ_inData_length;
         private int IQ_interpolated_length;
         public int IQ_outData_length;
@@ -15,11 +17,15 @@ namespace demodulation
         private double Bandwich = 0.0d;
         private int decimation_coef;
         private int interpolation_coef;
-        private sIQData IQ_inData, IQ_outData, IQ_remainded, IQ_interpolated;
+        public sIQData IQ_inData, IQ_outData, IQ_remainded, IQ_interpolated;
         private float[] filterCoefficients;
-        private TWindowType FIR_WindowType = TWindowType.SINC; // тип вікна фільтра
+        private TWindowType FIR_WindowType = TWindowType.GAUSS; // тип вікна фільтра
         private float FIR_beta = 3.2f; // коефіціент БЕТА фільтра
-        int filterOrder = 2;
+        int filterOrder = 4;
+        public int get_OutDataLength { get { return IQ_outData_length; } }
+        public double get_newSampleRate {get { return SampleRate * calcDI_coef; } }
+        //public double get_newSampleRate { get { return SampleRate * interpolation_coef; } }
+
 
         public Poliphase_Filter()
         {
@@ -40,61 +46,103 @@ namespace demodulation
             IQ_remainded.bytes = new byte[filterOrder * 4];
             filterCoefficients = new float[filterOrder];
         }
-        public void configFilter(byte[] inData, double SampleRate, double Bandwich, int filterOrder, TWindowType WindowType, float Beta_coef)
+        public void configFilter(byte[] inData, double SampleRate, double Bandwich,  TWindowType WindowType, float Beta_coef)
         {
-            Filter_Math FIR = new Filter_Math();
-            IQ_inData_length = inData.Length / 4;
-            IQ_inData.bytes = inData;
-            this.SampleRate = SampleRate;
-            this.Bandwich = Bandwich;
-            FIR_WindowType = WindowType;
-            FIR_beta = Beta_coef;
-            this.filterOrder = filterOrder;
-            float BW = (float)(Bandwich / SampleRate);
-            calc_DI_coef();
-            Array.Resize(ref filterCoefficients, this.filterOrder);
-            filterCoefficients = FIR.BasicFIR(this.filterOrder, TPassTypeName.LPF, BW, 0, FIR_WindowType, FIR_beta, 0.0f);
+            try
+            {
+                Filter_Math FIR = new Filter_Math();
+                FIR_WindowType = WindowType;
+                IQ_inData_length = inData.Length / 4;
+                IQ_inData.bytes = inData;
+                this.SampleRate = SampleRate;
+                this.Bandwich = Bandwich;
+                FIR_WindowType = WindowType;
+                FIR_beta = Beta_coef;
+                float BW = (float)(Bandwich / SampleRate);
+                calc_DI_coef();
+                ///////////////////////////////////
+                BW = (float)(Bandwich / (SampleRate * interpolation_coef));
+                ///////////////////////////////////
+                Array.Resize(ref filterCoefficients, this.filterOrder);
+                Array.Resize(ref IQ_remainded.bytes, this.filterOrder * 4);
+                filterCoefficients = FIR.BasicFIR(this.filterOrder, TPassTypeName.LPF, BW, 0, FIR_WindowType, FIR_beta, 0.0f);
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message));
+            }
         }
         private void calc_DI_coef()
         {
-            double calcDI_coef = 0.0d;
-            double realDI_coef = Bandwich / SampleRate;
-            double decimation_coef_d = SampleRate;
-            while (decimation_coef_d > 10) { decimation_coef_d /= 10; }
-            decimation_coef = (int)Math.Round(decimation_coef_d);
-            decimation_coef *= 2;
-            interpolation_coef = decimation_coef - 1;
-            do
+            try
             {
-                calcDI_coef = (interpolation_coef * 1.0d) / (decimation_coef * 1.0d);
-                if (interpolation_coef != 0) { interpolation_coef--; } else { decimation_coef *= 2; interpolation_coef = decimation_coef - 1; }
-            } while (Math.Abs(realDI_coef - calcDI_coef) >= 0.01);
-            IQ_interpolated_length = IQ_inData_length * interpolation_coef;
-            IQ_outData_length = IQ_interpolated_length / decimation_coef;
-            filterOrder *= interpolation_coef;
+                double realDI_coef = Bandwich / SampleRate;
+                double decimation_coef_d = SampleRate;
+                while (decimation_coef_d > 10) { decimation_coef_d /= 10; }
+                decimation_coef = (int)Math.Round(decimation_coef_d);
+                decimation_coef *= 2;
+                interpolation_coef = decimation_coef - 1;
+                do
+                {
+                    calcDI_coef = (interpolation_coef * 1.0d) / (decimation_coef * 1.0d);
+                    if (Math.Abs(realDI_coef - calcDI_coef) >= 0.01)
+                    {
+                        if (interpolation_coef != 0) { interpolation_coef--; } else { decimation_coef *= 2; interpolation_coef = decimation_coef - 1; }
+                    }
+                } while (Math.Abs(realDI_coef - calcDI_coef) >= 0.01);
+                IQ_interpolated_length = IQ_inData_length * interpolation_coef;
+                IQ_outData_length = IQ_interpolated_length / decimation_coef;
+                if(interpolation_coef > 0 & interpolation_coef < 5) { filterOrder = 100; }
+                if (interpolation_coef > 5 & interpolation_coef < 10) { filterOrder = 50; }
+                if (interpolation_coef > 10 & interpolation_coef < 20) { filterOrder = 20; }
+                if (interpolation_coef > 20 & interpolation_coef < 50) { filterOrder = 5; }
+                if (interpolation_coef > 50 & interpolation_coef < 100) { filterOrder = 2; }
+                if (interpolation_coef > 100) { filterOrder = 1; }
+                filterOrder *= interpolation_coef;
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message));
+            }
         }
 
 
         private void interpolation_buffers()
         {
-            Array.Resize(ref IQ_interpolated.bytes, IQ_interpolated_length * 4);
-            Array.Clear(IQ_interpolated.bytes, 0, IQ_interpolated.bytes.Length);
+            try
+            { 
+                Array.Resize(ref IQ_interpolated.bytes, IQ_interpolated_length * 4);
+                Array.Clear(IQ_interpolated.bytes, 0, IQ_interpolated.bytes.Length);
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message));
+            }
         }
         private void decimation_buffers()
         {
-            Array.Resize(ref IQ_outData.bytes, IQ_outData_length * 4);
-            Array.Clear(IQ_outData.bytes, 0, IQ_outData.bytes.Length);
+            try
+            {
+                Array.Resize(ref IQ_outData.bytes, IQ_outData_length * 4);
+                Array.Clear(IQ_outData.bytes, 0, IQ_outData.bytes.Length);
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message));
+            }
         }
 
 
         public byte[] filtering()
         {
             int size = 0;
-            interpolation_buffers();
             try
             {
                 ///////////////////////////////////// Фаза інтерполяції /////////////////////////////////////
+                interpolation_buffers();
                 size = IQ_interpolated_length;
+                //MessageBox.Show(string.Format("IQ_inData.bytes.Length = {0}\nIQ_remainded.bytes.Length = {1}\nfilterOrder = {2}\nIQ_interpolated_length = {3}\ninterpolation_coef = {4}\nIQ_interpolated.bytes.length = {5}\n size = {6}", IQ_inData.bytes.Length, IQ_remainded.bytes.Length, filterOrder, IQ_interpolated_length, interpolation_coef, IQ_interpolated.bytes.Length, size));
+                //MessageBox.Show(string.Format("interpolation_coef = {0}\ndecimation_coef = {1}\nfilterOrder = {2}", interpolation_coef, decimation_coef, filterOrder));
                 int itteration = 0;
                 int filter_coef_shift = 0;
                 int inData_coef_shift = 0;
@@ -130,9 +178,17 @@ namespace demodulation
                     IQ_remainded.iq[j].i = IQ_interpolated.iq[IQ_interpolated_length - j - 1].i;
                     IQ_remainded.iq[j].q = IQ_interpolated.iq[IQ_interpolated_length - j - 1].q;
                 }
-                ///////////////////////////////////// Фаза децимації /////////////////////////////////////
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(string.Format("INTERPOLATION ERROR :{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message));
+            }
+            ///////////////////////////////////// Фаза децимації /////////////////////////////////////
+            try
+            { 
                 decimation_buffers();
                 size = IQ_outData_length;
+                //MessageBox.Show(string.Format("IQ_interpolated.bytes.length = {0}\nIQ_outData_length = {1}\nfilterOrder = {2}\nIQ_remainded.bytes.Length = {3}\ndecimation_coef = {4}\nIQ_outData.bytes.Length = {5}\n size = {6}", IQ_interpolated.bytes.Length, IQ_outData_length, filterOrder, IQ_remainded.bytes.Length, decimation_coef, IQ_outData.bytes.Length, size));
                 for (int j = 0; j < size; j++)
                 {
                     iqf _sum;
@@ -155,15 +211,20 @@ namespace demodulation
                     IQ_outData.iq[j].i = (short)(_sum.i);
                     IQ_outData.iq[j].q = (short)(_sum.q);
                 }
-                Array.Resize(ref IQ_remainded.bytes, (filterOrder / interpolation_coef) - 1);
+                //MessageBox.Show("Децимація в нормі");
+                Array.Resize(ref IQ_remainded.bytes, filterOrder * 4);
                 for (int j = 0; j < filterOrder; j++)
                 {
                     IQ_remainded.iq[j].i = IQ_outData.iq[IQ_outData_length - j - 1].i;
                     IQ_remainded.iq[j].q = IQ_outData.iq[IQ_outData_length - j - 1].q;
                 }
             }
-            catch (Exception) { }
+            catch (Exception exception)
+            {
+                MessageBox.Show(string.Format("DECIMATION ERROR :{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message));
+            }
             return IQ_outData.bytes;
+            //return IQ_interpolated.bytes;
         }
     }
 }

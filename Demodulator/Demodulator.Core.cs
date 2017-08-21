@@ -31,6 +31,7 @@ namespace demodulation
     public partial class Demodulator
     {        
         public  double SR = 0.0d; // частота дискретизації
+        public double SR_after_filter; // частота дискретизації після фільтрації
         public static sIQData IQ_inData, IQ_outData, IQ_detected, IQ_elevated, IQ_shifted, IQ_remainded, IQ_filtered;
         public long F = 0; // центральная частота
         public bool sendComand = false;
@@ -89,11 +90,10 @@ namespace demodulation
                     IQ_detected.iq[i].i = (short)tempI;
                     IQ_detected.iq[i].q = (short)tempQ;
                 }
-                warningMessage = "Стан: Працює без збоїв";                
             }
-            catch 
+            catch (Exception exception)
             {
-                warningMessage = "Стан: Проблеми з детектуванням";
+                warningMessage = string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
             }
             return IQ_detected;
         }
@@ -153,11 +153,10 @@ namespace demodulation
                         IQ_elevated.iq[i].q = (short)((2 * tempI_buffer[i] * tempQ_buffer[i]) / 100);
                     }
                 }
-                warningMessage = "Стан: Працює без збоїв";                
             }
-            catch 
+            catch (Exception exception)
             {
-                warningMessage = "Стан: Проблеми з піднесенням до степеня";                
+                warningMessage = string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
             }
             return IQ_elevated;
         }
@@ -180,9 +179,11 @@ namespace demodulation
                     IQ_shifted.iq[i].i = (short)(IQ_inData.iq[i].i * cos_1024[t] + IQ_inData.iq[i].q * sin_1024[t]);
                     IQ_shifted.iq[i].q = (short)(IQ_inData.iq[i].q * cos_1024[t] - IQ_inData.iq[i].i * sin_1024[t]);
                 }
-                warningMessage = "Стан: Працює без збоїв";
             }
-            catch { warningMessage = "Стан: Проблеми зі зносом"; }
+            catch (Exception exception)
+            {
+                warningMessage = string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
+            }
             return IQ_shifted;
         }       
         
@@ -271,81 +272,85 @@ namespace demodulation
                     warningMessage = "Стан: Працює без збоїв";
             }
             catch { warningMessage = "Стан: Проблеми з визначенням швидкості"; }
-            return realSpeedPos;     
+            return realSpeedPos;
         }
 
         /// <summary>Функція фільтрації</summary>
-        public void _filtering_function(ref byte[] outData)
-        {
-            configFilter();
-            try
-            {
-                IQ_shifted.bytes = shifted;
-                IQ_filtered.bytes = filtered;
-                IQ_remainded.bytes = remainded;
-                int size = IQ_lenght;
-                for (int j = 0; j < size; j++)
-                {
-                    iqf _sum;
-                    _sum.i = 0;
-                    _sum.q = 0;
-                    for (int i = 0; i < filterOrder; i++)
-                    {
-                        int a = j - i;
-                        if (a >= 0)
-                        {
-                            _sum.i += IQ_shifted.iq[a].i * filterCoefficients[i];
-                            _sum.q += IQ_shifted.iq[a].q * filterCoefficients[i];
-                        }
-                        else
-                        {
-                            _sum.i += IQ_remainded.iq[Math.Abs(a + 1)].i * filterCoefficients[i];
-                            _sum.q += IQ_remainded.iq[Math.Abs(a + 1)].q * filterCoefficients[i];
-                        }
-                    }
-                    IQ_filtered.iq[j].i = (short)(_sum.i);
-                    IQ_filtered.iq[j].q = (short)(_sum.q);
-                }
-                for (int j = 0; j < filterOrder; j++)
-                {
-                    IQ_remainded.iq[j].i = IQ_shifted.iq[IQ_lenght - j - 1].i;
-                    IQ_remainded.iq[j].q = IQ_shifted.iq[IQ_lenght - j - 1].q;
-                }
-                Buffer.BlockCopy(IQ_filtered.bytes, 0, outData, 0, filtered.Length);
-                warningMessage = "Стан: Працює без збоїв";
-            }
-            catch { warningMessage = "Стан: Проблеми з фільтрацією"; }
-        }
-
         //public void _filtering_function(ref byte[] outData)
         //{
+        //    configFilter();
         //    try
         //    {
         //        IQ_shifted.bytes = shifted;
-        //        FilterBandwich = (float)(speedFrequency * 2 / 0.85);
-        //        filter.configFilter(IQ_shifted.bytes, SR, FilterBandwich, filterOrder, FIR_WindowType, FIR_beta);
-        //        Array.Resize(ref filtered, filter.IQ_outData_length * 4);    
-        //        filtered = filter.filtering();
-        //        //MessageBox.Show(string.Format("{0}", IQ_filtered.bytes.Length));
         //        IQ_filtered.bytes = filtered;
-        //        if (write)
+        //        IQ_remainded.bytes = remainded;
+        //        int size = IQ_lenght;
+        //        for (int j = 0; j < size; j++)
         //        {
-        //            short[] temp_short_I = new short[IQ_filtered.bytes.Length / 4];
-        //            short[] temp_short_Q = new short[IQ_filtered.bytes.Length / 4];                    
-        //            for (int i = 0; i < IQ_filtered.bytes.Length / 4; i++)
+        //            iqf _sum;
+        //            _sum.i = 0;
+        //            _sum.q = 0;
+        //            for (int i = 0; i < filterOrder; i++)
         //            {
-        //                temp_short_I[i] = (short)IQ_filtered.iq[i].i;
-        //                temp_short_Q[i] = (short)IQ_filtered.iq[i].q;
+        //                int a = j - i;
+        //                if (a >= 0)
+        //                {
+        //                    _sum.i += IQ_shifted.iq[a].i * filterCoefficients[i];
+        //                    _sum.q += IQ_shifted.iq[a].q * filterCoefficients[i];
+        //                }
+        //                else
+        //                {
+        //                    _sum.i += IQ_remainded.iq[Math.Abs(a + 1)].i * filterCoefficients[i];
+        //                    _sum.q += IQ_remainded.iq[Math.Abs(a + 1)].q * filterCoefficients[i];
+        //                }
         //            }
-        //            Writter Write = new Writter(temp_short_I, temp_short_Q, "I", "Q", "after_polifiltering");
-        //            write = false;
+        //            IQ_filtered.iq[j].i = (short)(_sum.i);
+        //            IQ_filtered.iq[j].q = (short)(_sum.q);
         //        }
+        //        for (int j = 0; j < filterOrder; j++)
+        //        {
+        //            IQ_remainded.iq[j].i = IQ_shifted.iq[IQ_lenght - j - 1].i;
+        //            IQ_remainded.iq[j].q = IQ_shifted.iq[IQ_lenght - j - 1].q;
+        //        }
+        //        Buffer.BlockCopy(IQ_filtered.bytes, 0, outData, 0, filtered.Length);
+        //        warningMessage = "Стан: Працює без збоїв";
         //    }
-        //    catch (Exception)
-        //    {
-        //        warningMessage = "Стан: Проблеми з фільтрацією";
-        //    }
-        //}
+            //catch (Exception exception)
+            //{
+            //    warningMessage = string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
+            //}
+    //}
+
+    public void _filtering_function(ref byte[] outData)
+        {
+            try
+            {
+                IQ_shifted.bytes = shifted;
+                FilterBandwich = (float)(speedFrequency * 2 / 0.85);
+                filter.configFilter(IQ_shifted.bytes, SR, FilterBandwich, FIR_WindowType, FIR_beta);
+                Array.Resize(ref filtered, filter.get_OutDataLength * 4);
+                filtered = filter.filtering();
+                IQ_filtered.bytes = filtered;
+                //MessageBox.Show(string.Format("old SR = {0}, new SR = {1}", SR, filter.get_newSampleRate));
+                SR_after_filter = filter.get_newSampleRate;
+                if (write)
+                {
+                    short[] temp_short_I = new short[IQ_filtered.bytes.Length / 4];
+                    short[] temp_short_Q = new short[IQ_filtered.bytes.Length / 4];
+                    for (int i = 0; i < IQ_filtered.bytes.Length / 4; i++)
+                    {
+                        temp_short_I[i] = (short)IQ_filtered.iq[i].i;
+                        temp_short_Q[i] = (short)IQ_filtered.iq[i].q;
+                    }
+                    Writter Write = new Writter(temp_short_I, temp_short_Q, "I", "Q", "after_polifiltering");
+                    write = false;
+                }
+            }
+            catch (Exception exception)
+            {
+                warningMessage = string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
+            }
+        }
 
         /// <summary>Функція визначення кількості  бітів на символ</summary>
         public float _BitPerSapmle()
@@ -353,10 +358,12 @@ namespace demodulation
             float BPS = 0.0f;
             try
             {
-                BPS = (float)(SR / speedFrequency);
-                warningMessage = "Стан: Працює без збоїв";
+                BPS = (float)(SR_after_filter / speedFrequency);
             }
-            catch { warningMessage = "Стан: Проблеми з визначенням бітів на такт"; }
+            catch (Exception exception)
+            {
+                warningMessage = string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
+            }
             return BPS;
         }
     }

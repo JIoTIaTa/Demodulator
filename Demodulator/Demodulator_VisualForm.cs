@@ -95,23 +95,20 @@ namespace demodulation
                 toolStripStatusLabel.Text = string.Format("{0} %", toolStripProgressBar1.Value);
                 toolStripStatusLabel1.Text = Demodulator.warningMessage;                
                 writter_checkBox.Checked = dem_functions.write;
-                
+                Speed_label.Text = string.Format("Символьна швидкість:  {0:0.00} кГц", dem_functions.speedFrequency / 1000.0d);
+                T_label.Text = string.Format("Період маніпуляції:  {0:0.00} мкс", (1 / dem_functions.speedFrequency * 1000000.0d));
+                F_label.Text = string.Format("Центральна частота:  {0:0.00} кГц", (dem_functions.centralFrequency / 1000.0d));
+                deltaF_label.Text = string.Format("Відхилення від центру:  {0:0.00} кГц", ((dem_functions.centralFrequency - dem_functions.SR / 2) / 1000.0d));
+                BPS_label.Text = string.Format("Відліків на символ:  {0:0.00}", dem_functions.SymbolsPerSapmle);
+                deltaMS_I_label.Text = string.Format("Відхилення швидкості I:  {0}", dem_functions.speed_error_I);
+                deltaMS_Q_label.Text = string.Format("Відхилення швидкості Q:  {0}", dem_functions.speed_error_Q);
+                deltaMS_label.Text = string.Format("Відхилення швидкості :  {0}", dem_functions.speed_error);
+                inputSR_label.Text = string.Format("Частота дискретизації на вході:  {0:0.00} кГц", dem_functions.SR / 1000.0d);
+                afterFilterSR_label.Text = string.Format("Частота дискретизації після децимації:  {0:0.00} кГц", dem_functions.SR_after_filter / 1000.0d);
+                filterBW_textBox.Text = string.Format("{0:0.00}", dem_functions.FilterBandwich);
             }
-            catch
-            {
-                toolStripStatusLabel1.Text = "Стан: ШПФ не проведено :(";
-            }
+            catch { }
 
-            Speed_label.Text = string.Format("Символьна швидкість:  {0:0.00} кГц", dem_functions.speedFrequency / 1000.0d);
-            T_label.Text = string.Format("Період маніпуляції:  {0:0.00} мкс", (1 / dem_functions.speedFrequency * 1000000.0d));
-            F_label.Text = string.Format("Центральна частота:  {0:0.00} кГц", (dem_functions.centralFrequency / 1000.0d));
-            deltaF_label.Text = string.Format("Відхилення від центру:  {0:0.00} кГц",((dem_functions.centralFrequency - dem_functions.SR / 2) / 1000.0d));
-            BPS_label.Text = string.Format("Відліків на символ:  {0:0.00}", dem_functions.SymbolsPerSapmle);
-            deltaMS_I_label.Text = string.Format("Відхилення швидкості I:  {0}", dem_functions.speed_error_I);
-            deltaMS_Q_label.Text = string.Format("Відхилення швидкості Q:  {0}", dem_functions.speed_error_Q);
-            deltaMS_label.Text = string.Format("Відхилення швидкості :  {0}", dem_functions.speed_error);
-            SR_label.Text = string.Format("Частота дискретизації:  {0:0.00} кГц", dem_functions.SR / 1000.0d);
-            filterBW_textBox.Text = string.Format("{0:0.00}", dem_functions.FilterBandwich );
         }
        
 
@@ -168,6 +165,7 @@ namespace demodulation
                     default:
                         break;
                 }
+                if (dem_functions.display == demodulation.FFT_data_display.FILTERING){ SR = dem_functions.SR_after_filter; } else { SR = dem_functions.SR; }
                 visualData = new VisuaslFactory();
                 visualData.CreateVisual(ref visual_data, dem_functions.display, dem_functions.maxFFT);
                 visual_data = Fft.fft(visual_data);
@@ -191,9 +189,9 @@ namespace demodulation
                     Array.Clear(outFFTdata, 0, dem_functions.maxFFT);
                 }
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                toolStripStatusLabel1.Text = "Стан: Trouble with averingFFT :(";
+                toolStripStatusLabel1.Text = string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
             }
         }
 
