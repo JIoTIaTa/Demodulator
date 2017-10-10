@@ -51,7 +51,6 @@ namespace demodulation
             try
             {
                 Filter_Math FIR = new Filter_Math();
-                FIR_WindowType = WindowType;
                 IQ_inData_length = inData.Length / 4;
                 IQ_inData.bytes = inData;
                 this.SampleRate = SampleRate;
@@ -141,8 +140,6 @@ namespace demodulation
                 ///////////////////////////////////// Фаза інтерполяції /////////////////////////////////////
                 interpolation_buffers();
                 size = IQ_interpolated_length;
-                //MessageBox.Show(string.Format("IQ_inData.bytes.Length = {0}\nIQ_remainded.bytes.Length = {1}\nfilterOrder = {2}\nIQ_interpolated_length = {3}\ninterpolation_coef = {4}\nIQ_interpolated.bytes.length = {5}\n size = {6}", IQ_inData.bytes.Length, IQ_remainded.bytes.Length, filterOrder, IQ_interpolated_length, interpolation_coef, IQ_interpolated.bytes.Length, size));
-                //MessageBox.Show(string.Format("interpolation_coef = {0}\ndecimation_coef = {1}\nfilterOrder = {2}", interpolation_coef, decimation_coef, filterOrder));
                 int itteration = 0;
                 int filter_coef_shift = 0;
                 int inData_coef_shift = 0;

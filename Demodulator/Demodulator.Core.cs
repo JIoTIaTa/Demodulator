@@ -45,17 +45,13 @@ namespace demodulation
         public int modulation_multiplicity = 4; //кратність модуляції 
         public bool demodulator_busy = false; // прапорець роботи тракту
         public int fftAveragingValue = 4; // усереднення ШПФ
-        byte[] detected = new byte[512]; // для визначення швикості
-        byte[] elevated = new byte[512]; // піднесений в степінь, для визначення центральної частоти
-        byte[] shifted = new byte[512]; // знесений сигнал
-        byte[] filtered = new byte[512]; // відфільтрований сигнал
         double[] tempI_buffer = new double[128]; // для зберігання I відліків подвійної точності 
         double[] tempQ_buffer = new double[128]; // для зберігання Q відліків подвійної точності 
-        float[] sin_1024 = new float[1024]; // масив синусів для зносу
-        float[] cos_1024 = new float[1024]; // масив косинусів для зносу        
+        float[] sin_16384 = new float[16384]; // масив синусів для зносу
+        float[] cos_16384 = new float[16384]; // масив косинусів для зносу        
         public double speedFrequency = 0.0d; // швидкість модуляції
         public double centralFrequency = 0.0d; // центральна частота
-        float sin_cos_position = 0; // позиція син/кос для вибору з таблиці
+        public float sin_cos_position = 0; // позиція син/кос для вибору з таблиці
         public float FilterBandwich = 0; // смуга фільтрація
         static int filterOrder = 101; // порядок фільтру
         float[] filterCoefficients; // коефіціенти фільтра
@@ -74,7 +70,10 @@ namespace demodulation
         public bool write = false;
         public static string warningMessage = "Стан: Працює без збоїв";
         public float MS_correct = 0.0f;
-        Poliphase_Filter filter = new Poliphase_Filter();
+        Poliphase_Filter Poliphase_filter = new Poliphase_Filter();
+        Filter old_filter = new Filter();
+        public Filter_type filter_type = Filter_type.simple;
+        public float central_freq_correct = 0.0f;
 
 
         /// <summary>Функція визначення частоти маніпуляції (символьної швидкості)</summary>
@@ -82,7 +81,7 @@ namespace demodulation
         {
             try
             {
-                IQ_detected.bytes = detected;
+                //IQ_detected.bytes = detected;
                 for (int i = 0; i < IQ_lenght; i++)
                 {
                     tempI = Math.Abs(IQ_shifted.iq[i].i + IQ_shifted.iq[i].q);
@@ -105,7 +104,7 @@ namespace demodulation
             try
             {
                 IQ_inData.bytes = inData;
-                IQ_elevated.bytes = elevated;
+                //IQ_elevated.bytes = elevated;
                 if (modulation_multiplicity == 2)
                 {
                     tempI = 0;
@@ -168,16 +167,17 @@ namespace demodulation
         {
             try
             {
-                IQ_shifted.bytes = shifted;
+                //IQ_shifted.bytes = shifted;
                 IQ_inData.bytes = inData;
-                if (centralFrequency > F) { sin_cos_position = (float)((centralFrequency - SR / 2) * 1024f / (SR)); sin_cos_position = sin_cos_position / 2; }
-                else { sin_cos_position = (float)(1024f + (centralFrequency - F) * 1024f / (SR)); sin_cos_position = sin_cos_position * 2; }
+                centralFrequency += central_freq_correct;
+                if (centralFrequency > F) { sin_cos_position = (float)((centralFrequency - F) * 16384f / (SR)); sin_cos_position = sin_cos_position / 4; }
+                else { sin_cos_position = (float)(( F - centralFrequency) * 16384f / (SR)); sin_cos_position = sin_cos_position / 4; }
 
                 for (int i = 0; i < IQ_lenght; i++)
                 {
-                    int t = (i * (int)sin_cos_position) % 1024;
-                    IQ_shifted.iq[i].i = (short)(IQ_inData.iq[i].i * cos_1024[t] + IQ_inData.iq[i].q * sin_1024[t]);
-                    IQ_shifted.iq[i].q = (short)(IQ_inData.iq[i].q * cos_1024[t] - IQ_inData.iq[i].i * sin_1024[t]);
+                    int t = (i * (int)sin_cos_position) % 16384;
+                    IQ_shifted.iq[i].i = (short)(IQ_inData.iq[i].i * cos_16384[t] + IQ_inData.iq[i].q * sin_16384[t]);
+                    IQ_shifted.iq[i].q = (short)(IQ_inData.iq[i].q * cos_16384[t] - IQ_inData.iq[i].i * sin_16384[t]);
                 }
             }
             catch (Exception exception)
@@ -315,36 +315,38 @@ namespace demodulation
         //        Buffer.BlockCopy(IQ_filtered.bytes, 0, outData, 0, filtered.Length);
         //        warningMessage = "Стан: Працює без збоїв";
         //    }
-            //catch (Exception exception)
-            //{
-            //    warningMessage = string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
-            //}
-    //}
+        //catch (Exception exception)
+        //{
+        //    warningMessage = string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
+        //}
+        //}
 
-    public void _filtering_function(ref byte[] outData)
+        /// <summary>Функція фільтрації</summary>
+        public void _filtering_function(ref byte[] outData)
         {
             try
             {
-                IQ_shifted.bytes = shifted;
-                FilterBandwich = (float)(speedFrequency * 2 / 0.85);
-                filter.configFilter(IQ_shifted.bytes, SR, FilterBandwich, FIR_WindowType, FIR_beta);
-                Array.Resize(ref filtered, filter.get_OutDataLength * 4);
-                filtered = filter.filtering();
-                IQ_filtered.bytes = filtered;
-                //MessageBox.Show(string.Format("old SR = {0}, new SR = {1}", SR, filter.get_newSampleRate));
-                SR_after_filter = filter.get_newSampleRate;
-                if (write)
+                FilterBandwich = (float)(speedFrequency * 2 / 0.805);
+                switch (filter_type)
                 {
-                    short[] temp_short_I = new short[IQ_filtered.bytes.Length / 4];
-                    short[] temp_short_Q = new short[IQ_filtered.bytes.Length / 4];
-                    for (int i = 0; i < IQ_filtered.bytes.Length / 4; i++)
-                    {
-                        temp_short_I[i] = (short)IQ_filtered.iq[i].i;
-                        temp_short_Q[i] = (short)IQ_filtered.iq[i].q;
-                    }
-                    Writter Write = new Writter(temp_short_I, temp_short_Q, "I", "Q", "after_polifiltering");
-                    write = false;
+                    case Filter_type.simple:
+                        old_filter.configFilter(IQ_shifted.bytes.Length, SR, FilterBandwich, FIR_WindowType, FIR_beta);
+                        Array.Resize(ref IQ_filtered.bytes, IQ_shifted.bytes.Length);
+                        IQ_filtered.bytes = old_filter.filtering(IQ_shifted.bytes);
+                        SR_after_filter = SR;
+                        sendComand = true;
+                        break;
+                    case Filter_type.poliphase:
+                        Poliphase_filter.configFilter(IQ_shifted.bytes, SR, FilterBandwich, FIR_WindowType, FIR_beta);
+                        Array.Resize(ref IQ_filtered.bytes, Poliphase_filter.get_OutDataLength * 4);
+                        IQ_filtered.bytes = Poliphase_filter.filtering();
+                        SR_after_filter = Poliphase_filter.get_newSampleRate;
+                        sendComand = true;
+                        break;
+                    default:
+                        break;
                 }
+                //outData = IQ_filtered.bytes;
             }
             catch (Exception exception)
             {

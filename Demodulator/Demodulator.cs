@@ -52,11 +52,17 @@ namespace demodulation
     {
         SHIFTING, EXPONENT, DETECTED, FILTERING, INPUT
     };
+
+    public enum modulation_type { PSK_2, PSK_4, PSK_8, QAM_16 }
+
+    public enum Filter_type { simple, poliphase }
     public partial class Demodulator
     {
        
         //[DllImport("..\\..\\data\\FIR.dll", EntryPoint = "BasicFIR", CallingConvention = CallingConvention.StdCall)]
         //static extern void _FIR(ref float FIRCoeff, int numTaps, TPassTypeName PassType, float OmegaC, float BW, TWindowType WindowTyte, float WinBeta);
+
+
         /// <summary>Функція ініціалізації буферів, необхідних для роботи модуля, з вказанням їх довжини</summary>
         /// <param name="Length">Довжина масивів які необхідно виділити в байтах</param>
         public void demodulator_init(int Length)
@@ -65,16 +71,20 @@ namespace demodulation
             {
                 IQ_lenght = Length / 4;
                 if (IQ_lenght > maxFFT) { IQ_lenght = maxFFT; }
-                Array.Resize(ref detected, Length);
-                Array.Resize(ref elevated, Length);
-                Array.Resize(ref shifted, Length);
-                Array.Resize(ref filtered, Length);
+                //Array.Resize(ref detected, Length);
+                //Array.Resize(ref elevated, Length);
+                //Array.Resize(ref shifted, Length);
+                //Array.Resize(ref filtered, Length);
+                IQ_detected.bytes = new byte[Length];
+                IQ_elevated.bytes = new byte[Length];
+                IQ_shifted.bytes = new byte[Length];
+                IQ_filtered.bytes = new byte[Length];
                 Array.Resize(ref tempI_buffer, IQ_lenght);
                 Array.Resize(ref tempQ_buffer, IQ_lenght);
-                for (int i = 0; i < 1024; i++)
+                for (int i = 0; i < 16384; i++)
                 {
-                    sin_1024[i] = (float)Math.Sin(i * Math.PI * 2 / 1024);
-                    cos_1024[i] = (float)Math.Cos(i * Math.PI * 2 / 1024);
+                    sin_16384[i] = (float)Math.Sin(i * Math.PI * 2 / 16384);
+                    cos_16384[i] = (float)Math.Cos(i * Math.PI * 2 / 16384);
                 }
                 warningMessage = "Стан: Працює без збоїв";
             }

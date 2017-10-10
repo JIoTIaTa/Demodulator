@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Numerics;
 using FFT;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 //using Filter;
 
@@ -20,7 +21,7 @@ namespace demodulation
         public float beginBW = 0.0f; // для порівняння і конфігурації фільтра
         public float BW = 0.0f;
         public Demodulator dem_functions;
-        VisuaslFactory visualData;
+        VisuaslFactory_FFT visualData;
         private double fNormolize = 1d / 4294967296; // коефициент нормализации сигнала
         private double SR = 0.0d; // частота дискретизации
         private double FFIR = 0.0d;// реальная частота сигнала
@@ -29,12 +30,16 @@ namespace demodulation
         private float ACHAvering;
         private float SignalAvering;
         Complex[] visual_data = new Complex[65536];
+        Complex[] visual_data_after = new Complex[65536];
+
         double[] avering_buffer = new double[65536];
         public float[] xAxes = new float[65536]; // значення осі Х ШТП
         public float[] outFFTdata = new float[65536]; // значення осі У ШПФ
         int averingRepeat = 0;
         private int inData_length;
 
+        [DllImport(@"..\\..\\data\\CUDA_FFT.dll")]
+        public static extern int deviceFFT(ref Complex inData, ref Complex outData,  int FFT_deep, int device_number);
         public DemodulatorVisual_Form()
         {
             InitializeComponent();
@@ -68,6 +73,11 @@ namespace demodulation
             if (dem_functions.display == demodulation.FFT_data_display.DETECTED) { FFT_data_display.SelectedIndex = 2; }
             if (dem_functions.display == demodulation.FFT_data_display.SHIFTING) { FFT_data_display.SelectedIndex = 3; }
             if (dem_functions.display == demodulation.FFT_data_display.FILTERING) { FFT_data_display.SelectedIndex = 4; }
+
+            if (dem_functions.filter_type == Filter_type.simple ) { radioButton_simpleFilter.Checked = true; ; }
+            if (dem_functions.filter_type == Filter_type.poliphase ) { radioButton_poliphaseFilter.Checked = true; ; }
+
+            typeWindow.SelectedIndex = (int)dem_functions.FIR_WindowType;
         }
 
         private void refreshButton_Click(object sender, EventArgs e)
@@ -92,13 +102,16 @@ namespace demodulation
             {
                 if (dem_functions.display == demodulation.FFT_data_display.EXPONENT) { exponentiationLevel.Enabled = true; } else { exponentiationLevel.Enabled = false; }
                 toolStripProgressBar1.Value = averingRepeat * 100 / dem_functions.fftAveragingValue;
+                label8.Text = string.Format("{0}", dem_functions.sin_cos_position);
+
                 toolStripStatusLabel.Text = string.Format("{0} %", toolStripProgressBar1.Value);
-                toolStripStatusLabel1.Text = Demodulator.warningMessage;                
+                toolStripStatusLabel1.Text = Demodulator.warningMessage;
+                if (Demodulator.warningMessage != "Стан: Працює без збоїв") { BackColor = Color.Red; } else { BackColor = Color.White; }             
                 writter_checkBox.Checked = dem_functions.write;
                 Speed_label.Text = string.Format("Символьна швидкість:  {0:0.00} кГц", dem_functions.speedFrequency / 1000.0d);
                 T_label.Text = string.Format("Період маніпуляції:  {0:0.00} мкс", (1 / dem_functions.speedFrequency * 1000000.0d));
                 F_label.Text = string.Format("Центральна частота:  {0:0.00} кГц", (dem_functions.centralFrequency / 1000.0d));
-                deltaF_label.Text = string.Format("Відхилення від центру:  {0:0.00} кГц", ((dem_functions.centralFrequency - dem_functions.SR / 2) / 1000.0d));
+                deltaF_label.Text = string.Format("Відхилення:  {0:0.00} кГц", ((dem_functions.centralFrequency - dem_functions.F) / 1000.0d));
                 BPS_label.Text = string.Format("Відліків на символ:  {0:0.00}", dem_functions.SymbolsPerSapmle);
                 deltaMS_I_label.Text = string.Format("Відхилення швидкості I:  {0}", dem_functions.speed_error_I);
                 deltaMS_Q_label.Text = string.Format("Відхилення швидкості Q:  {0}", dem_functions.speed_error_Q);
@@ -166,10 +179,26 @@ namespace demodulation
                         break;
                 }
                 if (dem_functions.display == demodulation.FFT_data_display.FILTERING){ SR = dem_functions.SR_after_filter; } else { SR = dem_functions.SR; }
-                visualData = new VisuaslFactory();
+                visualData = new VisuaslFactory_FFT();
                 visualData.CreateVisual(ref visual_data, dem_functions.display, dem_functions.maxFFT);
-                visual_data = Fft.fft(visual_data);
+
+                //visual_data = Fft.fft(visual_data);
+
+                //*********************************************************************************//
+                int Error = 999;
+                Error = deviceFFT(ref visual_data[0], ref visual_data[0], dem_functions.maxFFT, 0);
+                //MessageBox.Show(string.Format("Error from CUDA = {0}", Error));
+                //for (int i = 0; i < visual_data_after.Length; i++)
+                //{
+                //    MessageBox.Show(string.Format("{0}|{1}", visual_data[i].Real, visual_data[i].Imaginary));
+                //}
+                //*********************************************************************************//
+
+
+                
                 if (dem_functions.display != demodulation.FFT_data_display.DETECTED) { visual_data = Fft.nfft(visual_data); } else { }
+
+
                 for (int i = 0; i < dem_functions.maxFFT; i++)
                 {
                     avering_buffer[i] = (avering_buffer[i] + visual_data[i].Magnitude);
@@ -208,6 +237,26 @@ namespace demodulation
         private void MScorrect_textBox_TextChanged(object sender, EventArgs e)
         {
             dem_functions.MS_correct = (float)Convert.ToDouble(MScorrect_textBox.Text);
+        }
+
+        private void radioButton_simpleFilter_CheckedChanged(object sender, EventArgs e)
+        {
+            dem_functions.filter_type = Filter_type.simple;
+        }
+
+        private void radioButton_poliphaseFilter_CheckedChanged(object sender, EventArgs e)
+        {          
+            dem_functions.filter_type = Filter_type.poliphase;
+        }
+
+        private void numericUpDown_central_freq_corerct_ValueChanged(object sender, EventArgs e)
+        {
+            dem_functions.central_freq_correct = Convert.ToSingle(numericUpDown_central_freq_corerct.Value * 1000);
+        }
+
+        private void typeWindow_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            dem_functions.FIR_WindowType = (TWindowType)typeWindow.SelectedIndex;
         }
     }    
 }

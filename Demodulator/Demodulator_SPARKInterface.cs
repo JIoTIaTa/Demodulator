@@ -22,15 +22,19 @@ namespace demodulation
         private double errorsNumber = 0; // кількість зривів
         public Demodulator dem_functions = new Demodulator(); // обьєкт класу
         private byte[] outData = new byte[524288]; // масив відфільтрованих даних
-        private Demodulator_DoubleClick_Form doubleClick_Form; // форма, що відкривається при подвійному кліку на блок
         private long SR = 9999999; // частота дискретизації (вхідного сигналу)
         private long F = 5555555; // центральна частота (вхідного сигналу)
         private string info; // строка виведення інформації в вікні СПАРК
-        public DemodulatorVisual_Form visual_Form; // форма візуалізації         
+        public DemodulatorVisual_Form visual_Form; // форма візуалізації 
+        public Constellation constellation_Form;
+        Detector phase_detector = new Detector(65536, modulation_type.PSK_4);
         public static bool calculate_parametrs_bool = true;
+        public static bool display_constellation = false;
         private change inDataLength_change = new change(); // для визначення, чи змінилась довжинавхідних даних
         public int[] demodulate_I_unit;
         public int[] demodulate_Q_unit;
+        public byte[] after_phase_detector;
+        
 
         public string Name
         {
@@ -39,7 +43,7 @@ namespace demodulation
 
         public string Version
         {
-            get { return "beta"; }
+            get { return string.Format("Beta v.{0}.{1}.{2}", DateTime.Today.Day, DateTime.Today.Month, DateTime.Today.Year); }
         }
 
         public string Author
@@ -72,22 +76,26 @@ namespace demodulation
 
         public string Init()
         {
-            //if (dem_functions.demodulator_busy == true)
-            //{
-                if (visual_Form == null || visual_Form.IsDisposed)
-                {
-                    visual_Form = new DemodulatorVisual_Form() { dem_functions = dem_functions };
-                    visual_Form.Show();
-                }
-                else
-                {
-                    visual_Form.Focus();
-                }
-            //}
-            //else
-            //{
-            //    MessageBox.Show("Can't do it, bro");
-            //}
+            if (visual_Form == null || visual_Form.IsDisposed)
+            {
+                visual_Form = new DemodulatorVisual_Form() { dem_functions = dem_functions };
+                visual_Form.Show();
+            }
+            else
+            {
+                visual_Form.Focus();
+            }
+
+            if (constellation_Form == null || constellation_Form.IsDisposed)
+            {
+                constellation_Form = new Constellation();
+                constellation_Form.Show();
+            }
+            else
+            {
+                constellation_Form.Focus();
+            }
+
             return "Демодулятор";
         }
 
@@ -103,11 +111,7 @@ namespace demodulation
 
         public void Visual()
         {            
-            if (doubleClick_Form == null || doubleClick_Form.IsDisposed)
-            {
-                doubleClick_Form = new Demodulator_DoubleClick_Form { demodulation_functions = dem_functions };
-            }
-            doubleClick_Form.Show();
+           
         }
 
         public void Start(string mesage, byte[] inData)
@@ -119,6 +123,7 @@ namespace demodulation
                 if (!string.IsNullOrEmpty(mesage))
                 {
                     var message = mesage;
+                    dem_functions.sendComand = true;
                     try
                     {
                         if (message.Contains("%%SAMPLERATE&"))
@@ -140,77 +145,95 @@ namespace demodulation
                         else { F = Convert.ToInt64(dem_functions.SR / 2); dem_functions.F = F; }
                                
                         }
-                        outMessage = "%%FPCH&" + ((long)(dem_functions.F)) + "%%SAMPLERATE&" + ((long)(dem_functions.SR));
+                        //outMessage = "%%FPCH&" + ((long)(dem_functions.F)) + "%%SAMPLERATE&" + ((long)(dem_functions.SR));
                         info = string.Format("Частота дискретизації:  {0} МГц\nЦентральна частота:  {1} МГц", dem_functions.SR / 1000000.0, dem_functions.F / 1000000.0);
                     }
                     catch
                     {
-
                     }
                     }
             if (dem_functions.sendComand)
             {
-                outMessage = "%%FPCH&" + ((long)(dem_functions.F)) + "%%SAMPLERATE&" + ((long)(dem_functions.SR));
+                if (dem_functions.filter_type == Filter_type.simple)
+                {
+                    outMessage = "%%FPCH&" + ((long)(dem_functions.F)) + "%%SAMPLERATE&" + ((long)(dem_functions.SR));
+                    //MessageBox.Show("Відправив стару частоту");
+                }
+                else
+                {
+                    outMessage = "%%FPCH&" + ((long)(dem_functions.F)) + "%%SAMPLERATE&" + ((long)(dem_functions.SR_after_filter));
+                    //MessageBox.Show("Відправив частоту поліфазну");
+                }               
                 dem_functions.sendComand = false;
-                info = string.Format("Частота дискретизації:  {0} МГц\nЦентральна частота:  {1} МГц ", dem_functions.SR / 1000000.0, dem_functions.F / 1000000.0);
             }
             //info = string.Format(string.Format("{0}", inData.Length));
             Array.Resize(ref outData, inData.Length);
             try
             {
-                MessageBox.Show(string.Format("inData = {0}", inData.Length));
+                ////////////////////////////**************************////////////////////////////
                 if (inDataLength_change.new_value != inData.Length)
                 {
                     inDataLength_change.new_value = inDataLength_change.old_value;
                     dem_functions.demodulator_init(inData.Length);
+                    phase_detector.ReInit(inData.Length, modulation_type.PSK_4);
                 }
+                ////////////////////////////**************************////////////////////////////
+                
                 if (calculate_parametrs_bool)
                 {
                     dem_functions._exponentiation(ref inData);
                     dem_functions.centralFrequency = dem_functions._F_calculating();
                 }
+                ////////////////////////////**************************////////////////////////////
                 dem_functions._shifting_function(ref inData);
+                ////////////////////////////**************************////////////////////////////
+
                 if (calculate_parametrs_bool)
                 {
                     dem_functions._detection();
                     //dem_functions.speedFrequency = dem_functions._speed_calculating() + dem_functions.MS_correct;
                     dem_functions.speedFrequency = dem_functions._speed_calculating();
                 }
+                ////////////////////////////**************************////////////////////////////
+                
                 dem_functions._filtering_function(ref outData);
+                ////////////////////////////**************************////////////////////////////
+
+                //after_phase_detector = new byte[Demodulator.IQ_filtered.bytes.Length / 4];
+                //after_phase_detector = phase_detector.detection(Demodulator.IQ_filtered.bytes);
+                ////////////////////////////**************************////////////////////////////
+                if (display_constellation)
+                {
+                    VisuaslFactory_constellation VF_constellation = new VisuaslFactory_constellation(dem_functions.display);                   
+                    constellation_Form.BeginDisplay(ref VF_constellation.I_data, ref VF_constellation.Q_data);
+                }
+                ////////////////////////////**************************////////////////////////////
                 if (calculate_parametrs_bool)
                 {
                     dem_functions.SymbolsPerSapmle = dem_functions._BitPerSapmle();
                 }
-                    if (visual_Form != null && visual_Form.Visible) { visual_Form.displayFFT(); }
-                //Gardner_detector ms_sync = new Gardner_detector(Demodulator.IQ_shifted.bytes, dem_functions.SymbolsPerSapmle);
-                //ms_sync.BeginPhaseCalc();
-                //demodulate_I_unit = new int[(int)((inData.Length / 4) / dem_functions.SymbolsPerSapmle)];
-                //demodulate_Q_unit = new int[(int)((inData.Length / 4) / dem_functions.SymbolsPerSapmle)];               
-                //demodulate_I_unit = ms_sync.take_I();
-                //demodulate_Q_unit = ms_sync.take_Q();
-                //if (dem_functions.write)
-                //{
-                //    short[] temp_short_I = new short[demodulate_I_unit.Length];
-                //    short[] temp_short_Q = new short[demodulate_Q_unit.Length];
-                //    for (int i = 0; i < demodulate_I_unit.Length; i++)
-                //    {
-                //        temp_short_I[i] = (short)demodulate_I_unit[i];
-                //        temp_short_Q[i] = (short)demodulate_Q_unit[i];
-                //    }
-                //    Writter Write = new Writter(temp_short_I, temp_short_Q, "I", "Q", "sympols_for_demod");
-                //    dem_functions.write = false;                    
-                //}
-                    _outcom += outData.Length;
-                info = string.Format("Частота дискретизації:  {0} МГц\nЦентральна частота:  {1} МГц\nФАПЧ status: {2}\n ", dem_functions.SR / 1000000.0, dem_functions.F / 1000000.0, Convert.ToString(calculate_parametrs_bool));
+                ////////////////////////////**************************////////////////////////////
+                if (visual_Form != null && visual_Form.Visible) { visual_Form.displayFFT(); }
+                ////////////////////////////**************************////////////////////////////
+                outData = Demodulator.IQ_shifted.bytes;
+                ////////////////////////////**************************////////////////////////////
+                _outcom += outData.Length;
+                if (dem_functions.filter_type == Filter_type.simple)
+                {
+                    info = string.Format("Частота дискретизації:  {0} МГц\nЦентральна частота:  {1} МГц\nФАПЧ status: {2}", dem_functions.SR / 1000000.0, dem_functions.F / 1000000.0, Convert.ToString(calculate_parametrs_bool));
+                }
+                else
+                {
+                    info = string.Format("Частота дискретизації:  {0} МГц\nЦентральна частота:  {1} МГц\nФАПЧ status: {2}", dem_functions.SR_after_filter / 1000000.0, dem_functions.F / 1000000.0, Convert.ToString(calculate_parametrs_bool));
+                }
+                //info = string.Format("Частота дискретизації:  {0} МГц\nЦентральна частота:  {1} МГц\nФАПЧ status: {2}\n ", dem_functions.SR / 1000000.0, dem_functions.F / 1000000.0, Convert.ToString(calculate_parametrs_bool));
                 DoneWorck(this, outMessage, outData);               
             }
-            catch
-            {
-                _incom = 0;
-                _outcom = 0;
+            catch (Exception exception)
+            {                
                 DoneWorck(this, outMessage, null);
                 outMessage = "";
-                info = "Помилка роботи модуля";
+                info = string.Format("ДЕМ ПРИУНИВ\n{0}\n{1}\n{2}", exception.Source, exception.TargetSite, exception.Message) ;
             }
             _busy = false;
         
@@ -222,6 +245,7 @@ namespace demodulation
             _busy = false;
             _incom = 0;
             _outcom = 0;
+            //constellation_Form.StopTimer();
     }
 
         public void SetParam(string param)
@@ -242,7 +266,14 @@ namespace demodulation
 
         public string GetParam()
         {
-            return string.Format("%%FPCH&{0}%%SAMPLERATE&{1}", Convert.ToDecimal(dem_functions.F), Convert.ToDecimal(dem_functions.SR));           
+            if(dem_functions.filter_type == Filter_type.simple)
+            {
+                return string.Format("%%FPCH&{0}%%SAMPLERATE&{1}", Convert.ToDecimal(dem_functions.F), Convert.ToDecimal(dem_functions.SR));
+            }
+            else
+            {
+                return string.Format("%%FPCH&{0}%%SAMPLERATE&{1}", Convert.ToDecimal(dem_functions.F), Convert.ToDecimal(dem_functions.SR_after_filter));
+            }           
         }
 
         public event Sdelal DoneWorck;

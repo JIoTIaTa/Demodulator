@@ -1,0 +1,5 @@
+D:\Repositories\Demodulator\Demodulator\obj\x64\Release\Demodulator.csprojResolveAssemblyReference.cache
+D:\Repositories\Demodulator\Demodulator\obj\x64\Release\demodulation.Demodulator_DoubleClick_Form.resources
+D:\Repositories\Demodulator\Demodulator\obj\x64\Release\demodulation.Properties.Resources.resources
+D:\Repositories\Demodulator\Demodulator\obj\x64\Release\demodulation.DemodulatorVisual_Form.resources
+D:\Repositories\Demodulator\Demodulator\obj\x64\Release\Demodulator.csproj.GenerateResource.Cache

@@ -25,10 +25,11 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\FormVisualizator\bin\Debug\Decoders\Утиліти\</OutputPath>
+    <OutputPath>..\..\..\SPARK\plaZma\Decoders\Утиліти\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -49,25 +50,45 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Interface">
+      <HintPath>..\..\..\Projects\SPARK\Interface\obj\Debug\Interface.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Mitov.BasicLab, Version=7.6.0.0, Culture=neutral, PublicKeyToken=54b8a1f38c94221a" />
     <Reference Include="Mitov.PlotLabBasic, Version=7.6.0.0, Culture=neutral, PublicKeyToken=1bb0b8a97236ac2e, processorArchitecture=MSIL" />
+    <Reference Include="Mitov.SignalLab, Version=7.6.0.0, Culture=neutral, PublicKeyToken=0f7dd317c9b1aa3e, processorArchitecture=MSIL" />
+    <Reference Include="Mitov.SignalLabBasic, Version=7.6.0.0, Culture=neutral, PublicKeyToken=0b44e28582c522cf" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constellation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Constellation.Designer.cs">
+      <DependentUpon>Constellation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Constellation_new.cs" />
     <Compile Include="Demodulator.cs" />
+    <Compile Include="Filter.cs" />
+    <Compile Include="Phase_Detector.cs" />
     <Compile Include="FFT.cs" />
     <Compile Include="Demodulator.Core.cs" />
     <Compile Include="cloo\binding\CL10.cs" />
@@ -112,12 +133,6 @@
     <Compile Include="cloo\ComputeUserEvent.cs" />
     <Compile Include="cloo\SysIntX2.cs" />
     <Compile Include="cloo\SysIntX3.cs" />
-    <Compile Include="Demodulator_DouleClick_Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Demodulator_DouleClick_Form.Designer.cs">
-      <DependentUpon>Demodulator_DouleClick_Form.cs</DependentUpon>
-    </Compile>
     <Compile Include="Demodulator_SPARKInterface.cs" />
     <Compile Include="Filter.Math.cs" />
     <Compile Include="Gardner_detector.cs" />
@@ -135,17 +150,14 @@
       <DependentUpon>Demodulator_VisualForm.cs</DependentUpon>
     </Compile>
     <Compile Include="TXT_writter.cs" />
+    <Compile Include="UserControl1.xaml.cs">
+      <DependentUpon>UserControl1.xaml</DependentUpon>
+    </Compile>
     <Compile Include="VisualFunctions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Interface\Interface.csproj">
-      <Project>{DCE50944-9241-4F8E-B23D-8FBC731E2F7C}</Project>
-      <Name>Interface</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Demodulator_DouleClick_Form.resx">
-      <DependentUpon>Demodulator_DouleClick_Form.cs</DependentUpon>
+    <EmbeddedResource Include="Constellation.resx">
+      <DependentUpon>Constellation.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -157,6 +169,12 @@
   </ItemGroup>
   <ItemGroup>
     <Fakes Include="Fakes\Mitov.PlotLab.fakes" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="UserControl1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

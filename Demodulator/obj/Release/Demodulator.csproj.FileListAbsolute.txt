@@ -1,0 +1,15 @@
+d:\Repositories\FormVisualizator\bin\Debug\Decoders\Утиліти\Demodulator.dll
+d:\Repositories\FormVisualizator\bin\Debug\Decoders\Утиліти\Demodulator.pdb
+D:\SPARK\plaZma\Decoders\Утиліти\Demodulator.dll
+D:\SPARK\plaZma\Decoders\Утиліти\Demodulator.pdb
+D:\Repositories\Demodulator\Demodulator\obj\Release\UserControl1.g.cs
+D:\Repositories\Demodulator\Demodulator\obj\Release\Demodulator_MarkupCompile.cache
+D:\Repositories\Demodulator\Demodulator\obj\Release\Demodulator_MarkupCompile.lref
+D:\Repositories\Demodulator\Demodulator\obj\Release\UserControl1.baml
+D:\Repositories\Demodulator\Demodulator\obj\Release\Demodulator.g.resources
+D:\Repositories\Demodulator\Demodulator\obj\Release\demodulation.Constellation.resources
+D:\Repositories\Demodulator\Demodulator\obj\Release\demodulation.Properties.Resources.resources
+D:\Repositories\Demodulator\Demodulator\obj\Release\demodulation.DemodulatorVisual_Form.resources
+D:\Repositories\Demodulator\Demodulator\obj\Release\Demodulator.csproj.GenerateResource.Cache
+D:\Repositories\Demodulator\Demodulator\obj\Release\Demodulator.dll
+D:\Repositories\Demodulator\Demodulator\obj\Release\Demodulator.pdb
