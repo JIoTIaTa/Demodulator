@@ -9,6 +9,7 @@ namespace demodulation
     public sealed class Filter
     {
         private TWindowType FIR_WindowType = TWindowType.SINC; // тип вікна фільтра
+        Filter_Math FIR;
         public sIQData IQ_inData, IQ_outData, IQ_remainded;
         private int IQ_inData_length;
         private double SampleRate = 0.0d;
@@ -16,15 +17,22 @@ namespace demodulation
         private float FIR_beta = 3.2f; // коефіціент БЕТА фільтра
         private float[] filterCoefficients;
         int filterOrder = 101;
+        public string warningMessage = "Стан: Працює без збоїв";
+        public Filter()
+        {
+            FIR = new Filter_Math();
+            IQ_outData.bytes = new byte[IQ_inData_length * 4];
+            filterCoefficients = new float[filterOrder];
+            IQ_remainded.bytes = new byte[filterOrder * 4];
+        }
         public void configFilter(int inData_length, double SampleRate, double Bandwich, TWindowType WindowType, float Beta_coef)
         {
             try
             {
-                IQ_outData.bytes = new byte[inData_length];
-                filterCoefficients = new float[filterOrder];
-                IQ_remainded.bytes = new byte[filterOrder * 4];
+                Array.Resize(ref IQ_outData.bytes, inData_length);
+                Array.Resize(ref filterCoefficients, this.filterOrder);
+                Array.Resize(ref IQ_remainded.bytes, this.filterOrder * 4);
                 IQ_inData_length = inData_length / 4;
-                Filter_Math FIR = new Filter_Math();
                 this.SampleRate = SampleRate;
                 this.Bandwich = Bandwich;
                 FIR_WindowType = WindowType;
@@ -34,7 +42,7 @@ namespace demodulation
             }
             catch (Exception exception)
             {
-                MessageBox.Show(string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message));
+                warningMessage = string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
             }
         }
         /// <summary>Функція фільтрації</summary>
@@ -43,8 +51,6 @@ namespace demodulation
             try
             {
                 IQ_inData.bytes = inData;
-                //IQ_outData.bytes = outData;
-                //IQ_remainded.bytes = remainded;
                 int size = IQ_inData_length;
                 for (int j = 0; j < size; j++)
                 {
@@ -76,7 +82,7 @@ namespace demodulation
             }
             catch (Exception exception)
             {
-                MessageBox.Show(string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message));
+                warningMessage = string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
             }
             return IQ_outData.bytes;
         }

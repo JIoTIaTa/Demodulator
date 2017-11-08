@@ -24,7 +24,7 @@ namespace demodulation
         int filterOrder = 4;
         public int get_OutDataLength { get { return IQ_outData_length; } }
         public double get_newSampleRate {get { return SampleRate * calcDI_coef; } }
-        //public double get_newSampleRate { get { return SampleRate * interpolation_coef; } }
+        public string warningMessage = "Стан: Працює без збоїв";
 
 
         public Poliphase_Filter()
@@ -68,7 +68,7 @@ namespace demodulation
             }
             catch (Exception exception)
             {
-                MessageBox.Show(string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message));
+                warningMessage = string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
             }
         }
         private void calc_DI_coef()
@@ -101,7 +101,7 @@ namespace demodulation
             }
             catch (Exception exception)
             {
-                MessageBox.Show(string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message));
+                warningMessage = string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
             }
         }
 
@@ -115,7 +115,7 @@ namespace demodulation
             }
             catch (Exception exception)
             {
-                MessageBox.Show(string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message));
+                warningMessage = string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
             }
         }
         private void decimation_buffers()
@@ -127,7 +127,7 @@ namespace demodulation
             }
             catch (Exception exception)
             {
-                MessageBox.Show(string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message));
+                warningMessage = string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
             }
         }
 
@@ -178,14 +178,13 @@ namespace demodulation
             }
             catch (Exception exception)
             {
-                MessageBox.Show(string.Format("INTERPOLATION ERROR :{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message));
+                warningMessage = string.Format("INTERPOLATION ERROR :{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
             }
             ///////////////////////////////////// Фаза децимації /////////////////////////////////////
             try
             { 
                 decimation_buffers();
                 size = IQ_outData_length;
-                //MessageBox.Show(string.Format("IQ_interpolated.bytes.length = {0}\nIQ_outData_length = {1}\nfilterOrder = {2}\nIQ_remainded.bytes.Length = {3}\ndecimation_coef = {4}\nIQ_outData.bytes.Length = {5}\n size = {6}", IQ_interpolated.bytes.Length, IQ_outData_length, filterOrder, IQ_remainded.bytes.Length, decimation_coef, IQ_outData.bytes.Length, size));
                 for (int j = 0; j < size; j++)
                 {
                     iqf _sum;
@@ -208,7 +207,6 @@ namespace demodulation
                     IQ_outData.iq[j].i = (short)(_sum.i);
                     IQ_outData.iq[j].q = (short)(_sum.q);
                 }
-                //MessageBox.Show("Децимація в нормі");
                 Array.Resize(ref IQ_remainded.bytes, filterOrder * 4);
                 for (int j = 0; j < filterOrder; j++)
                 {
@@ -218,10 +216,9 @@ namespace demodulation
             }
             catch (Exception exception)
             {
-                MessageBox.Show(string.Format("DECIMATION ERROR :{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message));
+                warningMessage = string.Format("DECIMATION ERROR :{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
             }
             return IQ_outData.bytes;
-            //return IQ_interpolated.bytes;
         }
     }
 }

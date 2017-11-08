@@ -7,59 +7,64 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Mitov.PlotLab;
+using Mitov.SignalLab;
+using System.Numerics;
 
 namespace demodulation
 {
     public partial class Constellation : Form
     {
-        public sIQData IQ_signal;
-        static int size = 65536;
+        public Demodulator dem_functions;
         public Constellation()
         {
             InitializeComponent();
-        }
-        //public void BeginDisplay(byte[] inData)
-        //{
-        //    try
-        //    {
-
-        //        if (size != inData.Length / 4)
-        //        {
-        //            size = inData.Length / 4;
-        //            Array.Resize(ref IQ_signal.bytes, size * 4);
-        //            Array.Resize(ref I_data, size);
-        //            Array.Resize(ref Q_data, size);
-        //        }
-        //        //Array.Clear(IQ_signal.bytes, 0, IQ_signal.bytes.Length - 1);
-        //        Array.Copy(inData, IQ_signal.bytes, inData.Length);
-        //        //IQ_signal.bytes = inData;
-        //        for (int i = 0; i < inData.Length / 4; i++)
-        //        {
-        //            I_data[i] = IQ_signal.iq[i].i;
-        //            Q_data[i] = IQ_signal.iq[i].q;
-        //        }
-        //        Mitov_constellation.Channels[0].Data.Clear();
-        //        Mitov_constellation.Channels[0].Data.SetXYData(I_data, Q_data);
-        //    }
-        //    catch
-        //    {
-        //    }
-        //}
-        public void BeginDisplay(ref short[] I_data, ref short[] Q_data)
-        {
-            try
-            {        
-                Mitov_constellation.Channels[0].Data.Clear();
-                Mitov_constellation.Channels[0].Data.SetXYData(I_data, Q_data);
-            }
-            catch
-            {
-            }
+            this.Top = 518;
+            this.Left = 0;
         }
 
         private void checkBox_constellation_CheckedChanged(object sender, EventArgs e)
         {
-            Quadrature_AM_demodulatorSPARKInterface.display_constellation = checkBox_constellation.Checked;
+            dem_functions.display_constellation = checkBox_constellation.Checked;
+            //timer_constellation.Enabled = checkBox_constellation.Checked;
+        }        
+
+        private void Constellation_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            //dem_functions.display_constellation = false;
+        }
+
+        private void Constellation_Load(object sender, EventArgs e)
+        {
+            checkBox_constellation.Checked = dem_functions.display_constellation;
+        }
+
+        private void timer_constellation_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                timer_constellation.Interval = dem_functions.display_Tick;
+                ComplexBuffer buffer = new ComplexBuffer(dem_functions.IQ_filtered.bytes.Length / 4);
+                RealBuffer real = new RealBuffer(dem_functions.IQ_filtered.bytes.Length / 4);
+                RealBuffer imaginary = new RealBuffer(dem_functions.IQ_filtered.bytes.Length / 4);
+                for (int k = 0; k < dem_functions.IQ_filtered.bytes.Length / 4; k++)
+                {
+                    real[k] = dem_functions.IQ_filtered.iq[k].i;
+                    imaginary[k] = dem_functions.IQ_filtered.iq[k].q;
+                }
+                buffer.Set(real, imaginary);           
+                genericComplex_constellation.SendData(buffer);
+            }
+            catch (Exception exception)
+            {
+                dem_functions.warningMessage = string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
+            }
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            checkBox_constellation.Checked = dem_functions.display_constellation;
+            timer_constellation.Enabled = dem_functions.display_constellation;
         }
     }
 }

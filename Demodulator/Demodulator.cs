@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Numerics;
 
 namespace demodulation
 {
@@ -50,7 +51,11 @@ namespace demodulation
     };
     public enum FFT_data_display
     {
-        SHIFTING, EXPONENT, DETECTED, FILTERING, INPUT
+        SHIFTING, FILTERING, INPUT
+    };
+    public enum Exponent_data_display
+    {
+       MODULE, ELEVATE
     };
 
     public enum modulation_type { PSK_2, PSK_4, PSK_8, QAM_16 }
@@ -58,10 +63,11 @@ namespace demodulation
     public enum Filter_type { simple, poliphase }
     public partial class Demodulator
     {
-       
-        //[DllImport("..\\..\\data\\FIR.dll", EntryPoint = "BasicFIR", CallingConvention = CallingConvention.StdCall)]
-        //static extern void _FIR(ref float FIRCoeff, int numTaps, TPassTypeName PassType, float OmegaC, float BW, TWindowType WindowTyte, float WinBeta);
 
+        [DllImport(@"..\\..\\data\\CUDA_FFT.dll")]
+        public static extern int deviceFFT(ref Complex inData, ref Complex outData, int FFT_deep, int device_number);
+        [DllImport(@"..\\..\\data\\CUDA_FFT.dll")]
+        public static extern int FFT_centering(ref Complex inData, ref Complex outData, int FFT_deep, int device_number);
 
         /// <summary>Функція ініціалізації буферів, необхідних для роботи модуля, з вказанням їх довжини</summary>
         /// <param name="Length">Довжина масивів які необхідно виділити в байтах</param>
@@ -71,10 +77,6 @@ namespace demodulation
             {
                 IQ_lenght = Length / 4;
                 if (IQ_lenght > maxFFT) { IQ_lenght = maxFFT; }
-                //Array.Resize(ref detected, Length);
-                //Array.Resize(ref elevated, Length);
-                //Array.Resize(ref shifted, Length);
-                //Array.Resize(ref filtered, Length);
                 IQ_detected.bytes = new byte[Length];
                 IQ_elevated.bytes = new byte[Length];
                 IQ_shifted.bytes = new byte[Length];
@@ -92,8 +94,6 @@ namespace demodulation
             {
                 warningMessage = string.Format("{0}.{1}: {2}", exception.Source, exception.TargetSite, exception.Message);
             }
-
-            //MessageBox.Show(String.Format("bufferDetectData = {0}\nbufferExpData = {1}\nshifting_data = {2}\nfiltering_data = {3}\ntempI_buffer = {4}\ntempQ_buffer = {5}\nCount = {6}", bufferDetectData.Length, bufferExpData.Length, shifting_data.Length, filtering_data.Length, tempI_buffer.Length, tempQ_buffer.Length, Count));
         }
         /// <summary>Функція конфігурації параметрів фільтрації</summary>
         private void configFilter()
@@ -110,5 +110,19 @@ namespace demodulation
             }
             catch { warningMessage = "Стан: Проблеми з налаштуванням фільтра"; }
         }
-    }    
+    }
+
+
+    /// <summary>
+    /// Клас зберігання двох величин
+    /// </summary>
+    public class change
+    {
+        private int _old;
+        private int _new;
+
+        public int old_value { get { return _old; } set { _old = value; } }
+        public int new_value { get { return _new; } set { _new = value; } }
+    }
+
 }

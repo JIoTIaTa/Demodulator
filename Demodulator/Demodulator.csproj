@@ -41,7 +41,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
+    <OutputPath>..\..\..\SPARK\plaZma\Decoders\Утиліти\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -87,6 +87,13 @@
     </Compile>
     <Compile Include="Constellation_new.cs" />
     <Compile Include="Demodulator.cs" />
+    <Compile Include="Demodulator.Variables.cs" />
+    <Compile Include="Exponent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exponent.Designer.cs">
+      <DependentUpon>Exponent.cs</DependentUpon>
+    </Compile>
     <Compile Include="Filter.cs" />
     <Compile Include="Phase_Detector.cs" />
     <Compile Include="FFT.cs" />
@@ -134,7 +141,7 @@
     <Compile Include="cloo\SysIntX2.cs" />
     <Compile Include="cloo\SysIntX3.cs" />
     <Compile Include="Demodulator_SPARKInterface.cs" />
-    <Compile Include="Filter.Math.cs" />
+    <Compile Include="Filter.CoefficientsCalculating.cs" />
     <Compile Include="Gardner_detector.cs" />
     <Compile Include="Poliphase_Filter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -149,15 +156,21 @@
     <Compile Include="Demodulator_VisualForm.designer.cs">
       <DependentUpon>Demodulator_VisualForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TXT_writter.cs" />
-    <Compile Include="UserControl1.xaml.cs">
-      <DependentUpon>UserControl1.xaml</DependentUpon>
+    <Compile Include="test_Form.cs">
+      <SubType>Form</SubType>
     </Compile>
+    <Compile Include="test_Form.Designer.cs">
+      <DependentUpon>test_Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TXT_writter.cs" />
     <Compile Include="VisualFunctions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Constellation.resx">
       <DependentUpon>Constellation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Exponent.resx">
+      <DependentUpon>Exponent.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -166,15 +179,12 @@
     <EmbeddedResource Include="Demodulator_VisualForm.resx">
       <DependentUpon>Demodulator_VisualForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="test_Form.resx">
+      <DependentUpon>test_Form.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Fakes Include="Fakes\Mitov.PlotLab.fakes" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="UserControl1.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
