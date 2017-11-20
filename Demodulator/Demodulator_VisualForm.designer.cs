@@ -265,6 +265,7 @@
             this.filterBW_label = new System.Windows.Forms.Label();
             this.afterFilterSR_label = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.textBox_BW = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
@@ -274,7 +275,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.numericUpDown_MScorrect = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
-            this.numericUpDown_BW = new System.Windows.Forms.NumericUpDown();
             this.label9 = new System.Windows.Forms.Label();
             this.typeWindow = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -294,7 +294,6 @@
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_MScorrect)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_BW)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_central_freq_corerct)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.genericReal_FFT)).BeginInit();
@@ -986,6 +985,7 @@
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.groupBox1.Controls.Add(this.textBox_BW);
             this.groupBox1.Controls.Add(this.button2);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.afterFilterSR_label);
@@ -1003,7 +1003,6 @@
             this.groupBox1.Controls.Add(this.T_label);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.Speed_label);
-            this.groupBox1.Controls.Add(this.numericUpDown_BW);
             this.groupBox1.Controls.Add(this.label9);
             this.groupBox1.Controls.Add(this.typeWindow);
             this.groupBox1.Controls.Add(this.label2);
@@ -1022,6 +1021,15 @@
             this.groupBox1.Size = new System.Drawing.Size(1125, 236);
             this.groupBox1.TabIndex = 127;
             this.groupBox1.TabStop = false;
+            // 
+            // textBox_BW
+            // 
+            this.textBox_BW.Location = new System.Drawing.Point(712, 34);
+            this.textBox_BW.Name = "textBox_BW";
+            this.textBox_BW.Size = new System.Drawing.Size(100, 20);
+            this.textBox_BW.TabIndex = 141;
+            this.textBox_BW.Text = "0";
+            this.textBox_BW.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // button2
             // 
@@ -1106,9 +1114,9 @@
             this.label5.BackColor = System.Drawing.Color.White;
             this.label5.Location = new System.Drawing.Point(818, 14);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(19, 13);
+            this.label5.Size = new System.Drawing.Size(26, 13);
             this.label5.TabIndex = 136;
-            this.label5.Text = "Гц";
+            this.label5.Text = "Бод";
             // 
             // label4
             // 
@@ -1137,6 +1145,7 @@
             this.numericUpDown_MScorrect.Size = new System.Drawing.Size(100, 20);
             this.numericUpDown_MScorrect.TabIndex = 134;
             this.numericUpDown_MScorrect.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numericUpDown_MScorrect.ValueChanged += new System.EventHandler(this.numericUpDown_MScorrect_ValueChanged_1);
             // 
             // label8
             // 
@@ -1147,24 +1156,6 @@
             this.label8.Size = new System.Drawing.Size(19, 13);
             this.label8.TabIndex = 128;
             this.label8.Text = "Гц";
-            // 
-            // numericUpDown_BW
-            // 
-            this.numericUpDown_BW.Location = new System.Drawing.Point(712, 34);
-            this.numericUpDown_BW.Maximum = new decimal(new int[] {
-            1000000000,
-            0,
-            0,
-            0});
-            this.numericUpDown_BW.Minimum = new decimal(new int[] {
-            1000000000,
-            0,
-            0,
-            -2147483648});
-            this.numericUpDown_BW.Name = "numericUpDown_BW";
-            this.numericUpDown_BW.Size = new System.Drawing.Size(100, 20);
-            this.numericUpDown_BW.TabIndex = 133;
-            this.numericUpDown_BW.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label9
             // 
@@ -1213,7 +1204,12 @@
             // 
             // numericUpDown_central_freq_corerct
             // 
-            this.numericUpDown_central_freq_corerct.DecimalPlaces = 2;
+            this.numericUpDown_central_freq_corerct.DecimalPlaces = 3;
+            this.numericUpDown_central_freq_corerct.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
             this.numericUpDown_central_freq_corerct.Location = new System.Drawing.Point(713, 56);
             this.numericUpDown_central_freq_corerct.Maximum = new decimal(new int[] {
             1000000000,
@@ -1353,7 +1349,6 @@
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_MScorrect)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_BW)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_central_freq_corerct)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -1394,7 +1389,6 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox typeWindow;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.NumericUpDown numericUpDown_BW;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.NumericUpDown numericUpDown_MScorrect;
         private System.Windows.Forms.Label label4;
@@ -1409,5 +1403,6 @@
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Label label_freq_dBm;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TextBox textBox_BW;
     }
 }

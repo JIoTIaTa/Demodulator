@@ -26,7 +26,7 @@ namespace demodulation
         public Demodulator dem_functions;
         VisuaslFactory_FFT visualBuffers;
         private double fNormolize = 1d / 4294967296; // коефициент нормализации сигнала
-        private double SR = 0.0d; // частота дискретизации
+        //private double SR = 0.0d; // частота дискретизации
         Complex[] visual_data = new Complex[65536];
         double[] avering_buffer = new double[65536];
         public float[] outFFTdata = new float[65536]; // значення осі У ШПФ
@@ -39,8 +39,7 @@ namespace demodulation
         [DllImport(@"..\\..\\data\\CUDA_FFT.dll")]
         public static extern int deviceFFT(ref Complex inData, ref Complex outData,  int FFT_deep, int device_number);
         [DllImport(@"..\\..\\data\\CUDA_FFT.dll")]
-        public static extern int FFT_centering(ref Complex inData, ref Complex outData, int FFT_deep, int device_number);
-        public DemodulatorVisual_Form()
+        public static extern int FFT_centering(ref Complex inData, ref Complex outData, int FFT_deep, int device_number);      public DemodulatorVisual_Form()
         {
             InitializeComponent();
             Top = 0;
@@ -64,7 +63,7 @@ namespace demodulation
             if (dem_functions.maxFFT == 16384) { comboBoxFFT.SelectedIndex = 6; }
             if (dem_functions.maxFFT == 32768) { comboBoxFFT.SelectedIndex = 7; }
             if (dem_functions.maxFFT == 65536) { comboBoxFFT.SelectedIndex = 8; }
-            SR = dem_functions.SR;
+            //SR = dem_functions.SR;
             toolStripStatusLabel1.Text = "Стан: Працюю без помилок";
             numericUpDown_fftAveragingValue.Value = dem_functions.fftAveragingValue;
             if (Quadrature_AM_demodulatorSPARKInterface.calculate_parametrs_bool) { calculate_parametrs.Checked = true; } else { calculate_parametrs.Checked = false; }
@@ -99,14 +98,14 @@ namespace demodulation
             {
                 toolStripStatusLabel1.Text = dem_functions.warningMessage;
                 if (dem_functions.warningMessage != "Стан: Працює без збоїв") { BackColor = Color.Red; } else { BackColor = Color.White; } 
-                Speed_label.Text = string.Format("Символьна швидкість:  {0:0.00} кГц", dem_functions.speedFrequency / 1000.0d);
+                Speed_label.Text = string.Format("Символьна швидкість:  {0:0.00} Бод", dem_functions.speedFrequency);
                 T_label.Text = string.Format("Період маніпуляції:  {0:0.00} мкс", (1 / dem_functions.speedFrequency * 1000000.0d));
                 F_label.Text = string.Format("Центральна частота:  {0:0.00} кГц", (dem_functions.centralFrequency / 1000.0d));
                 deltaF_label.Text = string.Format("Відхилення:  {0:0.00} кГц", ((dem_functions.centralFrequency - dem_functions.F) / 1000.0d));
                 BPS_label.Text = string.Format("Відліків на символ:  {0:0.00}", dem_functions.SymbolsPerSapmle);
                 inputSR_label.Text = string.Format("Частота дискретизації на вході:  {0:0.00} кГц", dem_functions.SR / 1000.0d);
                 afterFilterSR_label.Text = string.Format("Частота дискретизації після децимації:  {0:0.00} кГц", dem_functions.SR_after_filter / 1000.0d);
-                numericUpDown_BW.Value = Convert.ToDecimal(dem_functions.FilterBandwich);
+                textBox_BW.Text = string.Format("{0}",dem_functions.FilterBandwich);
                 checkBox_FFT.Checked = dem_functions.display_FFT;
                 timer_FFT.Enabled = dem_functions.display_FFT;
             }
@@ -182,12 +181,7 @@ namespace demodulation
             Array.Resize(ref visual_data, length);
             Array.Clear(avering_buffer, 0, length);
         }
-        ////////////////////////////******************************************************************************////////////////////////////
-        private void filterBW_textBox_TextChanged(object sender, EventArgs e)
-        {
-            dem_functions.FilterBandwich = Convert.ToSingle(numericUpDown_BW.Value);
-        }
-
+        
         ////////////////////////////******************************************************************************////////////////////////////
         private void radioButton_simpleFilter_CheckedChanged(object sender, EventArgs e)
         {
@@ -207,11 +201,6 @@ namespace demodulation
         private void typeWindow_SelectedIndexChanged(object sender, EventArgs e)
         {
             dem_functions.FIR_WindowType = (TWindowType)typeWindow.SelectedIndex;
-        }
-        ////////////////////////////******************************************************************************////////////////////////////
-        private void numericUpDown_MScorrect_ValueChanged(object sender, EventArgs e)
-        {
-            dem_functions.MS_correct = (float)Convert.ToDouble(numericUpDown_MScorrect.Value);
         }
         ////////////////////////////******************************************************************************////////////////////////////
         private void comboBoxFFT_SelectedIndexChanged(object sender, EventArgs e)
@@ -288,7 +277,7 @@ namespace demodulation
         {
             try
             {
-                if (dem_functions.display == demodulation.FFT_data_display.FILTERING) { SR = dem_functions.SR_after_filter; } else { SR = dem_functions.SR; }
+                //if (dem_functions.display == demodulation.FFT_data_display.FILTERING) { SR = dem_functions.SR_after_filter; } else { SR = dem_functions.SR; }
                 visualBuffers.Create(ref visual_data, dem_functions.maxFFT);
                 //*********************************************************************************//
                 int Error = 999;
@@ -317,7 +306,7 @@ namespace demodulation
                     {
                         //MitovScope.Channels[0].Data.SetXYData(xAxes, outFFTdata);
                         MitovScope.XAxis.AdditionalAxes[0].Axis.Min.Tick.Value = 0;
-                        MitovScope.XAxis.AdditionalAxes[0].Axis.Max.Tick.Value = SR;
+                        MitovScope.XAxis.AdditionalAxes[0].Axis.Max.Tick.Value =dem_functions.SR;
                         genericReal_FFT.SendData(out_FFT_Data);
                     }
                     catch { }
@@ -390,6 +379,11 @@ namespace demodulation
                 Exponent_VisualForm.WindowState = FormWindowState.Normal;
                 Constellation_VisualForm.WindowState = FormWindowState.Normal;
             }
+        }
+
+        private void numericUpDown_MScorrect_ValueChanged_1(object sender, EventArgs e)
+        {
+            dem_functions.MS_correct = (short)numericUpDown_MScorrect.Value;
         }
     }    
 }

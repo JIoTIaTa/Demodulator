@@ -45,7 +45,7 @@ namespace demodulation
         public float speed_error = 0;
         public bool write = false;
         public string warningMessage = "Стан: Працює без збоїв";
-        public float MS_correct = 0.0f;
+        public short MS_correct = 0;
         Poliphase_Filter Poliphase_filter = new Poliphase_Filter();
         Filter simple_filter = new Filter();
         public Filter_type filter_type = Filter_type.simple;

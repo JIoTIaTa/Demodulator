@@ -168,7 +168,7 @@ namespace demodulation
                         inDataLength_change.new_value = inDataLength_change.old_value;
                         dem_functions.demodulator_init(inData.Length);
                         phase_detector.ReInit(inData.Length, modulation_type.PSK_4);
-                        if (visual_Form == null) { visual_Form.new_length(inData.Length); }
+                        if (visual_Form != null) { visual_Form.new_length(inData.Length); }
                 }
                     ////////////////////////////Розрахунок центральної частоти////////////////////////////                
                     if (calculate_parametrs_bool)
@@ -187,20 +187,10 @@ namespace demodulation
                     ////////////////////////////**************************////////////////////////////
 
                     dem_functions._filtering_function(ref outData);
-                    ////////////////////////////*******************
                     ////////////////////////////**************************////////////////////////////
                     if (calculate_parametrs_bool)
                     {
                         dem_functions.SymbolsPerSapmle = dem_functions._BitPerSapmle();
-                    }
-                    ////////////////////////////**************************////////////////////////////
-                    if (dem_functions.display_FFT)
-                    {
-                        //visual_Form.displayFFT();
-                    }
-                    if (dem_functions.display_constellation)
-                    {
-                        //visual_Form.displayConstellation(ref dem_functions.IQ_filtered.bytes);
                     }
                     ////////////////////////////**************************////////////////////////////
                     outData = dem_functions.IQ_filtered.bytes;
